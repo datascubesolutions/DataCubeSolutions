@@ -1,0 +1,288 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 0;
+  overflow-y: auto;
+}
+
+html, body {
+  overscroll-behavior-y: contain;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body.dark {
+  background: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Ensure no white gaps when scrolling */
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+}
+
+#__next, main {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Prevent overscroll bounce at top */
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Grid Animation for Background Pattern */
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+/* Circuit Board Animations */
+@keyframes circuitPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes circuitFlow {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.circuit-light {
+  animation: circuitPulse 2s ease-in-out infinite;
+}
+
+.circuit-light-glow {
+  animation: circuitPulse 2s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.circuit-wire {
+  stroke-dasharray: 10, 5;
+  animation: circuitFlow 3s linear infinite;
+}
+
+.flowing-light {
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+/* Matrix Fall Animation */
+@keyframes matrix-fall {
+  0% {
+    top: -10%;
+    opacity: 1;
+  }
+  100% {
+    top: 110%;
+    opacity: 0;
+  }
+}
+
+/* Terminal Blink */
+@keyframes terminal-blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+.terminal-line {
+  animation: terminal-blink 2s infinite;
+}
+
+/* Network Node Pulse */
+@keyframes node-pulse {
+  0%, 100% {
+    r: 6;
+    opacity: 0.8;
+  }
+  50% {
+    r: 10;
+    opacity: 1;
+  }
+}
+
+.network-node {
+  animation: node-pulse 2s ease-in-out infinite;
+}
+
+.network-node-glow {
+  animation: node-pulse 2s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+/* Central Hub Pulse */
+.central-hub {
+  filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.8));
+}
+
+.central-hub-glow {
+  filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.4));
+}
+
+/* Floating Code Animation */
+@keyframes floatCode {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.2;
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-10px) translateX(-5px);
+    opacity: 0.3;
+  }
+  75% {
+    transform: translateY(-30px) translateX(5px);
+    opacity: 0.4;
+  }
+}
+
+.floating-code {
+  animation: floatCode 15s ease-in-out infinite;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+/* CRM Customer Animation */
+@keyframes floatCustomer {
+  0%, 100% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px) rotate(5deg);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-5px) rotate(-5deg);
+  }
+  75% {
+    transform: translateY(-30px) translateX(5px) rotate(3deg);
+  }
+}
+
+/* ERP Dashboard Animations */
+@keyframes erpBarGrow {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.erp-bar {
+  animation: erpBarGrow 1s ease-out;
+}
+
+/* Contact Page Animations */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.ripple-effect div {
+  animation: ripple 4s ease-out infinite;
+}
+
+/* Services Network Animations */
+@keyframes floatServiceIcon {
+  0%, 100% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px) rotate(10deg);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-5px) rotate(-5deg);
+  }
+  75% {
+    transform: translateY(-25px) translateX(8px) rotate(8deg);
+  }
+}
+
+.service-float-icon {
+  animation: floatServiceIcon 6s ease-in-out infinite;
+}
+
+/* Home Page Data Flow Animations */
+@keyframes floatDataParticle {
+  0%, 100% {
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  50% {
+    transform: translateY(-30px) translateX(20px) scale(1.2);
+  }
+}
+
+.data-particle {
+  animation: floatDataParticle 6s ease-in-out infinite;
+}
+
+@keyframes rotateOrbital {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.orbital-ring {
+  animation: rotateOrbital 30s linear infinite;
+}
+
