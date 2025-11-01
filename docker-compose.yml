@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/app
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+
+  users-service:
+    build:
+      context: ./backend/services/users
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3001'
+    volumes:
+      - ./backend/services/users:/app
+    environment:
+      - DATABASE_URL=${USERS_DATABASE_URL}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
+
+  products-service:
+    build:
+      context: ./backend/services/products
+      dockerfile: Dockerfile
+    ports:
+      - '3002:3002'
+    volumes:
+      - ./backend/services/products:/app
+    environment:
+      - DATABASE_URL=${PRODUCTS_DATABASE_URL}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
+
+  orders-service:
+    build:
+      context: ./backend/services/orders
+      dockerfile: Dockerfile
+    ports:
+      - '3003:3003'
+    volumes:
+      - ./backend/services/orders:/app
+    environment:
+      - DATABASE_URL=${ORDERS_DATABASE_URL}
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
+
+networks:
+  default:
+    name: datascube-network

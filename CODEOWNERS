@@ -1,0 +1,23 @@
+# This file is used to define the owners of different parts of the codebase.
+# When a pull request is opened that touches any of these files, the owners
+# will be automatically requested for review.
+
+# Global owners
+* @global-owner
+
+# Frontend
+/frontend/ @frontend-team
+
+# Backend services
+/backend/services/users/ @users-team
+/backend/services/products/ @products-team
+/backend/services/orders/ @orders-team
+
+# Shared libraries
+/shared/ @shared-libs-team
+
+# Documentation
+/docs/ @docs-team
+
+# Scripts
+/scripts/ @devops-team
