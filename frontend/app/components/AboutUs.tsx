@@ -535,7 +535,7 @@ export default function AboutUs() {
           id="wire-1"
           d="M 50 50 Q 200 100, 400 200 L 400 350"
           fill="none"
-          stroke="rgba(34, 197, 94, 0.3)"
+          stroke="rgba(34, 197, 94, 0.7)"
           strokeWidth="3"
           className="circuit-wire"
         />
@@ -545,7 +545,7 @@ export default function AboutUs() {
           id="wire-2"
           d="M 400 350 Q 600 400, 800 450 L 800 550"
           fill="none"
-          stroke="rgba(59, 130, 246, 0.3)"
+          stroke="rgba(59, 130, 246, 0.7)"
           strokeWidth="3"
           className="circuit-wire"
         />
@@ -555,7 +555,7 @@ export default function AboutUs() {
           id="wire-3"
           d="M 1100 550 Q 900 600, 700 700 L 700 850"
           fill="none"
-          stroke="rgba(168, 85, 247, 0.3)"
+          stroke="rgba(168, 85, 247, 0.7)"
           strokeWidth="3"
           className="circuit-wire"
         />
@@ -565,7 +565,7 @@ export default function AboutUs() {
           id="wire-4"
           d="M 700 950 Q 500 1000, 300 1100 L 300 1300"
           fill="none"
-          stroke="rgba(249, 115, 22, 0.3)"
+          stroke="rgba(249, 115, 22, 0.7)"
           strokeWidth="3"
           className="circuit-wire"
         />
@@ -575,7 +575,7 @@ export default function AboutUs() {
           id="wire-5"
           d="M 400 500 L 1100 500"
           fill="none"
-          stroke="rgba(34, 197, 94, 0.2)"
+          stroke="rgba(34, 197, 94, 0.6)"
           strokeWidth="2"
           strokeDasharray="10,5"
           className="circuit-wire"
