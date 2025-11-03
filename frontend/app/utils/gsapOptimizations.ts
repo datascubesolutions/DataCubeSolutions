@@ -24,10 +24,8 @@ export function initGSAPOptimizations() {
   });
 
   // Batch DOM reads/writes for better performance
-  if (window.requestAnimationFrame) {
-    // Use RAF for smoother animations
-    gsap.ticker.lagSmoothing(0);
-  }
+  // Use RAF for smoother animations
+  gsap.ticker.lagSmoothing(0);
 }
 
 /**

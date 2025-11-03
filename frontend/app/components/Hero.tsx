@@ -126,12 +126,12 @@ export default function Hero() {
           gsap.to(ref, {
             y: '-=80',
             opacity: 0,
+            ease: 'none',
             scrollTrigger: {
               trigger: heroRef.current,
               start: 'top top',
               end: 'bottom top',
               scrub: 1,
-              ease: 'none'
             },
           });
         }
@@ -156,12 +156,12 @@ export default function Hero() {
           gsap.to(circle, {
             y: '-=120',
             opacity: 0,
+            ease: 'none',
             scrollTrigger: {
               trigger: heroRef.current,
               start: 'top top',
               end: 'bottom top',
               scrub: 1.5,
-              ease: 'none'
             },
           });
         });
@@ -172,12 +172,12 @@ export default function Hero() {
         gsap.to(titleRef.current, {
           y: -40,
           opacity: 0.2,
+          ease: 'none',
           scrollTrigger: {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
             scrub: 1,
-            ease: 'none'
           },
         });
       }
@@ -186,12 +186,12 @@ export default function Hero() {
         gsap.to(subtitleRef.current, {
           y: -30,
           opacity: 0.3,
+          ease: 'none',
           scrollTrigger: {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
             scrub: 1,
-            ease: 'none'
           },
         });
       }
@@ -200,12 +200,12 @@ export default function Hero() {
         gsap.to(descRef.current, {
           y: -25,
           opacity: 0.4,
+          ease: 'none',
           scrollTrigger: {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
             scrub: 1,
-            ease: 'none'
           },
         });
       }
@@ -214,12 +214,12 @@ export default function Hero() {
         gsap.to(buttonRef.current, {
           y: -20,
           opacity: 0.5,
+          ease: 'none',
           scrollTrigger: {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
             scrub: 1,
-            ease: 'none'
           },
         });
       }

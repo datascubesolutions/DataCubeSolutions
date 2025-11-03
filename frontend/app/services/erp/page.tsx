@@ -39,11 +39,13 @@ export default function ERPServicePage() {
       const chartBars = pageRef.current?.querySelectorAll('.chart-bar');
       if (chartBars) {
         chartBars.forEach((bar, index) => {
+          const htmlBar = bar as HTMLElement;
+          const targetHeight = htmlBar.style.height || window.getComputedStyle(htmlBar).height;
           gsap.fromTo(
-            bar,
+            htmlBar,
             { height: 0, opacity: 0 },
             {
-              height: bar.style.height,
+              height: targetHeight,
               opacity: 1,
               duration: 1,
               delay: index * 0.05,
