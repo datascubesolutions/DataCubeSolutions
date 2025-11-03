@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Services from '../components/Services';
+import { BarChart3, Users, Code, Zap, Wrench } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -296,15 +297,17 @@ export default function ServicesPage() {
 
         {/* Floating Service Icons */}
         {[
-          { icon: '📊', x: 15, y: 25, color: 'blue', delay: '0s' },
-          { icon: '👥', x: 85, y: 25, color: 'pink', delay: '1s' },
-          { icon: '💻', x: 50, y: 80, color: 'cyan', delay: '0.5s' },
-          { icon: '⚡', x: 25, y: 60, color: 'purple', delay: '1.5s' },
-          { icon: '🔧', x: 75, y: 60, color: 'indigo', delay: '0.8s' },
-        ].map((service, index) => (
+          { icon: BarChart3, x: 15, y: 25, color: 'blue', delay: '0s' },
+          { icon: Users, x: 85, y: 25, color: 'pink', delay: '1s' },
+          { icon: Code, x: 50, y: 80, color: 'cyan', delay: '0.5s' },
+          { icon: Zap, x: 25, y: 60, color: 'purple', delay: '1.5s' },
+          { icon: Wrench, x: 75, y: 60, color: 'indigo', delay: '0.8s' },
+        ].map((service, index) => {
+          const IconComponent = service.icon;
+          return (
           <div
             key={index}
-            className={`absolute service-float-icon text-4xl`}
+            className={`absolute service-float-icon flex items-center justify-center`}
             style={{
               left: `${service.x}%`,
               top: `${service.y}%`,
@@ -318,9 +321,10 @@ export default function ServicesPage() {
               })`,
             }}
           >
-            {service.icon}
+            <IconComponent className="w-10 h-10" style={{ color: service.color === 'blue' ? '#3b82f6' : service.color === 'pink' ? '#ec4899' : service.color === 'cyan' ? '#06b6d4' : service.color === 'purple' ? '#8b5cf6' : '#6366f1' }} />
           </div>
-        ))}
+        );
+        })}
 
         {/* Hexagonal Grid Pattern */}
         <div

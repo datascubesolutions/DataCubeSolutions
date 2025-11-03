@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Mail, Zap, Globe, Star, Phone, MapPin, Clock, Send } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -206,7 +207,9 @@ export default function Contact() {
       <div className="container mx-auto px-6">
         <div className="text-center mb-16 relative z-10">
           <div className="relative inline-block mb-6">
-            <div className="text-7xl contact-icon-main">📨</div>
+            <div className="contact-icon-main flex items-center justify-center">
+              <Mail className="w-28 h-28 text-blue-400" />
+            </div>
             <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-2xl animate-pulse"></div>
           </div>
           <h2 className="text-5xl font-bold text-gray-800 dark:text-white mb-4 relative z-10">
@@ -219,21 +222,26 @@ export default function Contact() {
           {/* Quick Contact Stats */}
           <div className="grid grid-cols-3 gap-6 max-w-3xl mx-auto mt-12 relative z-10">
             {[
-              { label: 'Response Time', value: '< 24hrs', icon: '⚡', color: 'from-blue-500 to-cyan-500' },
-              { label: 'Support', value: '24/7', icon: '🌐', color: 'from-purple-500 to-pink-500' },
-              { label: 'Satisfaction', value: '100%', icon: '⭐', color: 'from-green-500 to-emerald-500' },
-            ].map((stat, index) => (
+              { label: 'Response Time', value: '< 24hrs', icon: Zap, color: 'from-blue-500 to-cyan-500' },
+              { label: 'Support', value: '24/7', icon: Globe, color: 'from-purple-500 to-pink-500' },
+              { label: 'Satisfaction', value: '100%', icon: Star, color: 'from-green-500 to-emerald-500' },
+            ].map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
               <div
                 key={index}
-                className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-6 shadow-xl border border-blue-200/50 dark:border-blue-500/20 contact-stat-card"
+                className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-6 shadow-xl border border-blue-200/50 dark:border-blue-500/20 contact-stat-card text-center"
               >
-                <div className="text-3xl mb-2">{stat.icon}</div>
+                <div className="flex justify-center mb-3">
+                  <IconComponent className={`w-10 h-10 ${stat.color.includes('blue') ? 'text-blue-500' : stat.color.includes('purple') ? 'text-purple-500' : 'text-green-500'}`} />
+                </div>
                 <div className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1`}>
                   {stat.value}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
 
@@ -346,8 +354,8 @@ export default function Contact() {
                 className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden send-button group"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
-                  Send Inquiry
-                  <span className="text-xl">✈️</span>
+                  <span>Send Inquiry</span>
+                  <span><Send className="w-5 h-5" /></span>
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
@@ -361,8 +369,8 @@ export default function Contact() {
               
               <div className="space-y-6">
                 <div className="flex items-start">
-                  <div className="bg-blue-600 p-3 rounded-lg mr-4">
-                    <span className="text-white text-2xl">📍</span>
+                  <div className="bg-blue-600 p-3 rounded-lg mr-4 flex-shrink-0 flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Address</h4>
@@ -375,8 +383,8 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="bg-purple-600 p-3 rounded-lg mr-4">
-                    <span className="text-white text-2xl">📧</span>
+                  <div className="bg-purple-600 p-3 rounded-lg mr-4 flex-shrink-0 flex items-center justify-center">
+                    <Mail className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Email</h4>
@@ -386,8 +394,8 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="bg-pink-600 p-3 rounded-lg mr-4">
-                    <span className="text-white text-2xl">📞</span>
+                  <div className="bg-pink-600 p-3 rounded-lg mr-4 flex-shrink-0 flex items-center justify-center">
+                    <Phone className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Phone</h4>
@@ -397,8 +405,8 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="bg-green-600 p-3 rounded-lg mr-4">
-                    <span className="text-white text-2xl">🕒</span>
+                  <div className="bg-green-600 p-3 rounded-lg mr-4 flex-shrink-0 flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Business Hours</h4>

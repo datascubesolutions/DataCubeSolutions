@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import { Rocket, Briefcase, Zap, Lock, Users, Target, User, Star, BarChart3, Globe } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -13,25 +14,25 @@ if (typeof window !== 'undefined') {
 
 const features = [
   {
-    icon: '🚀',
+    icon: Rocket,
     title: 'Innovative Solutions',
     description: 'Cutting-edge technology that drives your business forward',
     color: 'from-blue-500 to-cyan-500',
   },
   {
-    icon: '💼',
+    icon: Briefcase,
     title: 'Enterprise Ready',
     description: 'Scalable solutions for businesses of all sizes',
     color: 'from-purple-500 to-pink-500',
   },
   {
-    icon: '⚡',
+    icon: Zap,
     title: 'Lightning Fast',
     description: 'Optimized performance for maximum efficiency',
     color: 'from-orange-500 to-red-500',
   },
   {
-    icon: '🔒',
+    icon: Lock,
     title: 'Secure & Reliable',
     description: 'Enterprise-grade security and 99.9% uptime',
     color: 'from-green-500 to-emerald-500',
@@ -39,31 +40,31 @@ const features = [
 ];
 
 const stats = [
-  { number: '500+', label: 'Happy Clients', icon: '👥' },
-  { number: '1000+', label: 'Projects Completed', icon: '🎯' },
-  { number: '50+', label: 'Expert Team', icon: '👨‍💼' },
-  { number: '10+', label: 'Years Experience', icon: '⭐' },
+  { number: '500+', label: 'Happy Clients', icon: Users },
+  { number: '1000+', label: 'Projects Completed', icon: Target },
+  { number: '50+', label: 'Expert Team', icon: User },
+  { number: '10+', label: 'Years Experience', icon: Star },
 ];
 
 const services = [
   {
     title: 'ERP Solutions',
     description: 'Streamline your business operations with comprehensive ERP systems',
-    icon: '📊',
+    icon: BarChart3,
     link: '/services/erp',
     gradient: 'from-blue-600 to-cyan-600',
   },
   {
     title: 'CRM Systems',
     description: 'Enhance customer relationships and boost sales with powerful CRM',
-    icon: '👥',
+    icon: Users,
     link: '/services/crm',
     gradient: 'from-purple-600 to-pink-600',
   },
   {
     title: 'Web Development',
     description: 'Modern web applications built with latest technologies',
-    icon: '🌐',
+    icon: Globe,
     link: '/services/web-development',
     gradient: 'from-orange-600 to-red-600',
   },
@@ -78,10 +79,14 @@ export default function Home() {
   const ctaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Set global GSAP defaults for performance
+    gsap.defaults({ force3D: true, immediateRender: false });
+    
     const ctx = gsap.context(() => {
-      // Mesh gradient animation
+      // Mesh gradient animation - keep as is (backgroundPosition is okay)
       const meshGradient = pageRef.current?.querySelector('.mesh-gradient-home');
       if (meshGradient) {
+        (meshGradient as HTMLElement).style.willChange = 'background-position';
         gsap.to(meshGradient, {
           backgroundPosition: '200% 200%',
           duration: 20,
@@ -90,10 +95,11 @@ export default function Home() {
         });
       }
 
-      // Floating geometric shapes animation
+      // Floating geometric shapes animation - optimized
       const geoShapes = pageRef.current?.querySelectorAll('.floating-geo-shape');
       if (geoShapes) {
         geoShapes.forEach((shape, index) => {
+          (shape as HTMLElement).style.willChange = 'transform';
           gsap.to(shape, {
             y: -30 + Math.random() * 60,
             x: -20 + Math.random() * 40,
@@ -104,14 +110,16 @@ export default function Home() {
             yoyo: true,
             ease: 'sine.inOut',
             delay: index * 0.5,
+            force3D: true,
           });
         });
       }
 
-      // Data particles floating animation
+      // Data particles floating animation - optimized
       const dataParticles = pageRef.current?.querySelectorAll('.data-particle');
       if (dataParticles) {
         dataParticles.forEach((particle, index) => {
+          (particle as HTMLElement).style.willChange = 'transform, opacity';
           gsap.to(particle, {
             y: -50 + Math.random() * 100,
             x: -30 + Math.random() * 60,
@@ -122,28 +130,32 @@ export default function Home() {
             yoyo: true,
             ease: 'sine.inOut',
             delay: index * 0.1,
+            force3D: true,
           });
         });
       }
 
-      // Orbital rings rotation
+      // Orbital rings rotation - optimized
       const orbitalRings = pageRef.current?.querySelectorAll('.orbital-ring');
       if (orbitalRings) {
         orbitalRings.forEach((ring, index) => {
+          (ring as HTMLElement).style.willChange = 'transform';
           gsap.to(ring, {
             rotation: 360,
             duration: 20 + index * 10,
             repeat: -1,
             ease: 'none',
             transformOrigin: 'center center',
+            force3D: true,
           });
         });
       }
 
-      // Data nodes pulse animation
+      // Data nodes pulse animation - optimized
       const dataNodes = pageRef.current?.querySelectorAll('.data-node-pulse');
       if (dataNodes) {
         dataNodes.forEach((node, index) => {
+          (node as HTMLElement).style.willChange = 'transform, opacity';
           gsap.to(node, {
             scale: 1.5,
             opacity: 0.7,
@@ -152,77 +164,84 @@ export default function Home() {
             yoyo: true,
             ease: 'sine.inOut',
             delay: index * 0.1,
+            force3D: true,
           });
         });
       }
 
-      // Hero section animations - ensure text is always visible
+      // Hero section animations - optimized (removed expensive properties)
       if (titleRef.current) {
-        // Set initial state to visible
+        titleRef.current.style.willChange = 'transform, opacity';
         gsap.set(titleRef.current, { opacity: 1, visibility: 'visible' });
         
         gsap.fromTo(
           titleRef.current,
-          { opacity: 0.8, y: 50, scale: 0.95, rotationX: -10 },
+          { opacity: 0.8, y: 50, scale: 0.95 },
           {
             opacity: 1,
             y: 0,
             scale: 1,
-            rotationX: 0,
             duration: 1.2,
             ease: 'power3.out',
+            force3D: true,
           }
         );
       }
 
       if (subtitleRef.current) {
-        // Set initial state to visible
+        subtitleRef.current.style.willChange = 'transform, opacity';
         gsap.set(subtitleRef.current, { opacity: 1, visibility: 'visible' });
         
         gsap.fromTo(
           subtitleRef.current,
-          { opacity: 0.8, y: 30, blur: 5 },
+          { opacity: 0.8, y: 30 },
           {
             opacity: 1,
             y: 0,
-            blur: 0,
             duration: 1,
             delay: 0.3,
             ease: 'power2.out',
+            force3D: true,
           }
         );
       }
 
       if (ctaRef.current) {
+        ctaRef.current.style.willChange = 'transform, opacity';
         gsap.fromTo(
           ctaRef.current,
-          { opacity: 0, scale: 0, rotation: -180 },
+          { opacity: 0, scale: 0 },
           {
             opacity: 1,
             scale: 1,
-            rotation: 0,
             duration: 0.8,
             delay: 0.6,
             ease: 'back.out(2)',
+            force3D: true,
           }
         );
       }
 
-      // Features animation
+      // Features animation - optimized (removed rotationX)
+      const featureCards = pageRef.current?.querySelectorAll('.feature-card');
+      if (featureCards) {
+        featureCards.forEach((card) => {
+          (card as HTMLElement).style.willChange = 'transform, opacity';
+        });
+      }
       gsap.fromTo(
         '.feature-card',
         {
           opacity: 0,
           y: 80,
-          rotationX: -15,
         },
         {
           opacity: 1,
           y: 0,
-          rotationX: 0,
           duration: 0.8,
           stagger: 0.2,
           ease: 'power3.out',
+          force3D: true,
           scrollTrigger: {
             trigger: '.features-section',
             start: 'top 80%',
@@ -231,21 +250,26 @@ export default function Home() {
         }
       );
 
-      // Stats animation
+      // Stats animation - optimized (removed rotation)
+      const statCards = pageRef.current?.querySelectorAll('.stat-card');
+      if (statCards) {
+        statCards.forEach((card) => {
+          (card as HTMLElement).style.willChange = 'transform, opacity';
+        });
+      }
       gsap.fromTo(
         '.stat-card',
         {
           opacity: 0,
           scale: 0,
-          rotation: -180,
         },
         {
           opacity: 1,
           scale: 1,
-          rotation: 0,
           duration: 0.8,
           stagger: 0.15,
           ease: 'back.out(2)',
+          force3D: true,
           scrollTrigger: {
             trigger: '.stats-section',
             start: 'top 80%',
@@ -254,7 +278,13 @@ export default function Home() {
         }
       );
 
-      // Services animation
+      // Services animation - optimized
+      const serviceCards = pageRef.current?.querySelectorAll('.service-card');
+      if (serviceCards) {
+        serviceCards.forEach((card) => {
+          (card as HTMLElement).style.willChange = 'transform, opacity';
+        });
+      }
       gsap.fromTo(
         '.service-card',
         {
@@ -269,6 +299,7 @@ export default function Home() {
           duration: 1,
           stagger: 0.2,
           ease: 'power3.out',
+          force3D: true,
           scrollTrigger: {
             trigger: '.services-section',
             start: 'top 80%',
@@ -277,7 +308,13 @@ export default function Home() {
         }
       );
 
-      // Floating animations for background elements
+      // Floating animations for background elements - optimized
+      const floatingCircles = pageRef.current?.querySelectorAll('.floating-circle');
+      if (floatingCircles) {
+        floatingCircles.forEach((circle) => {
+          (circle as HTMLElement).style.willChange = 'transform';
+        });
+      }
       gsap.to('.floating-circle', {
         y: 30,
         scale: 1.1,
@@ -286,11 +323,11 @@ export default function Home() {
         yoyo: true,
         ease: 'sine.inOut',
         stagger: 0.4,
+        force3D: true,
       });
 
-      // Parallax effect for hero on scroll (only when scrolling away from hero)
+      // Parallax effect for hero on scroll - optimized
       if (heroRef.current && titleRef.current && subtitleRef.current) {
-        // Set initial visibility
         gsap.set(titleRef.current, { opacity: 1 });
         gsap.set(subtitleRef.current, { opacity: 1 });
         
@@ -298,27 +335,37 @@ export default function Home() {
           y: -50,
           opacity: 0.5,
           scale: 0.95,
+          force3D: true,
           scrollTrigger: {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
-            scrub: 1,
+            scrub: 0.5, // Optimized for smoother scrolling
+            invalidateOnRefresh: true,
           },
         });
 
         gsap.to(subtitleRef.current, {
           y: -30,
           opacity: 0.6,
+          force3D: true,
           scrollTrigger: {
             trigger: heroRef.current,
             start: 'top top',
             end: 'bottom top',
-            scrub: 1,
+            scrub: 0.5,
+            invalidateOnRefresh: true,
           },
         });
       }
 
-      // Floating particles
+      // Floating particles - optimized
+      const particles = pageRef.current?.querySelectorAll('.particle');
+      if (particles) {
+        particles.forEach((particle) => {
+          (particle as HTMLElement).style.willChange = 'transform';
+        });
+      }
       gsap.to('.particle', {
         y: -20,
         x: 10,
@@ -326,16 +373,18 @@ export default function Home() {
         duration: 4 + Math.random() * 2,
         repeat: -1,
         ease: 'sine.inOut',
+        force3D: true,
         stagger: {
           amount: 2,
           from: 'random',
         },
       });
 
-      // Circuit LED animations
+      // Circuit LED animations - optimized
       const circuitLeds = pageRef.current?.querySelectorAll('.circuit-card-led, .circuit-node, .circuit-connection');
       if (circuitLeds) {
         circuitLeds.forEach((led) => {
+          (led as HTMLElement).style.willChange = 'transform, opacity';
           gsap.to(led, {
             scale: 1.4,
             opacity: 0.9,
@@ -344,14 +393,16 @@ export default function Home() {
             yoyo: true,
             ease: 'sine.inOut',
             delay: Math.random() * 0.5,
+            force3D: true,
           });
         });
       }
 
-      // Circuit wire glow animation
+      // Circuit wire glow animation - optimized
       const circuitWires = pageRef.current?.querySelectorAll('.circuit-wire');
       if (circuitWires) {
         circuitWires.forEach((wire, index) => {
+          (wire as HTMLElement).style.willChange = 'opacity';
           gsap.to(wire, {
             opacity: 0.7,
             duration: 2.5,
@@ -766,8 +817,13 @@ export default function Home() {
                 <div className="absolute top-4 right-4 w-2 h-2 bg-blue-400 rounded-full shadow-lg shadow-blue-400/50 animate-pulse circuit-card-led"></div>
                 
                 <div className="relative z-10">
-                  <div className="text-6xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                    {feature.icon}
+                  <div className="mb-4 flex justify-center">
+                    <div className="transform group-hover:scale-110 transition-transform duration-300">
+                      {(() => {
+                        const IconComponent = feature.icon;
+                        return <IconComponent className="w-16 h-16 text-blue-400" />;
+                      })()}
+                    </div>
                   </div>
                   <h3 className="text-xl font-bold text-white mb-3">
                     {feature.title}
@@ -806,7 +862,12 @@ export default function Home() {
                 <div className={`absolute top-2 ${index % 2 === 0 ? 'left-2' : 'right-2'} w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/50 animate-pulse circuit-card-led`}></div>
                 
                 <div className="relative z-10">
-                  <div className="text-5xl mb-4">{stat.icon}</div>
+                  <div className="mb-4">
+                    {(() => {
+                      const IconComponent = stat.icon;
+                      return <IconComponent className="w-12 h-12 text-green-400 mx-auto" />;
+                    })()}
+                  </div>
                   <div className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-400 mb-2">
                     {stat.number}
                   </div>
@@ -852,7 +913,7 @@ export default function Home() {
                 {/* Circuit connection point */}
                 <div className={`absolute -top-2 ${index === 0 ? 'left-1/2' : index === 1 ? 'right-1/2' : 'left-1/2'} transform -translate-x-1/2 w-3 h-3 bg-purple-400 rounded-full shadow-lg shadow-purple-400/50 circuit-connection`}></div>
                 
-                <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 border-2 border-purple-500/30 overflow-hidden h-full">
+                <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 border-2 border-purple-500/30 overflow-hidden h-full flex flex-col">
                   {/* Circuit pattern overlay */}
                   <div className="absolute inset-0 opacity-10" style={{
                     backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(168, 85, 247, 0.1) 2px, rgba(168, 85, 247, 0.1) 4px)`,
@@ -862,30 +923,42 @@ export default function Home() {
                   <div className="absolute top-4 left-4 w-2 h-2 bg-purple-400 rounded-full shadow-lg shadow-purple-400/50 animate-pulse circuit-card-led"></div>
                   <div className="absolute top-4 right-4 w-2 h-2 bg-pink-400 rounded-full shadow-lg shadow-pink-400/50 animate-pulse circuit-card-led"></div>
                   
-                  <div className="relative z-10">
-                    <div
-                      className={`w-20 h-20 bg-gradient-to-r ${service.gradient} rounded-2xl flex items-center justify-center text-4xl mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}
-                      style={{
-                        boxShadow: `0 10px 30px ${index === 0 ? 'rgba(59, 130, 246, 0.5)' : index === 1 ? 'rgba(168, 85, 247, 0.5)' : 'rgba(249, 115, 22, 0.5)'}`,
-                      }}
-                    >
-                      {service.icon}
+                  {/* Circuit bottom line - fixed at absolute bottom */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${service.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 z-20`}></div>
+                  
+                  <div className="relative z-10 flex flex-col h-full">
+                    {/* Icon - centered */}
+                    <div className="flex justify-center mb-6">
+                      <div
+                        className={`w-20 h-20 bg-gradient-to-r ${service.gradient} rounded-2xl flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}
+                        style={{
+                          boxShadow: `0 10px 30px ${index === 0 ? 'rgba(59, 130, 246, 0.5)' : index === 1 ? 'rgba(168, 85, 247, 0.5)' : 'rgba(249, 115, 22, 0.5)'}`,
+                        }}
+                      >
+                        {(() => {
+                          const IconComponent = service.icon;
+                          return <IconComponent className="w-10 h-10 text-white" />;
+                        })()}
+                      </div>
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-4">
-                      {service.title}
-                    </h3>
-                    <p className="text-gray-300 leading-relaxed mb-6">
-                      {service.description}
-                    </p>
-                    <div className="flex items-center text-blue-400 font-semibold group-hover:gap-2 transition-all">
+                    
+                    {/* Content - flex-grow to push bottom content down */}
+                    <div className="flex-grow">
+                      <h3 className="text-2xl font-bold text-white mb-4 text-center">
+                        {service.title}
+                      </h3>
+                      <p className="text-gray-300 leading-relaxed mb-6 text-center">
+                        {service.description}
+                      </p>
+                    </div>
+                    
+                    {/* Bottom section - Learn More */}
+                    <div className="flex justify-center items-center text-blue-400 font-semibold group-hover:gap-2 transition-all mt-auto pt-4">
                       <span>Learn More</span>
                       <span className="ml-2 transform group-hover:translate-x-2 transition-transform">
                         →
                       </span>
                     </div>
-                    
-                    {/* Circuit bottom line */}
-                    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${service.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
                   </div>
                 </div>
               </div>

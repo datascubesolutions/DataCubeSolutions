@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
+import { BarChart3, Zap, TrendingUp, DollarSign, Wrench } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -288,7 +289,9 @@ export default function ERPServicePage() {
           <div className="container mx-auto px-6">
             <div className="text-center fade-in relative z-10">
               <div className="relative inline-block mb-6">
-                <div className="text-7xl erp-icon-main">📊</div>
+                <div className="erp-icon-main flex items-center justify-center">
+                  <BarChart3 className="w-28 h-28 text-blue-400" />
+                </div>
                 <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-2xl animate-pulse"></div>
               </div>
               <h1 className="text-5xl md:text-7xl font-bold text-gray-800 dark:text-white mb-6 relative z-10">
@@ -301,16 +304,20 @@ export default function ERPServicePage() {
               {/* Live Dashboard Stats */}
               <div className="grid grid-cols-4 gap-4 max-w-5xl mx-auto relative z-10">
                 {[
-                  { label: 'Efficiency', value: '95%', color: 'from-blue-500 to-cyan-500', icon: '⚡' },
-                  { label: 'Growth', value: '+42%', color: 'from-purple-500 to-pink-500', icon: '📈' },
-                  { label: 'Savings', value: '$2M', color: 'from-green-500 to-emerald-500', icon: '💰' },
-                  { label: 'Modules', value: '12+', color: 'from-indigo-500 to-purple-500', icon: '🔧' },
-                ].map((stat, index) => (
+                  { label: 'Efficiency', value: '95%', color: 'from-blue-500 to-cyan-500', icon: Zap },
+                  { label: 'Growth', value: '+42%', color: 'from-purple-500 to-pink-500', icon: TrendingUp },
+                  { label: 'Savings', value: '$2M', color: 'from-green-500 to-emerald-500', icon: DollarSign },
+                  { label: 'Modules', value: '12+', color: 'from-indigo-500 to-purple-500', icon: Wrench },
+                ].map((stat, index) => {
+                  const IconComponent = stat.icon;
+                  return (
                   <div
                     key={index}
-                    className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-6 shadow-xl border border-blue-200/50 dark:border-blue-500/20 erp-stat-card"
+                    className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-6 shadow-xl border border-blue-200/50 dark:border-blue-500/20 erp-stat-card text-center"
                   >
-                    <div className="text-3xl mb-2">{stat.icon}</div>
+                    <div className="flex justify-center mb-2">
+                      <IconComponent className="w-8 h-8 text-blue-400" />
+                    </div>
                     <div className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1`}>
                       {stat.value}
                     </div>
@@ -323,7 +330,8 @@ export default function ERPServicePage() {
                       ></div>
                     </div>
                   </div>
-                ))}
+                );
+                })}
               </div>
             </div>
           </div>
