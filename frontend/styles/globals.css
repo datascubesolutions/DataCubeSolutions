@@ -286,3 +286,13 @@ body {
   animation: rotateOrbital 30s linear infinite;
 }
 
+/* Wave Animation for Background */
+@keyframes wave {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 60px 60px, -60px -60px;
+  }
+}
+

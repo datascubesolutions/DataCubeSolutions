@@ -4,18 +4,20 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mail, Zap, Globe, Star, Phone, MapPin, Clock, Send } from 'lucide-react';
+import { createInquiry } from '@/services/api/get-in-touch';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 const inquiryTypes = [
-  'ERP Solutions',
-  'CRM Systems',
-  'Web Development',
-  'Custom Software',
-  'Consultation',
-  'Other',
+  { label: 'ERP Solutions', value: 'erp-solutions' },
+  { label: 'CRM Systems', value: 'crm-systems' },
+  { label: 'Web Development', value: 'web-development' },
+  { label: 'Custom Software', value: 'custom-software' },
+  { label: 'Sales', value: 'sales' },
+  { label: 'Consultation', value: 'consultation' },
+  { label: 'Other', value: 'other' },
 ];
 
 export default function Contact() {
@@ -29,6 +31,8 @@ export default function Contact() {
     inquiryType: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -176,19 +180,51 @@ export default function Contact() {
     return () => ctx.revert();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    alert('Thank you for your inquiry! We will get back to you soon.');
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      company: '',
-      inquiryType: '',
-      message: '',
-    });
+    setIsSubmitting(true);
+    setSubmitMessage(null);
+
+    try {
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        message: formData.message,
+        inquiryType: formData.inquiryType || 'other',
+      };
+
+      await createInquiry(payload);
+
+      setSubmitMessage({
+        type: 'success',
+        text: 'Thank you for your inquiry! We will get back to you soon.',
+      });
+
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        inquiryType: '',
+        message: '',
+      });
+    } catch (error: any) {
+      const errorMessage = 
+        error?.data?.message || 
+        error?.response?.data?.message || 
+        error?.message || 
+        'Something went wrong. Please try again later.';
+      
+      setSubmitMessage({
+        type: 'error',
+        text: errorMessage,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -326,8 +362,8 @@ export default function Contact() {
                 >
                   <option value="">Select an option</option>
                   {inquiryTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {type}
+                    <option key={type.value} value={type.value}>
+                      {type.label}
                     </option>
                   ))}
                 </select>
@@ -349,12 +385,25 @@ export default function Contact() {
                 />
               </div>
 
+              {submitMessage && (
+                <div
+                  className={`p-4 rounded-lg ${
+                    submitMessage.type === 'success'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-300 dark:border-green-700'
+                      : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-700'
+                  }`}
+                >
+                  {submitMessage.text}
+                </div>
+              )}
+
               <button
                 type="submit"
-                className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden send-button group"
+                disabled={isSubmitting}
+                className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden send-button group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
-                  <span>Send Inquiry</span>
+                  <span>{isSubmitting ? 'Sending...' : 'Send Inquiry'}</span>
                   <span><Send className="w-5 h-5" /></span>
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

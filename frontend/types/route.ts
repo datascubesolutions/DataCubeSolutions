@@ -6,3 +6,4 @@ export interface RouteConfig {
   element: ComponentType<any>;
 }
 
+

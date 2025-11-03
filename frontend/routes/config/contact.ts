@@ -6,3 +6,4 @@ export const contactRoute: RouteConfig = {
   element: () => null, // Since we're using Next.js app router, this is for reference
 };
 
+
