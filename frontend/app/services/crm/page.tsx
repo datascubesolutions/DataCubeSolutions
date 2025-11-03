@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
+import { Users, User } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -139,8 +140,8 @@ export default function CRMServicePage() {
                 animation: `floatCustomer ${8 + Math.random() * 4}s ease-in-out infinite`,
               }}
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-400/30 to-pink-400/30 rounded-full backdrop-blur-sm border border-purple-300/20 flex items-center justify-center text-2xl">
-                👤
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-400/30 to-pink-400/30 rounded-full backdrop-blur-sm border border-purple-300/20 flex items-center justify-center">
+                <User className="w-8 h-8 text-purple-400" />
               </div>
             </div>
           ))}
@@ -203,7 +204,9 @@ export default function CRMServicePage() {
           <div className="container mx-auto px-6">
             <div className="text-center fade-in relative z-10">
               <div className="relative inline-block mb-6">
-                <div className="text-7xl customer-icon-main">👥</div>
+                <div className="customer-icon-main flex items-center justify-center">
+                  <Users className="w-28 h-28 text-purple-400" />
+                </div>
                 <div className="absolute inset-0 bg-purple-400/30 rounded-full blur-2xl animate-pulse"></div>
               </div>
               <h1 className="text-5xl md:text-7xl font-bold text-gray-800 dark:text-white mb-6 relative z-10">

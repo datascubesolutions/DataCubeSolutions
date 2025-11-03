@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
+import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
   useEffect(() => {
@@ -33,16 +34,16 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <span className="text-2xl">📘</span>
+                <Facebook className="w-6 h-6" />
               </a>
               <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <span className="text-2xl">🐦</span>
+                <Twitter className="w-6 h-6" />
               </a>
               <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <span className="text-2xl">💼</span>
+                <Linkedin className="w-6 h-6" />
               </a>
               <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <span className="text-2xl">📷</span>
+                <Instagram className="w-6 h-6" />
               </a>
             </div>
           </div>
@@ -125,10 +126,19 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact</h4>
             <ul className="space-y-2 text-gray-400">
-              <li>📧 info@datacube.com</li>
-              <li>📞 +1 (555) 123-4567</li>
-              <li>📍 123 Business Street</li>
-              <li>Tech City, TC 12345</li>
+              <li className="flex items-center gap-2">
+                <Mail className="w-4 h-4" />
+                <span>info@datacube.com</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Phone className="w-4 h-4" />
+                <span>+1 (555) 123-4567</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                <span>123 Business Street</span>
+              </li>
+              <li className="pl-6">Tech City, TC 12345</li>
             </ul>
           </div>
         </div>

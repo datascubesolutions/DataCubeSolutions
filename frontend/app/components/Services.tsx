@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Tabs from './Tabs';
+import { BarChart3, Users, Code, Rocket, TrendingUp, Star } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -14,7 +15,7 @@ const services = [
     id: 1,
     title: 'ERP Solutions',
     description: 'Comprehensive Enterprise Resource Planning systems to streamline your business operations, manage resources efficiently, and boost productivity.',
-    icon: '📊',
+    icon: BarChart3,
     features: ['Inventory Management', 'Financial Planning', 'Supply Chain', 'Human Resources'],
     color: 'from-blue-500 to-blue-700',
     details: (
@@ -54,7 +55,7 @@ const services = [
     id: 2,
     title: 'CRM Systems',
     description: 'Customer Relationship Management solutions to enhance customer engagement, track interactions, and drive sales growth.',
-    icon: '👥',
+    icon: Users,
     features: ['Customer Analytics', 'Sales Pipeline', 'Marketing Automation', 'Support Tickets'],
     color: 'from-purple-500 to-purple-700',
     details: (
@@ -94,7 +95,7 @@ const services = [
     id: 3,
     title: 'Web Development',
     description: 'Modern, responsive, and scalable web applications built with latest technologies to bring your digital presence to life.',
-    icon: '💻',
+    icon: Code,
     features: ['React/Next.js', 'Node.js Backend', 'Mobile Responsive', 'SEO Optimized'],
     color: 'from-pink-500 to-pink-700',
     details: (
@@ -509,7 +510,9 @@ export default function Services() {
           </svg>
 
           <div className="relative inline-block mb-6">
-            <div className="text-8xl services-icon-main relative z-10">🚀</div>
+            <div className="services-icon-main relative z-10 flex items-center justify-center">
+              <Rocket className="w-32 h-32 text-blue-400" />
+            </div>
             <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-3xl animate-pulse"></div>
             {/* Connection point on rocket */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-blue-400 rounded-full opacity-0 rocket-connection-point">
@@ -533,21 +536,26 @@ export default function Services() {
           {/* Service Stats */}
           <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto relative z-10">
             {[
-              { label: 'Active Projects', value: '500+', icon: '📊', color: 'from-blue-500 to-cyan-500' },
-              { label: 'Happy Clients', value: '1000+', icon: '👥', color: 'from-purple-500 to-pink-500' },
-              { label: 'Success Rate', value: '98%', icon: '⭐', color: 'from-green-500 to-emerald-500' },
-            ].map((stat, index) => (
+              { label: 'Active Projects', value: '500+', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
+              { label: 'Happy Clients', value: '1000+', icon: Users, color: 'from-purple-500 to-pink-500' },
+              { label: 'Success Rate', value: '98%', icon: Star, color: 'from-green-500 to-emerald-500' },
+            ].map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
               <div
                 key={index}
-                className="bg-white/10 dark:bg-gray-800/40 backdrop-blur-md rounded-xl p-6 shadow-xl border border-blue-200/20 dark:border-blue-500/20 service-stat-card"
+                className="bg-white/10 dark:bg-gray-800/40 backdrop-blur-md rounded-xl p-6 shadow-xl border border-blue-200/20 dark:border-blue-500/20 service-stat-card text-center"
               >
-                <div className="text-4xl mb-3">{stat.icon}</div>
+                <div className="flex justify-center mb-3">
+                  <IconComponent className="w-10 h-10 text-blue-400" />
+                </div>
                 <div className={`text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-2`}>
                   {stat.value}
                 </div>
                 <div className="text-sm text-gray-300">{stat.label}</div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
 
@@ -576,8 +584,13 @@ export default function Services() {
 
                 {/* Content */}
                 <div className="relative z-10">
-                  <div className={`text-6xl mb-6 transform group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 inline-block`}>
-                    {service.icon}
+                  <div className="mb-6 flex justify-center">
+                    <div className={`transform group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 inline-block`}>
+                      {(() => {
+                        const IconComponent = service.icon;
+                        return <IconComponent className="w-16 h-16 text-blue-400" />;
+                      })()}
+                    </div>
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300">
                     {service.title}

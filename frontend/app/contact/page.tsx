@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Contact from '../components/Contact';
+import { Mail, MessageCircle, Smartphone, Phone } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -144,8 +145,12 @@ export default function ContactPage() {
                 animationDelay: `${Math.random() * 5}s`,
               }}
             >
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-400/50 to-purple-400/50 rounded-full backdrop-blur-sm border border-blue-300/50 flex items-center justify-center text-2xl shadow-xl">
-                {['📧', '💬', '📱', '✉️'][i % 4]}
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-400/50 to-purple-400/50 rounded-full backdrop-blur-sm border border-blue-300/50 flex items-center justify-center shadow-xl">
+                {(() => {
+                  const icons = [Mail, MessageCircle, Smartphone, Mail];
+                  const IconComponent = icons[i % 4];
+                  return <IconComponent className="w-8 h-8 text-white" />;
+                })()}
               </div>
               <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gradient-to-br from-blue-400/50 to-purple-400/50 rounded-full"></div>
             </div>
@@ -198,8 +203,8 @@ export default function ContactPage() {
                 animationDelay: `${Math.random() * 4}s`,
               }}
             >
-              <div className="w-16 h-12 bg-gradient-to-br from-purple-400/30 to-pink-400/30 rounded-lg backdrop-blur-sm border border-purple-300/30 shadow-lg transform rotate-12">
-                <div className="absolute inset-0 flex items-center justify-center text-xl">✉️</div>
+              <div className="w-16 h-12 bg-gradient-to-br from-purple-400/30 to-pink-400/30 rounded-lg backdrop-blur-sm border border-purple-300/30 shadow-lg transform rotate-12 flex items-center justify-center">
+                <Mail className="w-6 h-6 text-purple-400" />
               </div>
             </div>
           ))}
@@ -246,8 +251,8 @@ export default function ContactPage() {
                 animationDelay: `${Math.random() * 3}s`,
               }}
             >
-              <div className="w-14 h-14 bg-gradient-to-br from-green-400/30 to-emerald-400/30 rounded-xl backdrop-blur-sm border border-green-300/30 flex items-center justify-center text-2xl shadow-xl">
-                📞
+              <div className="w-14 h-14 bg-gradient-to-br from-green-400/30 to-emerald-400/30 rounded-xl backdrop-blur-sm border border-green-300/30 flex items-center justify-center shadow-xl">
+                <Phone className="w-7 h-7 text-green-400" />
               </div>
             </div>
           ))}

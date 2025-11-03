@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { gsap } from 'gsap';
+import { Home, Users, Settings, Briefcase, Phone } from 'lucide-react';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -210,7 +211,7 @@ export default function Header() {
               }`}
             >
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">🏠</span>
+                <Home className="w-6 h-6" />
                 <span>Home</span>
               </div>
             </button>
@@ -224,7 +225,7 @@ export default function Header() {
               }`}
             >
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">👥</span>
+                <Users className="w-6 h-6" />
                 <span>About</span>
               </div>
             </button>
@@ -238,7 +239,7 @@ export default function Header() {
               }`}
             >
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">⚙️</span>
+                <Settings className="w-6 h-6" />
                 <span>Services</span>
               </div>
             </button>
@@ -252,7 +253,7 @@ export default function Header() {
               }`}
             >
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">💼</span>
+                <Briefcase className="w-6 h-6" />
                 <span>Projects</span>
               </div>
             </button>
@@ -266,7 +267,7 @@ export default function Header() {
               }`}
             >
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">📞</span>
+                <Phone className="w-6 h-6" />
                 <span>Contact</span>
               </div>
             </button>

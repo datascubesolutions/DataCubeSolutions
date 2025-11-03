@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Factory, Cloud, ShoppingCart, Building2, Home, Globe } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -14,7 +15,7 @@ const projects = [
     title: 'Enterprise ERP System',
     category: 'ERP',
     description: 'Complete enterprise resource planning solution for manufacturing industry with real-time analytics, inventory management, and comprehensive financial reporting.',
-    image: '🏭',
+    image: Factory,
     tech: ['React', 'Node.js', 'PostgreSQL'],
     gradient: 'from-blue-500 to-cyan-500',
     stats: { clients: '50+', efficiency: '85%', scale: 'Enterprise' },
@@ -24,7 +25,7 @@ const projects = [
     title: 'Cloud CRM Platform',
     category: 'CRM',
     description: 'Scalable CRM platform with advanced analytics, AI-powered automation, and seamless integration for sales teams worldwide.',
-    image: '☁️',
+    image: Cloud,
     tech: ['Next.js', 'MongoDB', 'AWS'],
     gradient: 'from-purple-500 to-pink-500',
     stats: { clients: '200+', efficiency: '90%', scale: 'Cloud' },
@@ -34,7 +35,7 @@ const projects = [
     title: 'E-Commerce Platform',
     category: 'Web Development',
     description: 'Modern e-commerce solution with secure payment integration, real-time inventory management, and advanced analytics.',
-    image: '🛒',
+    image: ShoppingCart,
     tech: ['React', 'Stripe API', 'Firebase'],
     gradient: 'from-orange-500 to-red-500',
     stats: { clients: '150+', efficiency: '95%', scale: 'Global' },
@@ -44,7 +45,7 @@ const projects = [
     title: 'Healthcare Management System',
     category: 'ERP',
     description: 'Comprehensive healthcare ERP for patient management, billing automation, and medical records with HIPAA compliance.',
-    image: '🏥',
+    image: Building2,
     tech: ['Vue.js', 'Django', 'MySQL'],
     gradient: 'from-green-500 to-emerald-500',
     stats: { clients: '30+', efficiency: '88%', scale: 'Healthcare' },
@@ -54,7 +55,7 @@ const projects = [
     title: 'Real Estate CRM',
     category: 'CRM',
     description: 'Specialized CRM for real estate agencies with property listing management, client tracking, and automated lead generation.',
-    image: '🏠',
+    image: Home,
     tech: ['Angular', 'Node.js', 'MongoDB'],
     gradient: 'from-indigo-500 to-purple-500',
     stats: { clients: '100+', efficiency: '92%', scale: 'Regional' },
@@ -64,7 +65,7 @@ const projects = [
     title: 'Corporate Website',
     category: 'Web Development',
     description: 'Modern corporate website with headless CMS integration, multilingual support, and advanced SEO optimization.',
-    image: '🌐',
+    image: Globe,
     tech: ['Next.js', 'Contentful', 'Tailwind'],
     gradient: 'from-teal-500 to-cyan-500',
     stats: { clients: '80+', efficiency: '98%', scale: 'Corporate' },
@@ -249,8 +250,13 @@ export default function Projects() {
                 }}></div>
                 
                 <div className="relative z-10">
-                  <div className="project-icon text-7xl mb-4 transform group-hover:scale-125 transition-transform duration-500 inline-block">
-                    {project.image}
+                  <div className="mb-4 flex justify-center">
+                    <div className="project-icon transform group-hover:scale-125 transition-transform duration-500 inline-block">
+                      {(() => {
+                        const IconComponent = project.image;
+                        return <IconComponent className="w-16 h-16 text-white" />;
+                      })()}
+                    </div>
                   </div>
                   <span className={`inline-block px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm font-semibold rounded-full border border-white/30`}>
                     {project.category}

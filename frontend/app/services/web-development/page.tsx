@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
+import { Code, Code2, Box, Terminal, Cloud } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -208,9 +209,7 @@ export default function WebDevelopmentServicePage() {
           ))}
 
           {/* Tech Stack Icons Floating */}
-          {[
-            '⚛️', '🔷', '📘', '🐳', '☁️', '🔵', '💚', '🟡', '🔴', '⚪',
-          ].map((icon, index) => (
+          {[Code, Code2, Box, Terminal, Cloud, Code, Code2, Box, Terminal, Cloud].map((IconComponent, index) => (
             <div
               key={index}
               className="absolute tech-icon"
@@ -220,8 +219,8 @@ export default function WebDevelopmentServicePage() {
                 animationDelay: `${Math.random() * 3}s`,
               }}
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500/30 to-pink-500/30 rounded-lg backdrop-blur-sm border border-blue-400/30 flex items-center justify-center text-2xl shadow-xl">
-                {icon}
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500/30 to-pink-500/30 rounded-lg backdrop-blur-sm border border-blue-400/30 flex items-center justify-center shadow-xl">
+                <IconComponent className="w-6 h-6 text-blue-400" />
               </div>
             </div>
           ))}
@@ -280,7 +279,9 @@ export default function WebDevelopmentServicePage() {
           <div className="container mx-auto px-6">
             <div className="text-center fade-in relative z-10">
               <div className="relative inline-block mb-6">
-                <div className="text-7xl web-icon-main">💻</div>
+                <div className="web-icon-main flex items-center justify-center">
+                  <Code className="w-28 h-28 text-pink-400" />
+                </div>
                 <div className="absolute inset-0 bg-pink-400/30 rounded-full blur-2xl animate-pulse"></div>
               </div>
               <h1 className="text-5xl md:text-7xl font-bold text-gray-800 dark:text-white mb-6 relative z-10">
@@ -293,17 +294,19 @@ export default function WebDevelopmentServicePage() {
               {/* Tech Stack Showcase */}
               <div className="grid grid-cols-4 gap-4 max-w-5xl mx-auto relative z-10">
                 {[
-                  { name: 'React', icon: '⚛️', color: 'from-blue-500 to-cyan-500', percent: 95 },
-                  { name: 'Next.js', icon: '🔷', color: 'from-gray-500 to-gray-700', percent: 90 },
-                  { name: 'Node.js', icon: '📘', color: 'from-green-500 to-emerald-500', percent: 88 },
-                  { name: 'TypeScript', color: 'from-blue-600 to-indigo-600', percent: 92, icon: '🔵' },
-                ].map((tech, index) => (
+                  { name: 'React', icon: Code2, color: 'from-blue-500 to-cyan-500', percent: 95 },
+                  { name: 'Next.js', icon: Box, color: 'from-gray-500 to-gray-700', percent: 90 },
+                  { name: 'Node.js', icon: Terminal, color: 'from-green-500 to-emerald-500', percent: 88 },
+                  { name: 'TypeScript', color: 'from-blue-600 to-indigo-600', percent: 92, icon: Code },
+                ].map((tech, index) => {
+                  const IconComponent = tech.icon;
+                  return (
                   <div
                     key={index}
-                    className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-6 shadow-xl border border-pink-200/50 dark:border-pink-500/20 web-tech-card group"
+                    className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-6 shadow-xl border border-pink-200/50 dark:border-pink-500/20 web-tech-card group text-center"
                   >
-                    <div className="text-4xl mb-3 transform group-hover:scale-110 transition-transform duration-300">
-                      {tech.icon}
+                    <div className="flex justify-center mb-3">
+                      <IconComponent className="w-10 h-10 text-pink-400 transform group-hover:scale-110 transition-transform duration-300" />
                     </div>
                     <div className="text-lg font-bold text-gray-800 dark:text-white mb-2">{tech.name}</div>
                     <div className={`text-sm font-semibold bg-gradient-to-r ${tech.color} bg-clip-text text-transparent mb-3`}>
@@ -317,7 +320,8 @@ export default function WebDevelopmentServicePage() {
                       ></div>
                     </div>
                   </div>
-                ))}
+                );
+                })}
               </div>
             </div>
           </div>

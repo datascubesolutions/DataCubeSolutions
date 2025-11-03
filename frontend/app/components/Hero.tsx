@@ -21,174 +21,208 @@ export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const bgTextRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // Only prevent scroll if it goes negative (above top)
-    const handleScroll = () => {
-      if (window.scrollY < 0) {
-        window.scrollTo(0, 0);
-      }
-    };
-
-    // Prevent wheel scroll UP only when at top
-    const handleWheel = (e: WheelEvent) => {
-      if (window.scrollY <= 0 && e.deltaY < 0) {
-        e.preventDefault();
-        window.scrollTo(0, 0);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('wheel', handleWheel, { passive: false });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('wheel', handleWheel);
-    };
-  }, []);
-
-  useEffect(() => {
     const ctx = gsap.context(() => {
-      // Initial entrance animations
-      gsap.fromTo(
-        titleRef.current,
-        { opacity: 0, y: 100, scale: 0.8, rotationX: -15 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          scale: 1, 
-          rotationX: 0,
-          duration: 1.2, 
-          ease: 'power3.out' 
-        }
-      );
+      // Set GSAP defaults for smooth performance
+      gsap.defaults({ 
+        ease: 'power2.out',
+        force3D: true 
+      });
 
-      gsap.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 50, blur: 10 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          blur: 0,
-          duration: 1, 
-          delay: 0.3, 
-          ease: 'power2.out' 
-        }
-      );
+      // Create a master timeline for coordinated entrance
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      gsap.fromTo(
-        buttonRef.current,
-        { opacity: 0, scale: 0, rotation: -180 },
-        { 
-          opacity: 1, 
-          scale: 1, 
-          rotation: 0,
-          duration: 0.8, 
-          delay: 0.6, 
-          ease: 'back.out(2)' 
-        }
-      );
+      // Entrance animations - staggered and smooth
+      if (titleRef.current) {
+        tl.fromTo(
+          titleRef.current,
+          { 
+            opacity: 0, 
+            y: 60,
+            scale: 0.95
+          },
+          { 
+            opacity: 1, 
+            y: 0, 
+            scale: 1,
+            duration: 1.2,
+            ease: 'power4.out'
+          },
+          0.2
+        );
+      }
 
-      // Background text animations - floating and parallax
+      if (subtitleRef.current) {
+        tl.fromTo(
+          subtitleRef.current,
+          { opacity: 0, y: 40 },
+          { 
+            opacity: 1, 
+            y: 0,
+            duration: 1,
+            ease: 'power3.out'
+          },
+          0.4
+        );
+      }
+
+      if (descRef.current) {
+        tl.fromTo(
+          descRef.current,
+          { opacity: 0, y: 30 },
+          { 
+            opacity: 1, 
+            y: 0,
+            duration: 0.9,
+            ease: 'power3.out'
+          },
+          0.6
+        );
+      }
+
+      if (buttonRef.current) {
+        tl.fromTo(
+          buttonRef.current,
+          { opacity: 0, scale: 0.8, y: 20 },
+          { 
+            opacity: 1, 
+            scale: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'back.out(1.4)'
+          },
+          0.8
+        );
+      }
+
+      // Smooth background text animations
       bgTextRefs.current.forEach((ref, index) => {
         if (ref) {
-          // Initial floating animation
+          // Gentle floating animation
           gsap.to(ref, {
-            y: 30,
-            duration: 3 + index * 0.5,
+            y: '+=20',
+            duration: 4 + index * 0.3,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            delay: index * 0.2,
+          });
+
+          // Subtle rotation
+          gsap.to(ref, {
+            rotation: 5,
+            duration: 8 + index * 2,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            delay: index * 0.1,
+          });
+
+          // Smooth scroll parallax
+          gsap.to(ref, {
+            y: '-=80',
+            opacity: 0,
+            scrollTrigger: {
+              trigger: heroRef.current,
+              start: 'top top',
+              end: 'bottom top',
+              scrub: 1,
+              ease: 'none'
+            },
+          });
+        }
+      });
+
+      // Floating circles - gentle movement
+      const circles = heroRef.current?.querySelectorAll('.floating-circle');
+      if (circles) {
+        circles.forEach((circle, index) => {
+          gsap.to(circle, {
+            y: '+=30',
+            x: '+=15',
+            scale: 1.05,
+            duration: 5 + index * 0.5,
             repeat: -1,
             yoyo: true,
             ease: 'sine.inOut',
             delay: index * 0.3,
           });
 
-          // Parallax scroll effect
-          gsap.to(ref, {
-            y: -100,
+          // Scroll parallax for circles
+          gsap.to(circle, {
+            y: '-=120',
             opacity: 0,
-            scale: 0.8,
             scrollTrigger: {
               trigger: heroRef.current,
               start: 'top top',
               end: 'bottom top',
-              scrub: 1,
+              scrub: 1.5,
+              ease: 'none'
             },
           });
+        });
+      }
 
-          // Rotation animation
-          gsap.to(ref, {
-            rotation: 360,
-            duration: 20 + index * 5,
-            repeat: -1,
-            ease: 'none',
-          });
-        }
-      });
+      // Main content parallax on scroll
+      if (titleRef.current) {
+        gsap.to(titleRef.current, {
+          y: -40,
+          opacity: 0.2,
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+            ease: 'none'
+          },
+        });
+      }
 
-      // Floating circles with enhanced animations
-      gsap.to('.floating-circle', {
-        y: 30,
-        scale: 1.1,
-        duration: 3,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        stagger: 0.4,
-      });
+      if (subtitleRef.current) {
+        gsap.to(subtitleRef.current, {
+          y: -30,
+          opacity: 0.3,
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+            ease: 'none'
+          },
+        });
+      }
 
-      // Parallax effect for circles on scroll
-      gsap.to('.floating-circle', {
-        y: -150,
-        scale: 0.5,
-        opacity: 0,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.5,
-        },
-        stagger: 0.2,
-      });
+      if (descRef.current) {
+        gsap.to(descRef.current, {
+          y: -25,
+          opacity: 0.4,
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+            ease: 'none'
+          },
+        });
+      }
 
-      // Title parallax and fade on scroll
-      gsap.to(titleRef.current, {
-        y: -50,
-        opacity: 0.3,
-        scale: 0.9,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      });
-
-      // Subtitle parallax
-      gsap.to(subtitleRef.current, {
-        y: -30,
-        opacity: 0.4,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      });
-
-      // Button parallax
-      gsap.to(buttonRef.current, {
-        y: -20,
-        opacity: 0.5,
-        scale: 0.95,
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      });
+      if (buttonRef.current) {
+        gsap.to(buttonRef.current, {
+          y: -20,
+          opacity: 0.5,
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+            ease: 'none'
+          },
+        });
+      }
 
     }, heroRef);
 
@@ -206,21 +240,18 @@ export default function Hero() {
     <section
       id="home"
       ref={heroRef}
-      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pt-0"
-      style={{ paddingTop: 0, marginTop: 0 }}
+      className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
     >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-circle absolute w-72 h-72 bg-blue-200 dark:bg-blue-900 rounded-full opacity-20 dark:opacity-10 blur-3xl top-20 left-10"></div>
         <div className="floating-circle absolute w-96 h-96 bg-purple-200 dark:bg-purple-900 rounded-full opacity-20 dark:opacity-10 blur-3xl bottom-20 right-10"></div>
         <div className="floating-circle absolute w-64 h-64 bg-pink-200 dark:bg-pink-900 rounded-full opacity-20 dark:opacity-10 blur-3xl top-1/2 left-1/2"></div>
-        
-        {/* Additional floating particles */}
         <div className="floating-circle absolute w-40 h-40 bg-cyan-200 dark:bg-cyan-900 rounded-full opacity-15 dark:opacity-8 blur-2xl top-10 right-1/4"></div>
         <div className="floating-circle absolute w-56 h-56 bg-indigo-200 dark:bg-indigo-900 rounded-full opacity-15 dark:opacity-8 blur-2xl bottom-40 left-1/3"></div>
       </div>
 
-      {/* Animated Background Text with Low Opacity */}
+      {/* Animated Background Text */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {backgroundServices.map((service, index) => (
           <div
@@ -237,7 +268,7 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* Grid Pattern Overlay */}
+      {/* Subtle Grid Pattern */}
       <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none">
         <div 
           className="w-full h-full"
@@ -246,7 +277,7 @@ export default function Hero() {
               linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px),
               linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px)
             `,
-            backgroundSize: '50px 50px',
+            backgroundSize: '60px 60px',
           }}
         ></div>
       </div>
@@ -255,16 +286,13 @@ export default function Hero() {
       <div className="container mx-auto px-6 text-center relative z-10">
         <h1
           ref={titleRef}
-          className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent drop-shadow-2xl"
-          style={{
-            textShadow: '0 0 40px rgba(59, 130, 246, 0.3)',
-          }}
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent leading-tight"
         >
           Data Scube
         </h1>
         <p
           ref={subtitleRef}
-          className="text-xl md:text-3xl text-gray-700 dark:text-gray-200 mb-8 max-w-3xl mx-auto leading-relaxed font-medium"
+          className="text-xl md:text-2xl lg:text-3xl text-gray-700 dark:text-gray-200 mb-6 max-w-3xl mx-auto leading-relaxed font-medium"
         >
           Transforming Businesses with{' '}
           <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent font-bold">
@@ -272,23 +300,26 @@ export default function Hero() {
           </span>{' '}
           Solutions
         </p>
-        <p className="text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto">
+        <p 
+          ref={descRef}
+          className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto"
+        >
           Empowering your business with cutting-edge technology and innovative solutions
         </p>
         <button
           ref={buttonRef}
           onClick={() => scrollToSection('contact')}
-          className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:scale-110 transition-all duration-300 relative overflow-hidden group"
+          className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden group"
         >
           <span className="relative z-10">Get Started Today</span>
-          <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+          <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
         </button>
       </div>
 
       {/* Scroll Indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
         <div className="flex flex-col items-center text-gray-600 dark:text-gray-400">
-          <span className="text-sm mb-2">Scroll</span>
+          <span className="text-sm mb-2 font-medium">Scroll</span>
           <svg
             className="w-6 h-6"
             fill="none"

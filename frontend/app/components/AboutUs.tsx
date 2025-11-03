@@ -3,38 +3,39 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Users, Target, User, Star, Lightbulb, Sparkles, Handshake, Shield, Rocket, Eye, Goal } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 const stats = [
-  { number: '500+', label: 'Happy Clients', icon: '👥' },
-  { number: '1000+', label: 'Projects Completed', icon: '🎯' },
-  { number: '50+', label: 'Team Members', icon: '👨‍💼' },
-  { number: '10+', label: 'Years Experience', icon: '⭐' },
+  { number: '500+', label: 'Happy Clients', icon: Users },
+  { number: '1000+', label: 'Projects Completed', icon: Target },
+  { number: '50+', label: 'Team Members', icon: User },
+  { number: '10+', label: 'Years Experience', icon: Star },
 ];
 
 const values = [
   {
     title: 'Innovation',
     description: 'We stay ahead of technology trends to provide cutting-edge solutions.',
-    icon: '💡',
+    icon: Lightbulb,
   },
   {
     title: 'Quality',
     description: 'We deliver exceptional quality in every project we undertake.',
-    icon: '✨',
+    icon: Sparkles,
   },
   {
     title: 'Customer Focus',
     description: 'Our clients success is our primary goal and driving force.',
-    icon: '🤝',
+    icon: Handshake,
   },
   {
     title: 'Integrity',
     description: 'We maintain transparency and honesty in all our business dealings.',
-    icon: '🛡️',
+    icon: Shield,
   },
 ];
 
@@ -708,7 +709,9 @@ export default function AboutUs() {
                 <div className="absolute top-4 right-4 w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/50 animate-pulse circuit-card-led"></div>
                 
                 <div className="text-center relative z-10">
-                  <div className="text-6xl mb-4">🚀</div>
+                  <div className="mb-4">
+                    <Rocket className="w-16 h-16 text-green-400 mx-auto" />
+                  </div>
                   <h4 className="text-2xl font-bold text-white mb-2">
                     Our Mission
                   </h4>
@@ -739,8 +742,8 @@ export default function AboutUs() {
             <div className="absolute bottom-4 right-4 w-2 h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50 animate-pulse circuit-card-led"></div>
             
             <div className="flex items-center mb-6 relative z-10">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center text-4xl mr-4 shadow-lg shadow-blue-500/50">
-                👁️
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-blue-500/50">
+                <Eye className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-3xl font-bold text-white">
                 Our Vision
@@ -770,8 +773,8 @@ export default function AboutUs() {
             <div className="absolute bottom-4 right-4 w-2 h-2 bg-pink-400 rounded-full shadow-lg shadow-pink-400/50 animate-pulse circuit-card-led"></div>
             
             <div className="flex items-center mb-6 relative z-10">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center text-4xl mr-4 shadow-lg shadow-purple-500/50">
-                🎯
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-purple-500/50">
+                <Goal className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-3xl font-bold text-white">
                 Our Mission
@@ -809,7 +812,12 @@ export default function AboutUs() {
               <div className={`absolute top-2 ${index % 2 === 0 ? 'left-2' : 'right-2'} w-2 h-2 bg-orange-400 rounded-full shadow-lg shadow-orange-400/50 animate-pulse circuit-card-led`}></div>
               
               <div className="relative z-10">
-                <div className="text-4xl mb-3">{stat.icon}</div>
+                <div className="mb-3">
+                  {(() => {
+                    const IconComponent = stat.icon;
+                    return <IconComponent className="w-10 h-10 text-orange-400 mx-auto" />;
+                  })()}
+                </div>
                 <div className="stat-number text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400 mb-2">
                   {stat.number}
                 </div>
@@ -922,8 +930,11 @@ export default function AboutUs() {
                           boxShadow: `0 10px 30px ${glowColors[index]}`,
                         }}
                       >
-                        <div className="text-5xl transform group-hover:scale-110 transition-transform duration-300">
-                          {value.icon}
+                        <div className="transform group-hover:scale-110 transition-transform duration-300">
+                          {(() => {
+                            const IconComponent = value.icon;
+                            return <IconComponent className="w-12 h-12 text-white" />;
+                          })()}
                         </div>
                       </div>
                     </div>

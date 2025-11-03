@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { BarChart3, Users, Globe } from 'lucide-react';
 import Projects from '../components/Projects';
 
 if (typeof window !== 'undefined') {
@@ -267,9 +268,13 @@ export default function ProjectsPage() {
               }}
             >
               <div className="w-16 h-16 bg-gradient-to-br from-cyan-400/40 to-blue-400/40 rounded-lg mb-2 flex items-center justify-center border border-cyan-400/60">
-                <span className="text-2xl">
-                  {category === 'ERP' ? '📊' : category === 'CRM' ? '👥' : '🌐'}
-                </span>
+                {category === 'ERP' ? (
+                  <BarChart3 className="w-8 h-8 text-cyan-400" />
+                ) : category === 'CRM' ? (
+                  <Users className="w-8 h-8 text-cyan-400" />
+                ) : (
+                  <Globe className="w-8 h-8 text-cyan-400" />
+                )}
               </div>
               <span className="text-cyan-400 text-xs font-mono">{category}</span>
             </div>
