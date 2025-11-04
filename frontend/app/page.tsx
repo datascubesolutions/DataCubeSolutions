@@ -6,7 +6,12 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { Rocket, Briefcase, Zap, Lock, Users, Target, User, Star, BarChart3, Globe } from 'lucide-react';
+import { 
+  Rocket, Briefcase, Zap, Lock, Users, Target, User, Star, BarChart3, Globe, 
+  ArrowRight, CheckCircle2, Search, Code, Database, Cloud, Shield, TrendingUp,
+  MessageSquare, Star as StarIcon, Clock, Award, ChevronRight, Sparkles, Layers,
+  Cpu, Brain, Sparkle, Stars, Infinity
+} from 'lucide-react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -15,58 +20,113 @@ if (typeof window !== 'undefined') {
 const features = [
   {
     icon: Rocket,
-    title: 'Innovative Solutions',
-    description: 'Cutting-edge technology that drives your business forward',
-    color: 'from-blue-500 to-cyan-500',
+    title: 'Innovation',
+    description: 'Cutting-edge solutions that drive business growth and competitive advantage',
   },
   {
     icon: Briefcase,
     title: 'Enterprise Ready',
-    description: 'Scalable solutions for businesses of all sizes',
-    color: 'from-purple-500 to-pink-500',
+    description: 'Scalable solutions designed for businesses of all sizes, from startups to enterprises',
   },
   {
     icon: Zap,
-    title: 'Lightning Fast',
-    description: 'Optimized performance for maximum efficiency',
-    color: 'from-orange-500 to-red-500',
+    title: 'Performance',
+    description: 'Optimized for speed, efficiency, and seamless user experience',
   },
   {
     icon: Lock,
-    title: 'Secure & Reliable',
-    description: 'Enterprise-grade security and 99.9% uptime',
-    color: 'from-green-500 to-emerald-500',
+    title: 'Security',
+    description: 'Enterprise-grade security protocols ensuring your data remains protected',
   },
 ];
 
 const stats = [
   { number: '500+', label: 'Happy Clients', icon: Users },
   { number: '1000+', label: 'Projects Completed', icon: Target },
-  { number: '50+', label: 'Expert Team', icon: User },
-  { number: '10+', label: 'Years Experience', icon: Star },
+  { number: '50+', label: 'Expert Team Members', icon: User },
+  { number: '10+', label: 'Years of Experience', icon: Star },
 ];
 
 const services = [
   {
     title: 'ERP Solutions',
-    description: 'Streamline your business operations with comprehensive ERP systems',
+    description: 'Comprehensive enterprise resource planning systems that streamline operations, optimize resource allocation, and provide real-time insights into your business processes.',
+    features: ['Financial Management', 'Inventory Control', 'Supply Chain', 'HR Management'],
     icon: BarChart3,
     link: '/services/erp',
-    gradient: 'from-blue-600 to-cyan-600',
   },
   {
     title: 'CRM Systems',
-    description: 'Enhance customer relationships and boost sales with powerful CRM',
+    description: 'Advanced customer relationship management platforms that enhance customer engagement, automate sales processes, and drive revenue growth through data-driven insights.',
+    features: ['Sales Automation', 'Customer Analytics', 'Marketing Tools', 'Support Integration'],
     icon: Users,
     link: '/services/crm',
-    gradient: 'from-indigo-600 to-cyan-600',
   },
   {
     title: 'Web Development',
-    description: 'Modern web applications built with latest technologies',
+    description: 'Modern, responsive web applications built with cutting-edge technologies, designed for scalability, performance, and exceptional user experience.',
+    features: ['Custom Solutions', 'E-commerce Platforms', 'API Integration', 'Cloud Deployment'],
     icon: Globe,
     link: '/services/web-development',
-    gradient: 'from-cyan-600 to-blue-600',
+  },
+];
+
+const processSteps = [
+  {
+    number: '01',
+    title: 'Discovery & Planning',
+    description: 'We analyze your business needs, goals, and requirements to create a comprehensive strategy.',
+    icon: Search,
+  },
+  {
+    number: '02',
+    title: 'Design & Development',
+    description: 'Our expert team designs and builds custom solutions tailored to your specific requirements.',
+    icon: Code,
+  },
+  {
+    number: '03',
+    title: 'Testing & Quality Assurance',
+    description: 'Rigorous testing ensures your solution meets the highest standards of quality and performance.',
+    icon: Shield,
+  },
+  {
+    number: '04',
+    title: 'Deployment & Support',
+    description: 'Seamless deployment followed by ongoing support and optimization to ensure continued success.',
+    icon: Cloud,
+  },
+];
+
+const technologies = [
+  { name: 'React', category: 'Frontend' },
+  { name: 'Node.js', category: 'Backend' },
+  { name: 'PostgreSQL', category: 'Database' },
+  { name: 'AWS', category: 'Cloud' },
+  { name: 'Docker', category: 'DevOps' },
+  { name: 'TypeScript', category: 'Language' },
+  { name: 'MongoDB', category: 'Database' },
+  { name: 'Next.js', category: 'Framework' },
+];
+
+const testimonials = [
+  {
+    name: 'Sarah Johnson',
+    role: 'CEO, TechCorp Inc.',
+    content: 'Data Scube transformed our operations with their ERP solution. Efficiency increased by 40% and we\'ve seen significant cost savings.',
+    rating: 5,
+  },
+  {
+    name: 'Michael Chen',
+    role: 'Director of Sales, Growth Solutions',
+    content: 'The CRM system they built has revolutionized our customer management. Our sales team productivity has doubled.',
+    rating: 5,
+  },
+  {
+    name: 'Emily Rodriguez',
+    role: 'Founder, Digital Innovations',
+    content: 'Their web development team delivered an exceptional e-commerce platform. The results exceeded our expectations.',
+    rating: 5,
   },
 ];
 
@@ -79,851 +139,592 @@ export default function Home() {
   const ctaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Set global GSAP defaults for performance
-    gsap.defaults({ force3D: true, immediateRender: false });
-    
     const ctx = gsap.context(() => {
-      // Premium Mesh gradient animation
-      const meshGradient = pageRef.current?.querySelector('.mesh-gradient-home');
-      if (meshGradient) {
-        (meshGradient as HTMLElement).style.willChange = 'background-position';
-        gsap.to(meshGradient, {
-          backgroundPosition: '200% 200%',
-          duration: 25,
-          repeat: -1,
-          ease: 'none',
-        });
-      }
-
-      // Floating glowing orbs animation - enhanced 3D effect
-      const geoShapes = pageRef.current?.querySelectorAll('.floating-geo-shape');
-      if (geoShapes) {
-        geoShapes.forEach((shape, index) => {
-          (shape as HTMLElement).style.willChange = 'transform, opacity';
-          gsap.to(shape, {
-            y: -40 + Math.random() * 80,
-            x: -30 + Math.random() * 60,
-            scale: 1.2 + Math.random() * 0.3,
-            opacity: 0.6 + Math.random() * 0.4,
-            duration: 12 + Math.random() * 6,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: index * 0.3,
-            force3D: true,
-          });
-        });
-      }
-
-      // Enhanced particle field animation
-      const dataParticles = pageRef.current?.querySelectorAll('.data-particle');
-      if (dataParticles) {
-        dataParticles.forEach((particle, index) => {
-          (particle as HTMLElement).style.willChange = 'transform, opacity';
-          gsap.to(particle, {
-            y: -80 + Math.random() * 160,
-            x: -50 + Math.random() * 100,
-            rotation: 720,
-            scale: 1.3 + Math.random() * 0.4,
-            opacity: 0.4 + Math.random() * 0.6,
-            duration: 8 + Math.random() * 7,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: index * 0.08,
-            force3D: true,
-          });
-        });
-      }
-
-      // Enhanced orbital rings rotation with counter-rotation
-      const orbitalRings = pageRef.current?.querySelectorAll('.orbital-ring');
-      if (orbitalRings) {
-        orbitalRings.forEach((ring, index) => {
-          (ring as HTMLElement).style.willChange = 'transform';
-          const direction = index % 2 === 0 ? 360 : -360;
-          gsap.to(ring, {
-            rotation: direction,
-            duration: 25 + index * 8,
-            repeat: -1,
-            ease: 'none',
-            transformOrigin: 'center center',
-            force3D: true,
-          });
-          // Add scale pulse
-          gsap.to(ring, {
-            scale: 1.1,
-            duration: 4 + index * 1,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: index * 0.5,
-          });
-        });
-      }
-
-      // Enhanced glow spheres pulse animation
-      const dataNodes = pageRef.current?.querySelectorAll('.data-node-pulse');
-      if (dataNodes) {
-        dataNodes.forEach((node, index) => {
-          (node as HTMLElement).style.willChange = 'transform, opacity';
-          gsap.to(node, {
-            scale: 1.8,
-            opacity: 0.9,
-            duration: 2.5 + Math.random() * 1,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: index * 0.15,
-            force3D: true,
-          });
-          // Add floating motion
-          gsap.to(node, {
-            y: -30 + Math.random() * 60,
-            x: -20 + Math.random() * 40,
-            duration: 6 + Math.random() * 4,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: index * 0.2,
-          });
-        });
-      }
-
-      // Flowing beam animations
-      const flowingBeams = pageRef.current?.querySelectorAll('.flowing-beam');
-      if (flowingBeams) {
-        flowingBeams.forEach((beam, index) => {
-          (beam as HTMLElement).style.willChange = 'opacity, transform';
-          gsap.to(beam, {
-            opacity: 0.3 + Math.random() * 0.4,
-            duration: 3 + Math.random() * 2,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: index * 0.3,
-          });
-        });
-      }
-
-      // Grid node animations
-      const gridNodes = pageRef.current?.querySelectorAll('.grid-node');
-      if (gridNodes) {
-        gridNodes.forEach((node, index) => {
-          (node as HTMLElement).style.willChange = 'transform, opacity';
-        });
-      }
-
-      // Hero section animations - optimized (removed expensive properties)
+      // Simple fade-in animations
       if (titleRef.current) {
-        titleRef.current.style.willChange = 'transform, opacity';
-        gsap.set(titleRef.current, { opacity: 1, visibility: 'visible' });
-        
         gsap.fromTo(
           titleRef.current,
-          { opacity: 0.8, y: 50, scale: 0.95 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1.2,
-            ease: 'power3.out',
-            force3D: true,
-          }
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
         );
       }
 
       if (subtitleRef.current) {
-        subtitleRef.current.style.willChange = 'transform, opacity';
-        gsap.set(subtitleRef.current, { opacity: 1, visibility: 'visible' });
-        
         gsap.fromTo(
           subtitleRef.current,
-          { opacity: 0.8, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            delay: 0.3,
-            ease: 'power2.out',
-            force3D: true,
-          }
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: 'power2.out' }
         );
       }
 
       if (ctaRef.current) {
-        ctaRef.current.style.willChange = 'transform, opacity';
         gsap.fromTo(
           ctaRef.current,
-          { opacity: 0, scale: 0 },
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 0.8,
-            delay: 0.6,
-            ease: 'back.out(2)',
-            force3D: true,
-          }
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.8, delay: 0.4, ease: 'power2.out' }
         );
       }
 
-      // Features animation - optimized (removed rotationX)
-      const featureCards = pageRef.current?.querySelectorAll('.feature-card');
-      if (featureCards) {
-        featureCards.forEach((card) => {
-          (card as HTMLElement).style.willChange = 'transform, opacity';
-        });
-      }
+      // Scroll-triggered animations
+      gsap.utils.toArray('.fade-in-section').forEach((section: any) => {
+        gsap.fromTo(
+          section,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+      });
+
+      // Feature cards animation
       gsap.fromTo(
         '.feature-card',
-        {
-          opacity: 0,
-          y: 80,
-        },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: 'power3.out',
-          force3D: true,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: '.features-section',
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
 
-      // Stats animation - optimized (removed rotation)
-      const statCards = pageRef.current?.querySelectorAll('.stat-card');
-      if (statCards) {
-        statCards.forEach((card) => {
-          (card as HTMLElement).style.willChange = 'transform, opacity';
-        });
-      }
-      gsap.fromTo(
-        '.stat-card',
-        {
-          opacity: 0,
-          scale: 0,
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: 'back.out(2)',
-          force3D: true,
-          scrollTrigger: {
-            trigger: '.stats-section',
-            start: 'top 80%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
-      // Services animation - optimized
-      const serviceCards = pageRef.current?.querySelectorAll('.service-card');
-      if (serviceCards) {
-        serviceCards.forEach((card) => {
-          (card as HTMLElement).style.willChange = 'transform, opacity';
-        });
-      }
+      // Service cards animation
       gsap.fromTo(
         '.service-card',
-        {
-          opacity: 0,
-          y: 100,
-          scale: 0.8,
-        },
+        { opacity: 0, y: 30 },
         {
           opacity: 1,
           y: 0,
-          scale: 1,
-          duration: 1,
-          stagger: 0.2,
-          ease: 'power3.out',
-          force3D: true,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: '.services-section',
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
 
-      // Floating animations for background elements - optimized
-      const floatingCircles = pageRef.current?.querySelectorAll('.floating-circle');
-      if (floatingCircles) {
-        floatingCircles.forEach((circle) => {
-          (circle as HTMLElement).style.willChange = 'transform';
-        });
-      }
-      gsap.to('.floating-circle', {
-        y: 30,
-        scale: 1.1,
-        duration: 3,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        stagger: 0.4,
-        force3D: true,
-      });
-
-      // Parallax effect for hero on scroll - optimized
-      if (heroRef.current && titleRef.current && subtitleRef.current) {
-        gsap.set(titleRef.current, { opacity: 1 });
-        gsap.set(subtitleRef.current, { opacity: 1 });
-        
-        gsap.to(titleRef.current, {
-          y: -50,
-          opacity: 0.5,
-          scale: 0.95,
-          force3D: true,
+      // Process steps animation
+      gsap.fromTo(
+        '.process-step',
+        { opacity: 0, x: -30 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          stagger: 0.2,
+          ease: 'power2.out',
           scrollTrigger: {
-            trigger: heroRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 0.5, // Optimized for smoother scrolling
-            invalidateOnRefresh: true,
+            trigger: '.process-section',
+            start: 'top 80%',
+            toggleActions: 'play none none none',
           },
-        });
+        }
+      );
 
-        gsap.to(subtitleRef.current, {
-          y: -30,
-          opacity: 0.6,
-          force3D: true,
+      // Testimonial cards animation
+      gsap.fromTo(
+        '.testimonial-card',
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          stagger: 0.15,
+          ease: 'power2.out',
           scrollTrigger: {
-            trigger: heroRef.current,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 0.5,
-            invalidateOnRefresh: true,
+            trigger: '.testimonials-section',
+            start: 'top 80%',
+            toggleActions: 'play none none none',
           },
-        });
-      }
-
-      // Floating particles - optimized
-      const particles = pageRef.current?.querySelectorAll('.particle');
-      if (particles) {
-        particles.forEach((particle) => {
-          (particle as HTMLElement).style.willChange = 'transform';
-        });
-      }
-      gsap.to('.particle', {
-        y: -20,
-        x: 10,
-        rotation: 360,
-        duration: 4 + Math.random() * 2,
-        repeat: -1,
-        ease: 'sine.inOut',
-        force3D: true,
-        stagger: {
-          amount: 2,
-          from: 'random',
-        },
-      });
-
-      // Circuit LED animations - optimized
-      const circuitLeds = pageRef.current?.querySelectorAll('.circuit-card-led, .circuit-node, .circuit-connection');
-      if (circuitLeds) {
-        circuitLeds.forEach((led) => {
-          (led as HTMLElement).style.willChange = 'transform, opacity';
-          gsap.to(led, {
-            scale: 1.4,
-            opacity: 0.9,
-            duration: 1.2,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: Math.random() * 0.5,
-            force3D: true,
-          });
-        });
-      }
-
-      // Circuit wire glow animation - optimized
-      const circuitWires = pageRef.current?.querySelectorAll('.circuit-wire');
-      if (circuitWires) {
-        circuitWires.forEach((wire, index) => {
-          (wire as HTMLElement).style.willChange = 'opacity';
-          gsap.to(wire, {
-            opacity: 0.7,
-            duration: 2.5,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: index * 0.4,
-          });
-        });
-      }
+        }
+      );
     }, pageRef);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <div ref={pageRef} className="min-h-screen w-full overflow-x-hidden relative">
+    <div ref={pageRef} className="min-h-screen w-full bg-slate-950">
       <Header />
-
-      {/* Tech Company Animated Background Theme */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        {/* Professional Tech Base Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950"></div>
-
-        {/* Animated Mesh Gradient - Tech Style */}
-        <div 
-          className="absolute inset-0 mesh-gradient-home opacity-90"
-          style={{
-            background: `
-              radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.5) 0px, transparent 50%),
-              radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.5) 0px, transparent 50%),
-              radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.4) 0px, transparent 50%),
-              radial-gradient(at 0% 100%, rgba(14, 165, 233, 0.4) 0px, transparent 50%),
-              radial-gradient(at 100% 100%, rgba(37, 99, 235, 0.5) 0px, transparent 50%)
-            `,
-            backgroundSize: '200% 200%',
-          }}
-        ></div>
-
-        {/* Floating Glowing Orbs - Tech Blue/Cyan */}
-        {[
-          { size: 400, x: -10, y: -10, color: 'rgba(59, 130, 246, 0.4)', blur: 120 },
-          { size: 350, x: 90, y: 20, color: 'rgba(6, 182, 212, 0.4)', blur: 100 },
-          { size: 300, x: 20, y: 80, color: 'rgba(99, 102, 241, 0.3)', blur: 90 },
-          { size: 450, x: 80, y: 70, color: 'rgba(14, 165, 233, 0.3)', blur: 110 },
-          { size: 380, x: 50, y: -5, color: 'rgba(37, 99, 235, 0.35)', blur: 105 },
-        ].map((orb, index) => (
-          <div
-            key={index}
-            className="absolute floating-geo-shape"
-            style={{
-              width: `${orb.size}px`,
-              height: `${orb.size}px`,
-              left: `${orb.x}%`,
-              top: `${orb.y}%`,
-              background: `radial-gradient(circle, ${orb.color}, transparent 70%)`,
-              borderRadius: '50%',
-              filter: `blur(${orb.blur}px)`,
-              transform: 'translateZ(0)',
-            }}
-          ></div>
-        ))}
-
-        {/* Animated Particle Field - Tech Colors */}
-        {[...Array(80)].map((_, i) => {
-          const size = 2 + Math.random() * 4;
-          // Tech color range: 180-280 (cyan to blue)
-          const hue = 180 + (i * 3) % 100;
-          return (
-            <div
-              key={i}
-              className="absolute data-particle"
-              style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                background: `hsl(${hue}, 75%, 65%)`,
-                borderRadius: '50%',
-                boxShadow: `0 0 ${size * 4}px hsl(${hue}, 75%, 70%), 0 0 ${size * 8}px hsl(${hue}, 75%, 60%)`,
-                opacity: 0.6 + Math.random() * 0.4,
-                animationDelay: `${Math.random() * 5}s`,
-              }}
-            ></div>
-          );
-        })}
-
-        {/* Flowing Light Beams - Tech Gradients */}
-        <svg className="absolute inset-0 w-full h-full opacity-40" style={{ zIndex: 1 }}>
-          {[...Array(8)].map((_, i) => {
-            const startY = 20 + i * 12;
-            const controlY = startY + 30;
-            return (
-              <path
-                key={i}
-                d={`M 0 ${startY} Q 50 ${controlY} 100 ${startY + 20}`}
-                fill="none"
-                stroke={`url(#gradient-${i})`}
-                strokeWidth="2"
-                opacity="0.6"
-                className="flowing-beam"
-              >
-                <animate
-                  attributeName="d"
-                  values={`M 0 ${startY} Q 50 ${controlY} 100 ${startY + 20}; M -50 ${startY} Q 0 ${controlY} 50 ${startY + 20}; M 0 ${startY} Q 50 ${controlY} 100 ${startY + 20}`}
-                  dur={`${8 + i * 2}s`}
-                  repeatCount="indefinite"
-                  begin={`${i * 0.5}s`}
-                />
-              </path>
-            );
-          })}
-          <defs>
-            {[...Array(8)].map((_, i) => {
-              const colors = [
-                ['#3b82f6', '#06b6d4'],
-                ['#06b6d4', '#3b82f6'],
-                ['#6366f1', '#3b82f6'],
-                ['#0ea5e9', '#06b6d4'],
-                ['#3b82f6', '#2563eb'],
-                ['#06b6d4', '#0ea5e9'],
-                ['#2563eb', '#6366f1'],
-                ['#0ea5e9', '#3b82f6'],
-              ];
-              return (
-                <linearGradient key={i} id={`gradient-${i}`} x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor={colors[i % colors.length][0]} stopOpacity="0.8" />
-                  <stop offset="50%" stopColor={colors[i % colors.length][1]} stopOpacity="1" />
-                  <stop offset="100%" stopColor={colors[i % colors.length][0]} stopOpacity="0.8" />
-                </linearGradient>
-              );
-            })}
-          </defs>
-        </svg>
-
-        {/* Animated Grid Network - Tech Colors */}
-        <svg className="absolute inset-0 w-full h-full opacity-20" style={{ zIndex: 1 }}>
-          {[...Array(15)].map((_, i) => {
-            const x = (i % 5) * 25;
-            const y = Math.floor(i / 5) * 33;
-            const colors = ['#3b82f6', '#06b6d4', '#6366f1', '#0ea5e9'];
-            const color = colors[i % colors.length];
-            
-            return (
-              <g key={i}>
-                <circle
-                  cx={`${x}%`}
-                  cy={`${y}%`}
-                  r="4"
-                  fill={color}
-                  opacity="0.8"
-                  className="grid-node"
-                >
-                  <animate
-                    attributeName="r"
-                    values="4;8;4"
-                    dur={`${2 + Math.random()}s`}
-                    repeatCount="indefinite"
-                    begin={`${i * 0.2}s`}
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0.4;1;0.4"
-                    dur={`${2 + Math.random()}s`}
-                    repeatCount="indefinite"
-                    begin={`${i * 0.2}s`}
-                  />
-                </circle>
-                {i < 14 && (
-                  <line
-                    x1={`${x}%`}
-                    y1={`${y}%`}
-                    x2={`${(x + 25) % 125}%`}
-                    y2={`${y}%`}
-                    stroke={color}
-                    strokeWidth="1"
-                    strokeDasharray="3,3"
-                    opacity="0.5"
-                  >
-                    <animate
-                      attributeName="stroke-dashoffset"
-                      values="0;-10"
-                      dur={`${3 + Math.random()}s`}
-                      repeatCount="indefinite"
-                      begin={`${i * 0.1}s`}
-                    />
-                  </line>
-                )}
-              </g>
-            );
-          })}
-        </svg>
-
-        {/* Floating Glow Spheres - Tech Colors */}
-        {[...Array(12)].map((_, i) => {
-          const colors = [
-            'rgba(59, 130, 246, 0.6)',
-            'rgba(6, 182, 212, 0.6)',
-            'rgba(99, 102, 241, 0.6)',
-            'rgba(14, 165, 233, 0.6)',
-          ];
-          return (
-            <div
-              key={i}
-              className="absolute data-node-pulse"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                width: `${30 + Math.random() * 40}px`,
-                height: `${30 + Math.random() * 40}px`,
-                animationDelay: `${Math.random() * 3}s`,
-              }}
-            >
-              <div
-                className="w-full h-full rounded-full"
-                style={{
-                  background: `radial-gradient(circle, ${colors[i % colors.length]}, transparent)`,
-                  boxShadow: `0 0 ${40 + Math.random() * 30}px ${colors[i % colors.length]}`,
-                  filter: 'blur(1px)',
-                }}
-              ></div>
-            </div>
-          );
-        })}
-
-        {/* Rotating Light Rings - Tech Colors */}
-        {[...Array(4)].map((_, i) => {
-          const sizes = [250, 400, 550, 700];
-          const colors = [
-            'rgba(59, 130, 246, 0.3)',
-            'rgba(6, 182, 212, 0.3)',
-            'rgba(99, 102, 241, 0.3)',
-            'rgba(14, 165, 233, 0.3)',
-          ];
-          return (
-            <div
-              key={i}
-              className="absolute orbital-ring"
-              style={{
-                width: `${sizes[i]}px`,
-                height: `${sizes[i]}px`,
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-                border: `1px solid ${colors[i]}`,
-                borderRadius: '50%',
-                boxShadow: `0 0 ${20 + i * 10}px ${colors[i]}, inset 0 0 ${20 + i * 10}px ${colors[i]}`,
-                animationDelay: `${i * 2}s`,
-              }}
-            ></div>
-          );
-        })}
-
-        {/* Animated Wave Overlay - Tech Colors */}
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            background: `
-              repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(59, 130, 246, 0.2) 2px,
-                rgba(59, 130, 246, 0.2) 4px
-              ),
-              repeating-linear-gradient(
-                90deg,
-                transparent,
-                transparent 2px,
-                rgba(6, 182, 212, 0.2) 2px,
-                rgba(6, 182, 212, 0.2) 4px
-              )
-            `,
-            backgroundSize: '60px 60px',
-            animation: 'wave 20s linear infinite',
-          }}
-        ></div>
-      </div>
-
-      {/* Keep existing circuit wires for service connections */}
-      <svg className="fixed inset-0 w-full h-full pointer-events-none z-0" style={{ zIndex: 1 }}>
-        {/* Main circuit wire from hero */}
-        <path
-          id="home-wire-1"
-          d="M 50 100 Q 200 150, 400 250 L 600 400"
-          fill="none"
-          stroke="rgba(34, 197, 94, 0.4)"
-          strokeWidth="3"
-          className="circuit-wire"
-        />
-        
-        {/* Wire to ERP */}
-        <path
-          id="home-wire-2"
-          d="M 600 400 Q 800 450, 1000 550 L 1000 650"
-          fill="none"
-          stroke="rgba(59, 130, 246, 0.4)"
-          strokeWidth="3"
-          className="circuit-wire"
-        />
-        
-        {/* Wire to CRM */}
-        <path
-          id="home-wire-3"
-          d="M 600 400 Q 400 450, 200 550 L 200 650"
-          fill="none"
-          stroke="rgba(168, 85, 247, 0.4)"
-          strokeWidth="3"
-          className="circuit-wire"
-        />
-        
-        {/* Wire to Web Dev */}
-        <path
-          id="home-wire-4"
-          d="M 600 400 Q 600 500, 600 700 L 600 850"
-          fill="none"
-          stroke="rgba(249, 115, 22, 0.4)"
-          strokeWidth="3"
-          className="circuit-wire"
-        />
-        
-        {/* Horizontal bus wire */}
-        <path
-          id="home-wire-5"
-          d="M 200 650 L 1000 650"
-          fill="none"
-          stroke="rgba(34, 197, 94, 0.3)"
-          strokeWidth="2"
-          strokeDasharray="15,10"
-          className="circuit-wire"
-        />
-        
-        {/* Animated Light Nodes */}
-        {[
-          { id: 'home-light-1', x: 600, y: 400, color: 'rgba(34, 197, 94, 0.9)' },
-          { id: 'home-light-2', x: 1000, y: 650, color: 'rgba(59, 130, 246, 0.9)' },
-          { id: 'home-light-3', x: 200, y: 650, color: 'rgba(168, 85, 247, 0.9)' },
-          { id: 'home-light-4', x: 600, y: 850, color: 'rgba(249, 115, 22, 0.9)' },
-          { id: 'home-light-5', x: 50, y: 100, color: 'rgba(59, 130, 246, 0.9)' },
-        ].map((light) => (
-          <g key={light.id}>
-            <circle
-              cx={light.x}
-              cy={light.y}
-              r="10"
-              fill={light.color}
-              opacity="0.7"
-              className="circuit-light-glow"
-            />
-            <circle
-              cx={light.x}
-              cy={light.y}
-              r="5"
-              fill={light.color}
-              className="circuit-light"
-            />
-          </g>
-        ))}
-        
-        {/* Flowing Lights */}
-        <circle
-          id="home-flowing-1"
-          r="8"
-          fill="rgba(34, 197, 94, 1)"
-          className="flowing-light"
-        >
-          <animateMotion dur="4s" repeatCount="indefinite">
-            <mpath href="#home-wire-1" />
-          </animateMotion>
-        </circle>
-        
-        <circle
-          id="home-flowing-2"
-          r="8"
-          fill="rgba(59, 130, 246, 1)"
-          className="flowing-light"
-        >
-          <animateMotion dur="5s" repeatCount="indefinite" begin="1s">
-            <mpath href="#home-wire-2" />
-          </animateMotion>
-        </circle>
-        
-        <circle
-          id="home-flowing-3"
-          r="8"
-          fill="rgba(168, 85, 247, 1)"
-          className="flowing-light"
-        >
-          <animateMotion dur="4.5s" repeatCount="indefinite" begin="0.5s">
-            <mpath href="#home-wire-3" />
-          </animateMotion>
-        </circle>
-      </svg>
 
       {/* Hero Section */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-12 z-10"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-20"
       >
-        {/* Animated Background Elements for Hero */}
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Large Glowing Orbs */}
-          <div className="absolute w-[600px] h-[600px] bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl top-0 left-0 opacity-40 animate-pulse"></div>
-          <div className="absolute w-[500px] h-[500px] bg-gradient-to-r from-indigo-500/20 to-cyan-500/20 rounded-full blur-3xl bottom-0 right-0 opacity-40 animate-pulse" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute w-[400px] h-[400px] bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-30 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+        
+        {/* Enhanced Grid Pattern */}
+        <div 
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px',
+          }}
+        />
+
+        {/* Gradient Orbs */}
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 right-1/3 w-80 h-80 bg-indigo-600/8 rounded-full blur-3xl"></div>
+
+        {/* Small Chip with Irregular Glowing Connections - Center Background */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[320px] md:h-[320px] pointer-events-none z-0">
+          {/* Outer Glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-cyan-500/15 to-blue-500/15 blur-3xl animate-pulse"></div>
+          
+          {/* Small Chip Package */}
+          <div className="relative w-full h-full">
+            {/* Main Chip Body - Smaller */}
+            <div className="absolute inset-[40px] md:inset-[50px] bg-gradient-to-br from-slate-800/90 via-slate-700/90 to-slate-800/90 rounded-sm border border-slate-600/40 shadow-xl">
+              {/* Center Die Area */}
+              <div className="absolute inset-4 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-sm border border-slate-600/20">
+                {/* Center Power Core */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-cyan-500 to-blue-500 rounded-full blur-md opacity-60 animate-pulse"></div>
+                  <div className="absolute inset-1 bg-gradient-to-br from-blue-400 via-cyan-400 to-blue-400 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.8)]"></div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[8px] md:text-[10px] font-mono font-bold text-white">PWR</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Small Pins - Reduced count */}
+            <div className="absolute top-0 left-0 right-0 flex justify-center gap-0.5 md:gap-1 px-[40px] md:px-[50px]">
+              {Array.from({ length: 16 }).map((_, i) => (
+                <div key={`top-${i}`} className="w-0.5 md:w-1 h-4 md:h-5 bg-gradient-to-b from-slate-600 to-slate-700 rounded-t-sm"></div>
+              ))}
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-0.5 md:gap-1 px-[40px] md:px-[50px]">
+              {Array.from({ length: 16 }).map((_, i) => (
+                <div key={`bottom-${i}`} className="w-0.5 md:w-1 h-4 md:h-5 bg-gradient-to-t from-slate-600 to-slate-700 rounded-b-sm"></div>
+              ))}
+            </div>
+            <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-center gap-0.5 md:gap-1 py-[40px] md:py-[50px]">
+              {Array.from({ length: 16 }).map((_, i) => (
+                <div key={`left-${i}`} className="w-4 md:w-5 h-0.5 md:h-1 bg-gradient-to-r from-slate-600 to-slate-700 rounded-l-sm"></div>
+              ))}
+            </div>
+            <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center gap-0.5 md:gap-1 py-[40px] md:py-[50px]">
+              {Array.from({ length: 16 }).map((_, i) => (
+                <div key={`right-${i}`} className="w-4 md:w-5 h-0.5 md:h-1 bg-gradient-to-l from-slate-600 to-slate-700 rounded-r-sm"></div>
+              ))}
+            </div>
+          </div>
+
+          {/* Irregular Glowing Connections - Octopus-like */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 800 800" fill="none" style={{ overflow: 'visible' }}>
+            <defs>
+              <filter id="glowPath" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <filter id="glowPathStrong" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <linearGradient id="pathGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8"/>
+                <stop offset="50%" stopColor="#06b6d4" stopOpacity="1"/>
+                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.6"/>
+              </linearGradient>
+              <linearGradient id="pathGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.8"/>
+                <stop offset="50%" stopColor="#3b82f6" stopOpacity="1"/>
+                <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.6"/>
+              </linearGradient>
+            </defs>
+
+            {/* Irregular Paths - Long Tentacle-like Connections */}
+            {/* Path 1 - Top Right Tentacle */}
+            <path
+              d="M 400 400 Q 450 350, 500 280 Q 520 200, 550 120 Q 570 80, 600 60"
+              stroke="url(#pathGradient1)"
+              strokeWidth="3"
+              fill="none"
+              filter="url(#glowPath)"
+              opacity="0.7"
+              className="animate-pulse"
+            >
+              <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+            </path>
+
+            {/* Path 2 - Top Left Tentacle */}
+            <path
+              d="M 400 400 Q 350 350, 300 280 Q 280 200, 250 120 Q 230 80, 200 60"
+              stroke="url(#pathGradient2)"
+              strokeWidth="3"
+              fill="none"
+              filter="url(#glowPath)"
+              opacity="0.7"
+              style={{ animationDelay: '0.5s' }}
+            >
+              <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+            </path>
+
+            {/* Path 3 - Bottom Right Tentacle */}
+            <path
+              d="M 400 400 Q 450 450, 500 520 Q 520 600, 550 680 Q 570 720, 600 740"
+              stroke="url(#pathGradient1)"
+              strokeWidth="3"
+              fill="none"
+              filter="url(#glowPath)"
+              opacity="0.7"
+              style={{ animationDelay: '1s' }}
+            >
+              <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+            </path>
+
+            {/* Path 4 - Bottom Left Tentacle */}
+            <path
+              d="M 400 400 Q 350 450, 300 520 Q 280 600, 250 680 Q 230 720, 200 740"
+              stroke="url(#pathGradient2)"
+              strokeWidth="3"
+              fill="none"
+              filter="url(#glowPath)"
+              opacity="0.7"
+              style={{ animationDelay: '1.5s' }}
+            >
+              <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+            </path>
+
+            {/* Path 5 - Right Tentacle */}
+            <path
+              d="M 400 400 Q 480 400, 560 380 Q 640 360, 700 340 Q 720 330, 740 320"
+              stroke="url(#pathGradient1)"
+              strokeWidth="2.5"
+              fill="none"
+              filter="url(#glowPath)"
+              opacity="0.6"
+              style={{ animationDelay: '0.3s' }}
+            >
+              <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.5s" repeatCount="indefinite"/>
+            </path>
+
+            {/* Path 6 - Left Tentacle */}
+            <path
+              d="M 400 400 Q 320 400, 240 380 Q 160 360, 100 340 Q 80 330, 60 320"
+              stroke="url(#pathGradient2)"
+              strokeWidth="2.5"
+              fill="none"
+              filter="url(#glowPath)"
+              opacity="0.6"
+              style={{ animationDelay: '0.8s' }}
+            >
+              <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2.5s" repeatCount="indefinite"/>
+            </path>
+
+            {/* Path 7 - Diagonal Top Right */}
+            <path
+              d="M 400 400 Q 450 380, 500 340 Q 550 300, 600 250 Q 620 220, 650 180"
+              stroke="url(#pathGradient1)"
+              strokeWidth="2"
+              fill="none"
+              filter="url(#glowPath)"
+              opacity="0.5"
+              style={{ animationDelay: '0.2s' }}
+            >
+              <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2s" repeatCount="indefinite"/>
+            </path>
+
+            {/* Path 8 - Diagonal Top Left */}
+            <path
+              d="M 400 400 Q 350 380, 300 340 Q 250 300, 200 250 Q 180 220, 150 180"
+              stroke="url(#pathGradient2)"
+              strokeWidth="2"
+              fill="none"
+              filter="url(#glowPath)"
+              opacity="0.5"
+              style={{ animationDelay: '0.7s' }}
+            >
+              <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2s" repeatCount="indefinite"/>
+            </path>
+
+            {/* Glowing Nodes along paths */}
+            {/* Node 1 - Top Right */}
+            <circle cx="550" cy="120" r="4" fill="#06b6d4" filter="url(#glowPathStrong)" opacity="0.9">
+              <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="600" cy="60" r="3" fill="#3b82f6" filter="url(#glowPath)" opacity="0.8">
+              <animate attributeName="r" values="3;5;3" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+
+            {/* Node 2 - Top Left */}
+            <circle cx="250" cy="120" r="4" fill="#3b82f6" filter="url(#glowPathStrong)" opacity="0.9" style={{ animationDelay: '0.5s' }}>
+              <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="200" cy="60" r="3" fill="#06b6d4" filter="url(#glowPath)" opacity="0.8" style={{ animationDelay: '0.5s' }}>
+              <animate attributeName="r" values="3;5;3" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+
+            {/* Node 3 - Bottom Right */}
+            <circle cx="550" cy="680" r="4" fill="#06b6d4" filter="url(#glowPathStrong)" opacity="0.9" style={{ animationDelay: '1s' }}>
+              <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="600" cy="740" r="3" fill="#3b82f6" filter="url(#glowPath)" opacity="0.8" style={{ animationDelay: '1s' }}>
+              <animate attributeName="r" values="3;5;3" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+
+            {/* Node 4 - Bottom Left */}
+            <circle cx="250" cy="680" r="4" fill="#3b82f6" filter="url(#glowPathStrong)" opacity="0.9" style={{ animationDelay: '1.5s' }}>
+              <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="200" cy="740" r="3" fill="#06b6d4" filter="url(#glowPath)" opacity="0.8" style={{ animationDelay: '1.5s' }}>
+              <animate attributeName="r" values="3;5;3" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+
+            {/* Node 5 - Right Side */}
+            <circle cx="700" cy="340" r="3.5" fill="#06b6d4" filter="url(#glowPathStrong)" opacity="0.8" style={{ animationDelay: '0.3s' }}>
+              <animate attributeName="r" values="3.5;5.5;3.5" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="740" cy="320" r="2.5" fill="#3b82f6" filter="url(#glowPath)" opacity="0.7" style={{ animationDelay: '0.3s' }}>
+              <animate attributeName="r" values="2.5;4.5;2.5" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.7;0.9;0.7" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+
+            {/* Node 6 - Left Side */}
+            <circle cx="100" cy="340" r="3.5" fill="#3b82f6" filter="url(#glowPathStrong)" opacity="0.8" style={{ animationDelay: '0.8s' }}>
+              <animate attributeName="r" values="3.5;5.5;3.5" dur="2s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="60" cy="320" r="2.5" fill="#06b6d4" filter="url(#glowPath)" opacity="0.7" style={{ animationDelay: '0.8s' }}>
+              <animate attributeName="r" values="2.5;4.5;2.5" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="0.7;0.9;0.7" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+
+            {/* Center Power Node */}
+            <circle cx="400" cy="400" r="8" fill="#06b6d4" filter="url(#glowPathStrong)" opacity="1">
+              <animate attributeName="r" values="8;12;8" dur="1.5s" repeatCount="indefinite"/>
+              <animate attributeName="opacity" values="1;1;1" dur="1.5s" repeatCount="indefinite"/>
+            </circle>
+          </svg>
         </div>
 
-        {/* Main Hero Content */}
-        <div className="container mx-auto px-6 text-center relative z-10">
-          {/* Data Flow Indicator */}
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-8">
-            <div className="relative">
-              <div className="w-6 h-6 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full shadow-lg shadow-blue-400/50 animate-pulse"></div>
-              <div className="absolute inset-0 w-6 h-6 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full animate-ping opacity-75"></div>
+        {/* Floating Feature Cards in Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {/* Top Left Card */}
+          <div className="absolute top-20 left-8 md:left-16 w-52 md:w-64 bg-gradient-to-br from-slate-800/50 to-slate-800/30 backdrop-blur-md rounded-2xl p-5 border border-slate-700/50 shadow-2xl shadow-blue-500/5 opacity-70 hover:opacity-90 transition-all duration-300">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600/20 to-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20 shadow-lg shadow-blue-500/10">
+                <Database className="w-6 h-6 text-blue-400" />
+              </div>
+              <div className="flex-1">
+                <div className="text-white text-base font-semibold mb-1">Data Management</div>
+                <div className="text-slate-400 text-xs leading-relaxed">Secure & Scalable Infrastructure</div>
+              </div>
             </div>
+          </div>
+
+          {/* Top Right Card */}
+          <div className="absolute top-32 right-8 md:right-16 w-52 md:w-64 bg-gradient-to-br from-slate-800/50 to-slate-800/30 backdrop-blur-md rounded-2xl p-5 border border-slate-700/50 shadow-2xl shadow-cyan-500/5 opacity-70 hover:opacity-90 transition-all duration-300">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-cyan-600/20 to-cyan-500/10 rounded-xl flex items-center justify-center border border-cyan-500/20 shadow-lg shadow-cyan-500/10">
+                <Cloud className="w-6 h-6 text-cyan-400" />
+              </div>
+              <div className="flex-1">
+                <div className="text-white text-base font-semibold mb-1">Cloud Solutions</div>
+                <div className="text-slate-400 text-xs leading-relaxed">99.9% Uptime Guarantee</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Left Card */}
+          <div className="absolute bottom-32 left-8 md:left-16 w-52 md:w-64 bg-gradient-to-br from-slate-800/50 to-slate-800/30 backdrop-blur-md rounded-2xl p-5 border border-slate-700/50 shadow-2xl shadow-green-500/5 opacity-70 hover:opacity-90 transition-all duration-300">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-600/20 to-green-500/10 rounded-xl flex items-center justify-center border border-green-500/20 shadow-lg shadow-green-500/10">
+                <Shield className="w-6 h-6 text-green-400" />
+              </div>
+              <div className="flex-1">
+                <div className="text-white text-base font-semibold mb-1">Enterprise Security</div>
+                <div className="text-slate-400 text-xs leading-relaxed">ISO 27001 Certified</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Right Card */}
+          <div className="absolute bottom-20 right-8 md:right-16 w-52 md:w-64 bg-gradient-to-br from-slate-800/50 to-slate-800/30 backdrop-blur-md rounded-2xl p-5 border border-slate-700/50 shadow-2xl shadow-purple-500/5 opacity-70 hover:opacity-90 transition-all duration-300">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-600/20 to-purple-500/10 rounded-xl flex items-center justify-center border border-purple-500/20 shadow-lg shadow-purple-500/10">
+                <TrendingUp className="w-6 h-6 text-purple-400" />
+              </div>
+              <div className="flex-1">
+                <div className="text-white text-base font-semibold mb-1">Business Growth</div>
+                <div className="text-slate-400 text-xs leading-relaxed">40% Average Increase</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="container mx-auto px-6 text-center relative z-10">
+          {/* Premium Badge */}
+          <div className="mb-8 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600/20 via-cyan-600/20 to-blue-600/20 backdrop-blur-sm rounded-full border border-blue-500/30 shadow-lg">
+            <Sparkles className="w-4 h-4 text-blue-400" />
+            <span className="text-sm font-semibold text-blue-300 tracking-wide">Enterprise Solutions</span>
+            <Sparkles className="w-4 h-4 text-blue-400" />
           </div>
           
           <h1
             ref={titleRef}
-            className="text-6xl md:text-8xl lg:text-9xl font-bold mb-8 md:mb-10 relative z-20"
-            style={{ opacity: 1 }}
+            className="text-6xl md:text-8xl lg:text-9xl font-extrabold mb-8 text-white tracking-tight"
+            style={{
+              background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #cbd5e1 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              textShadow: '0 0 80px rgba(59, 130, 246, 0.3)',
+            }}
           >
-            <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-2xl relative z-10 block">
+            <span className="relative inline-block">
               Data Scube
-            </span>
-            {/* Glowing effect - behind text */}
-            <span className="absolute inset-0 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent blur-xl opacity-50 -z-10 pointer-events-none">
-              Data Scube
+              <Sparkle className="absolute -top-2 -right-8 w-6 h-6 text-blue-400 opacity-60 animate-pulse" />
             </span>
           </h1>
           
           <p
             ref={subtitleRef}
-            className="text-2xl md:text-4xl text-white mb-6 md:mb-8 max-w-5xl mx-auto leading-[1.4] md:leading-[1.5] font-medium relative z-20 px-4"
-            style={{ opacity: 1 }}
+            className="text-2xl md:text-3xl lg:text-4xl text-slate-200 mb-6 max-w-4xl mx-auto font-semibold leading-tight tracking-wide"
           >
-            Empower Your Business Growth with{' '}
-            <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent font-bold">
-              Enterprise-Grade Technology Solutions
+            Enterprise solutions that{' '}
+            <span className="relative inline-block">
+              <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent font-bold">
+                transform
             </span>
-            {' '}That Scale
+              <Infinity className="absolute -bottom-2 left-0 w-full h-1 text-blue-400 opacity-50" />
+            </span>
+            {' '}your business
           </p>
           
-          <p className="text-lg md:text-xl text-gray-300 mb-12 md:mb-16 max-w-4xl mx-auto leading-relaxed md:leading-loose relative z-20 px-4 space-y-2">
-            <span className="block mb-2">
-              Drive revenue, streamline operations, and accelerate digital transformation with our comprehensive{' '}
-              <span className="text-blue-400 font-semibold">ERP Systems</span>,{' '}
-              <span className="text-indigo-400 font-semibold">CRM Platforms</span>, and{' '}
-              <span className="text-cyan-400 font-semibold">Custom Web Applications</span>.
-            </span>
-            <span className="block">
-              Trusted by <span className="text-cyan-400 font-semibold">1000+ businesses</span> worldwide for innovation and excellence.
-            </span>
+          <p className="text-lg md:text-xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
+            Comprehensive ERP, CRM, and web development services designed to scale with your business and drive sustainable growth
           </p>
+
+          {/* Premium Feature Icons */}
+          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 mb-12">
+            <div className="flex items-center gap-3 bg-slate-800/40 backdrop-blur-sm px-4 md:px-6 py-3 rounded-xl border border-slate-700/50 shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600/20 to-blue-500/10 rounded-lg flex items-center justify-center border border-blue-500/20">
+                <Layers className="w-5 h-5 text-blue-400" />
+              </div>
+              <span className="text-slate-300 font-medium text-sm">Scalable Solutions</span>
+            </div>
+            <div className="flex items-center gap-3 bg-slate-800/40 backdrop-blur-sm px-4 md:px-6 py-3 rounded-xl border border-slate-700/50 shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-600/20 to-cyan-500/10 rounded-lg flex items-center justify-center border border-cyan-500/20">
+                <Cpu className="w-5 h-5 text-cyan-400" />
+              </div>
+              <span className="text-slate-300 font-medium text-sm">High Performance</span>
+            </div>
+            <div className="flex items-center gap-3 bg-slate-800/40 backdrop-blur-sm px-4 md:px-6 py-3 rounded-xl border border-slate-700/50 shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-600/20 to-purple-500/10 rounded-lg flex items-center justify-center border border-purple-500/20">
+                <Brain className="w-5 h-5 text-purple-400" />
+              </div>
+              <span className="text-slate-300 font-medium text-sm">AI-Powered</span>
+            </div>
+          </div>
+          
           <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={() => router.push('/contact')}
-              className="px-10 py-5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:scale-110 transition-all duration-300 relative overflow-hidden group"
+              className="group relative px-10 py-5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white text-lg font-semibold rounded-xl shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 flex items-center gap-3 overflow-hidden"
             >
-              <span className="relative z-10">Get Started Today</span>
               <span className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+              <span className="relative z-10 flex items-center gap-2">
+                Get Started
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <div className="absolute inset-0 bg-white/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
             </button>
             <button
               onClick={() => router.push('/services')}
-              className="px-10 py-5 bg-white dark:bg-gray-800 text-gray-800 dark:text-white text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:scale-110 transition-all duration-300 border-2 border-blue-600 dark:border-blue-400"
+              className="px-10 py-5 bg-slate-800/60 hover:bg-slate-700/60 backdrop-blur-sm text-white text-lg font-semibold rounded-xl border-2 border-slate-600/50 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               Explore Services
             </button>
           </div>
+
+          {/* Quick Service Preview */}
+          <div className="mt-20 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="group relative bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-800/30 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50 hover:border-blue-500/70 transition-all duration-500 shadow-2xl hover:shadow-blue-500/20 hover:-translate-y-2 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/0 to-blue-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-600/30 to-blue-500/20 rounded-2xl flex items-center justify-center mb-6 border-2 border-blue-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-blue-500/20">
+                    <BarChart3 className="w-8 h-8 text-blue-400" />
+                  </div>
+                  <div className="text-white text-lg font-bold mb-3 group-hover:text-blue-300 transition-colors">ERP Solutions</div>
+                  <div className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors">Streamline Operations</div>
+                </div>
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <Stars className="w-5 h-5 text-blue-400" />
+                </div>
+              </div>
+              <div className="group relative bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-800/30 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50 hover:border-cyan-500/70 transition-all duration-500 shadow-2xl hover:shadow-cyan-500/20 hover:-translate-y-2 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/0 to-cyan-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-cyan-600/30 to-cyan-500/20 rounded-2xl flex items-center justify-center mb-6 border-2 border-cyan-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-cyan-500/20">
+                    <Users className="w-8 h-8 text-cyan-400" />
+                  </div>
+                  <div className="text-white text-lg font-bold mb-3 group-hover:text-cyan-300 transition-colors">CRM Systems</div>
+                  <div className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors">Boost Customer Relations</div>
+                </div>
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <Stars className="w-5 h-5 text-cyan-400" />
+                </div>
+              </div>
+              <div className="group relative bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-800/30 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50 hover:border-purple-500/70 transition-all duration-500 shadow-2xl hover:shadow-purple-500/20 hover:-translate-y-2 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-600/30 to-purple-500/20 rounded-2xl flex items-center justify-center mb-6 border-2 border-purple-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-purple-500/20">
+                    <Globe className="w-8 h-8 text-purple-400" />
+                  </div>
+                  <div className="text-white text-lg font-bold mb-3 group-hover:text-purple-300 transition-colors">Web Development</div>
+                  <div className="text-slate-400 text-sm leading-relaxed group-hover:text-slate-300 transition-colors">Modern Applications</div>
+                </div>
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <Stars className="w-5 h-5 text-purple-400" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-          <div className="flex flex-col items-center text-gray-600 dark:text-gray-400">
-            <span className="text-sm mb-2">Scroll Down</span>
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+          <div className="flex flex-col items-center text-slate-500">
+            <span className="text-sm mb-2">Scroll</span>
+            <svg className="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </div>
@@ -931,181 +732,227 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="features-section py-20 relative z-10">
+      <section className="features-section py-24 relative z-10 bg-slate-900/50">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16 relative">
-            {/* Circuit connection point */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4">
-              <div className="circuit-node w-4 h-4 bg-blue-400 rounded-full shadow-lg shadow-blue-400/50"></div>
-            </div>
-            
+          <div className="text-center mb-16 fade-in-section">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
-                Why Choose Us?
-              </span>
+              Why Choose Us
             </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              We deliver excellence through innovation, quality, and dedication
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+              Delivering excellence through innovation, quality, and dedicated service
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => {
+              const IconComponent = feature.icon;
+              return (
               <div
                 key={index}
-                className="feature-card group relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 border-2 border-blue-500/30 overflow-hidden text-center"
-              >
-                {/* Circuit pattern overlay */}
-                <div className="absolute inset-0 opacity-10" style={{
-                  backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(59, 130, 246, 0.1) 2px, rgba(59, 130, 246, 0.1) 4px)`,
-                }}></div>
-                
-                {/* LED indicator */}
-                <div className="absolute top-4 right-4 w-2 h-2 bg-blue-400 rounded-full shadow-lg shadow-blue-400/50 animate-pulse circuit-card-led"></div>
-                
-                <div className="relative z-10">
-                  <div className="mb-4 flex justify-center">
-                    <div className="transform group-hover:scale-110 transition-transform duration-300">
-                      {(() => {
-                        const IconComponent = feature.icon;
-                        return <IconComponent className="w-16 h-16 text-blue-400" />;
-                      })()}
+                  className="feature-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10"
+                >
+                  <div className="mb-6 flex justify-center">
+                    <div className="w-16 h-16 bg-blue-600/10 rounded-xl flex items-center justify-center">
+                      <IconComponent className="w-8 h-8 text-blue-400" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-3">
+                  <h3 className="text-xl font-semibold text-white mb-3">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-300 leading-relaxed">
+                  <p className="text-slate-400 leading-relaxed">
                     {feature.description}
                   </p>
-                  <div
-                    className={`mt-4 h-1 bg-gradient-to-r ${feature.color} rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`}
-                  ></div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="stats-section py-20 relative z-10">
+      <section className="stats-section py-24 relative z-10 bg-slate-950">
         <div className="container mx-auto px-6">
-          {/* Circuit connection line */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-green-400/30 to-transparent"></div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => {
+              const IconComponent = stat.icon;
+              return (
               <div
                 key={index}
-                className="stat-card relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-green-500/30 overflow-hidden"
-              >
-                {/* Circuit pattern */}
-                <div className="absolute inset-0 opacity-10" style={{
-                  backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(34, 197, 94, 0.1) 2px, rgba(34, 197, 94, 0.1) 4px)`,
-                }}></div>
-                
-                {/* LED indicator */}
-                <div className={`absolute top-2 ${index % 2 === 0 ? 'left-2' : 'right-2'} w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/50 animate-pulse circuit-card-led`}></div>
-                
-                <div className="relative z-10">
-                  <div className="mb-4">
-                    {(() => {
-                      const IconComponent = stat.icon;
-                      return <IconComponent className="w-12 h-12 text-green-400 mx-auto" />;
-                    })()}
+                  className="text-center fade-in-section"
+                >
+                  <div className="mb-4 flex justify-center">
+                    <div className="w-12 h-12 bg-slate-800 rounded-lg flex items-center justify-center">
+                      <IconComponent className="w-6 h-6 text-blue-400" />
                   </div>
-                  <div className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-400 mb-2">
+                  </div>
+                  <div className="text-4xl md:text-5xl font-bold text-white mb-2">
                     {stat.number}
                   </div>
-                  <div className="text-gray-300 font-medium text-lg">
+                  <div className="text-slate-400 font-medium">
                     {stat.label}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Services Section - Circuit Connected */}
-      <section className="services-section py-20 relative z-10">
+      {/* Services Section */}
+      <section className="services-section py-24 relative z-10 bg-slate-900/50">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16 relative">
-            {/* Circuit connection point */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4">
-              <div className="circuit-node w-4 h-4 bg-indigo-400 rounded-full shadow-lg shadow-indigo-400/50"></div>
-            </div>
-            
+          <div className="text-center mb-16 fade-in-section">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
                 Our Services
-              </span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
               Comprehensive solutions tailored to your business needs
             </p>
           </div>
           
-          {/* Circuit bus wire above services */}
-          <div className="absolute top-32 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-indigo-400/30 to-transparent"></div>
-          
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto relative">
-            {services.map((service, index) => (
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {services.map((service, index) => {
+              const IconComponent = service.icon;
+              return (
               <div
                 key={index}
-                className="service-card group cursor-pointer relative"
+                  className="service-card group cursor-pointer"
                 onClick={() => router.push(service.link)}
               >
-                {/* Circuit connection point */}
-                <div className={`absolute -top-2 ${index === 0 ? 'left-1/2' : index === 1 ? 'right-1/2' : 'left-1/2'} transform -translate-x-1/2 w-3 h-3 bg-indigo-400 rounded-full shadow-lg shadow-indigo-400/50 circuit-connection`}></div>
-                
-                <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-4 border-2 border-indigo-500/30 overflow-hidden h-full flex flex-col">
-                  {/* Circuit pattern overlay */}
-                  <div className="absolute inset-0 opacity-10" style={{
-                    backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(99, 102, 241, 0.1) 2px, rgba(99, 102, 241, 0.1) 4px)`,
-                  }}></div>
-                  
-                  {/* LED indicators */}
-                  <div className="absolute top-4 left-4 w-2 h-2 bg-indigo-400 rounded-full shadow-lg shadow-indigo-400/50 animate-pulse circuit-card-led"></div>
-                  <div className="absolute top-4 right-4 w-2 h-2 bg-cyan-400 rounded-full shadow-lg shadow-cyan-400/50 animate-pulse circuit-card-led"></div>
-                  
-                  {/* Circuit bottom line - fixed at absolute bottom */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${service.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 z-20`}></div>
-                  
-                  <div className="relative z-10 flex flex-col h-full">
-                    {/* Icon - centered */}
-                    <div className="flex justify-center mb-6">
-                      <div
-                        className={`w-20 h-20 bg-gradient-to-r ${service.gradient} rounded-2xl flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}
-                        style={{
-                          boxShadow: `0 10px 30px ${index === 0 ? 'rgba(59, 130, 246, 0.5)' : index === 1 ? 'rgba(168, 85, 247, 0.5)' : 'rgba(249, 115, 22, 0.5)'}`,
-                        }}
-                      >
-                        {(() => {
-                          const IconComponent = service.icon;
-                          return <IconComponent className="w-10 h-10 text-white" />;
-                        })()}
+                  <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 h-full flex flex-col">
+                    <div className="mb-6 flex justify-center">
+                      <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <IconComponent className="w-8 h-8 text-white" />
                       </div>
                     </div>
-                    
-                    {/* Content - flex-grow to push bottom content down */}
-                    <div className="flex-grow">
-                      <h3 className="text-2xl font-bold text-white mb-4 text-center">
-                        {service.title}
+                    <h3 className="text-2xl font-semibold text-white mb-4">
+                      {service.title}
+                    </h3>
+                    <p className="text-slate-400 leading-relaxed mb-6 flex-grow">
+                      {service.description}
+                    </p>
+                    <div className="mb-6 space-y-2">
+                      {service.features.map((feature, idx) => (
+                        <div key={idx} className="flex items-center text-slate-300 text-sm">
+                          <CheckCircle2 className="w-4 h-4 text-blue-400 mr-2 flex-shrink-0" />
+                          <span>{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex items-center text-blue-400 font-medium group-hover:gap-2 transition-all pt-4 border-t border-slate-700/50">
+                      <span>Learn More</span>
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Process Section */}
+      <section className="process-section py-24 relative z-10 bg-slate-950">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16 fade-in-section">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              How We Work
+            </h2>
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+              A proven methodology that ensures successful project delivery
+            </p>
+          </div>
+          
+          <div className="max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {processSteps.map((step, index) => {
+                const IconComponent = step.icon;
+                return (
+                  <div key={index} className="process-step relative">
+                    <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 h-full">
+                      <div className="mb-4">
+                        <div className="text-4xl font-bold text-blue-400/20 mb-2">{step.number}</div>
+                        <div className="w-12 h-12 bg-blue-600/10 rounded-lg flex items-center justify-center mb-4">
+                          <IconComponent className="w-6 h-6 text-blue-400" />
+                        </div>
+                      </div>
+                      <h3 className="text-lg font-semibold text-white mb-2">
+                        {step.title}
                       </h3>
-                      <p className="text-gray-300 leading-relaxed mb-6 text-center">
-                        {service.description}
+                      <p className="text-slate-400 text-sm leading-relaxed">
+                        {step.description}
+                      </p>
+                    </div>
+                    {index < processSteps.length - 1 && (
+                      <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-10">
+                        <ChevronRight className="w-6 h-6 text-blue-400/30" />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Technologies Section */}
+      <section className="py-24 relative z-10 bg-slate-900/50">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12 fade-in-section">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Technologies We Use
+            </h2>
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+              Built with modern, reliable technologies
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {technologies.map((tech, index) => (
+                <div
+                  key={index}
+                  className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-4 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 text-center"
+                >
+                  <div className="text-white font-medium">{tech.name}</div>
+                  <div className="text-slate-500 text-xs mt-1">{tech.category}</div>
+                      </div>
+              ))}
+                    </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="testimonials-section py-24 relative z-10 bg-slate-950">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16 fade-in-section">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              What Our Clients Say
+            </h2>
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+              Trusted by businesses worldwide for delivering exceptional results
                       </p>
                     </div>
                     
-                    {/* Bottom section - Learn More */}
-                    <div className="flex justify-center items-center text-blue-400 font-semibold group-hover:gap-2 transition-all mt-auto pt-4">
-                      <span>Learn More</span>
-                      <span className="ml-2 transform group-hover:translate-x-2 transition-transform">
-                        →
-                      </span>
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {testimonials.map((testimonial, index) => (
+              <div
+                key={index}
+                className="testimonial-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300"
+              >
+                <div className="flex items-center mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <StarIcon key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                  ))}
                     </div>
-                  </div>
+                <p className="text-slate-300 leading-relaxed mb-6 italic">
+                  "{testimonial.content}"
+                </p>
+                <div>
+                  <div className="text-white font-semibold">{testimonial.name}</div>
+                  <div className="text-slate-400 text-sm">{testimonial.role}</div>
                 </div>
               </div>
             ))}
@@ -1113,33 +960,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 relative z-10 bg-gradient-to-r from-blue-600/90 via-cyan-600/90 to-indigo-600/90 dark:from-blue-700/90 dark:via-cyan-700/90 dark:to-indigo-700/90 backdrop-blur-sm">
-        <div className="container mx-auto px-6 text-center relative">
-          {/* Circuit pattern overlay */}
-          <div className="absolute inset-0 opacity-10" style={{
-            backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.1) 4px)`,
-          }}></div>
-          
-          <div className="relative z-10">
+      {/* CTA Section - Redesigned to match UI */}
+      <section className="py-24 relative z-10 bg-slate-900/50">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-12 border border-slate-700/50 shadow-xl fade-in-section">
+              <div className="text-center">
+                <div className="mb-6 flex justify-center">
+                  <div className="w-16 h-16 bg-blue-600/10 rounded-xl flex items-center justify-center">
+                    <TrendingUp className="w-8 h-8 text-blue-400" />
+                  </div>
+                </div>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Ready to Transform Your Business?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Let's discuss how we can help you achieve your goals with our innovative solutions
+                <p className="text-xl text-slate-400 mb-8 max-w-2xl mx-auto">
+                  Let's discuss how our solutions can help you achieve your business goals and drive sustainable growth
             </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={() => router.push('/contact')}
-              className="px-10 py-5 bg-white text-blue-600 text-lg font-semibold rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 relative overflow-hidden group"
-            >
-              <span className="relative z-10">Get In Touch</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                    className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group"
+                  >
+                    Get In Touch
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                  <button
+                    onClick={() => router.push('/services')}
+                    className="px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white text-lg font-semibold rounded-lg border border-slate-600 hover:border-slate-500 transition-all duration-300"
+                  >
+                    View Services
             </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <Footer />
+      <div className="footer-wrapper-home-about">
+        <Footer />
+      </div>
     </div>
   );
 }

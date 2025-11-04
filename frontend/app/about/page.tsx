@@ -43,7 +43,9 @@ export default function AboutPage() {
       <main ref={pageRef} className="pt-20">
         <AboutUs />
       </main>
-      <Footer />
+      <div className="footer-wrapper-home-about">
+        <Footer />
+      </div>
     </div>
   );
 }
