@@ -6,9 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Tabs from './Tabs';
 import { BarChart3, Users, Code, Rocket, TrendingUp, Star } from 'lucide-react';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 const services = [
   {

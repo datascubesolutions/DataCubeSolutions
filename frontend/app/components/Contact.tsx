@@ -6,9 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Mail, Zap, Globe, Star, Phone, MapPin, Clock, Send } from 'lucide-react';
 import { createInquiry } from '@/services/api/get-in-touch';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 const inquiryTypes = [
   { label: 'ERP Solutions', value: 'erp-solutions' },
@@ -212,11 +210,21 @@ export default function Contact() {
         message: '',
       });
     } catch (error: any) {
-      const errorMessage = 
-        error?.data?.message || 
-        error?.response?.data?.message || 
-        error?.message || 
-        'Something went wrong. Please try again later.';
+      console.error('Contact form error:', error);
+      
+      let errorMessage = 'Something went wrong. Please try again later.';
+      
+      // Handle different error types
+      if (error?.response) {
+        // Server responded with error status
+        errorMessage = error.response.data?.message || error.response.statusText || errorMessage;
+      } else if (error?.request) {
+        // Request was made but no response (CORS, network error, etc.)
+        errorMessage = 'Unable to connect to the server. Please check your connection or try again later.';
+      } else if (error?.message) {
+        // Something else happened
+        errorMessage = error.message;
+      }
       
       setSubmitMessage({
         type: 'error',
@@ -238,25 +246,25 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative py-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm z-10 overflow-hidden"
+      className="relative py-12 sm:py-16 md:py-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm z-10 overflow-hidden"
     >
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16 relative z-10">
-          <div className="relative inline-block mb-6">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="text-center mb-10 sm:mb-12 md:mb-16 relative z-10">
+          <div className="relative inline-block mb-4 sm:mb-6">
             <div className="contact-icon-main flex items-center justify-center">
-              <Mail className="w-28 h-28 text-blue-400" />
+              <Mail className="w-20 sm:w-24 md:w-28 h-20 sm:h-24 md:h-28 text-blue-400" />
             </div>
             <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-2xl animate-pulse"></div>
           </div>
-          <h2 className="text-5xl font-bold text-gray-800 dark:text-white mb-4 relative z-10">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-3 sm:mb-4 relative z-10">
             Get In Touch
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto relative z-10">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto relative z-10 px-4">
             Ready to transform your business? Let's discuss your project
           </p>
 
           {/* Quick Contact Stats */}
-          <div className="grid grid-cols-3 gap-6 max-w-3xl mx-auto mt-12 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-3xl mx-auto mt-8 sm:mt-10 md:mt-12 relative z-10">
             {[
               { label: 'Response Time', value: '< 24hrs', icon: Zap, color: 'from-blue-500 to-cyan-500' },
               { label: 'Support', value: '24/7', icon: Globe, color: 'from-purple-500 to-pink-500' },
@@ -266,12 +274,12 @@ export default function Contact() {
               return (
               <div
                 key={index}
-                className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-6 shadow-xl border border-blue-200/50 dark:border-blue-500/20 contact-stat-card text-center"
+                className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-4 sm:p-5 md:p-6 shadow-xl border border-blue-200/50 dark:border-blue-500/20 contact-stat-card text-center"
               >
-                <div className="flex justify-center mb-3">
-                  <IconComponent className={`w-10 h-10 ${stat.color.includes('blue') ? 'text-blue-500' : stat.color.includes('purple') ? 'text-purple-500' : 'text-green-500'}`} />
+                <div className="flex justify-center mb-2 sm:mb-3">
+                  <IconComponent className={`w-8 sm:w-9 md:w-10 h-8 sm:h-9 md:h-10 ${stat.color.includes('blue') ? 'text-blue-500' : stat.color.includes('purple') ? 'text-purple-500' : 'text-green-500'}`} />
                 </div>
-                <div className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1`}>
+                <div className={`text-xl sm:text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-1`}>
                   {stat.value}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">{stat.label}</div>
@@ -281,10 +289,10 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 max-w-6xl mx-auto relative z-10">
           {/* Contact Form */}
           <div className="contact-form relative">
-            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Full Name *
@@ -296,7 +304,7 @@ export default function Contact() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
                   placeholder="John Doe"
                 />
               </div>
@@ -312,7 +320,7 @@ export default function Contact() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
                   placeholder="john@example.com"
                 />
               </div>
@@ -328,7 +336,7 @@ export default function Contact() {
                   required
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
                   placeholder="+1 234 567 8900"
                 />
               </div>
@@ -343,7 +351,7 @@ export default function Contact() {
                   name="company"
                   value={formData.company}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
                   placeholder="Your Company"
                 />
               </div>
@@ -358,7 +366,7 @@ export default function Contact() {
                   required
                   value={formData.inquiryType}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
                 >
                   <option value="">Select an option</option>
                   {inquiryTypes.map((type) => (
@@ -380,7 +388,7 @@ export default function Contact() {
                   rows={5}
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all resize-none"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all resize-none"
                   placeholder="Tell us about your project..."
                 />
               </div>
@@ -400,7 +408,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden send-button group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-base sm:text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden send-button group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   <span>{isSubmitting ? 'Sending...' : 'Send Inquiry'}</span>
@@ -413,17 +421,17 @@ export default function Contact() {
 
           {/* Contact Info */}
           <div className="contact-info">
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 h-full flex flex-col justify-center">
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Contact Information</h3>
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 sm:p-8 h-full flex flex-col justify-center">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">Contact Information</h3>
               
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 <div className="flex items-start">
-                  <div className="bg-blue-600 p-3 rounded-lg mr-4 flex-shrink-0 flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-white" />
+                  <div className="bg-blue-600 p-2.5 sm:p-3 rounded-lg mr-3 sm:mr-4 flex-shrink-0 flex items-center justify-center">
+                    <MapPin className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Address</h4>
-                    <p className="text-gray-600 dark:text-gray-300">
+                    <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Address</h4>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
                       123 Business Street<br />
                       Tech City, TC 12345<br />
                       Country
@@ -432,35 +440,35 @@ export default function Contact() {
                 </div>
 
                 <div className="flex items-start">
-                  <div className="bg-purple-600 p-3 rounded-lg mr-4 flex-shrink-0 flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-white" />
+                  <div className="bg-purple-600 p-2.5 sm:p-3 rounded-lg mr-3 sm:mr-4 flex-shrink-0 flex items-center justify-center">
+                    <Mail className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Email</h4>
-                    <p className="text-gray-600 dark:text-gray-300">info@datacube.com</p>
-                    <p className="text-gray-600 dark:text-gray-300">support@datacube.com</p>
+                    <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Email</h4>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">info@datacube.com</p>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">support@datacube.com</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <div className="bg-pink-600 p-3 rounded-lg mr-4 flex-shrink-0 flex items-center justify-center">
-                    <Phone className="w-6 h-6 text-white" />
+                  <div className="bg-pink-600 p-2.5 sm:p-3 rounded-lg mr-3 sm:mr-4 flex-shrink-0 flex items-center justify-center">
+                    <Phone className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Phone</h4>
-                    <p className="text-gray-600 dark:text-gray-300">+1 (555) 123-4567</p>
-                    <p className="text-gray-600 dark:text-gray-300">+1 (555) 123-4568</p>
+                    <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Phone</h4>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+1 (555) 123-4567</p>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+1 (555) 123-4568</p>
                   </div>
                 </div>
 
                 <div className="flex items-start">
-                  <div className="bg-green-600 p-3 rounded-lg mr-4 flex-shrink-0 flex items-center justify-center">
-                    <Clock className="w-6 h-6 text-white" />
+                  <div className="bg-green-600 p-2.5 sm:p-3 rounded-lg mr-3 sm:mr-4 flex-shrink-0 flex items-center justify-center">
+                    <Clock className="w-5 sm:w-6 h-5 sm:h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 dark:text-white mb-1">Business Hours</h4>
-                    <p className="text-gray-600 dark:text-gray-300">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                    <p className="text-gray-600 dark:text-gray-300">Saturday: 10:00 AM - 4:00 PM</p>
+                    <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Business Hours</h4>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">Saturday: 10:00 AM - 4:00 PM</p>
                   </div>
                 </div>
               </div>

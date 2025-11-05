@@ -17,15 +17,21 @@ export function initGSAPOptimizations() {
     immediateRender: false, // Don't render immediately
   });
 
-  // Optimize ScrollTrigger globally
+  // Optimize ScrollTrigger globally for better sync
   ScrollTrigger.config({
     autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load',
     ignoreMobileResize: true, // Ignore mobile resize events for better performance
+    refreshPriority: -1, // Lower priority for better performance
+    syncInterval: 0.1, // Sync interval for better synchronization
   });
 
-  // Batch DOM reads/writes for better performance
-  // Use RAF for smoother animations
+  // Optimize ticker for smoother, synchronized animations
+  // Disable lag smoothing for frame-perfect sync (0 = disabled)
+  // This ensures animations stay in sync with the browser's render cycle
   gsap.ticker.lagSmoothing(0);
+  
+  // Use will-change for better performance
+  // This is handled per-element in components
 }
 
 /**

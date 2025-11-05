@@ -7,9 +7,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import AboutUs from '../components/AboutUs';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 export default function AboutPage() {
   const pageRef = useRef<HTMLDivElement>(null);
@@ -43,7 +41,9 @@ export default function AboutPage() {
       <main ref={pageRef} className="pt-20">
         <AboutUs />
       </main>
-      <Footer />
+      <div className="footer-wrapper-home-about">
+        <Footer />
+      </div>
     </div>
   );
 }
