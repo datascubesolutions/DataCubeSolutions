@@ -8,9 +8,7 @@ import Footer from '../components/Footer';
 import { BarChart3, Users, Globe } from 'lucide-react';
 import Projects from '../components/Projects';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 export default function ProjectsPage() {
   const pageRef = useRef<HTMLDivElement>(null);
