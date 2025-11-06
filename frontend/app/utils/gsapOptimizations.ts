@@ -21,7 +21,6 @@ export function initGSAPOptimizations() {
   ScrollTrigger.config({
     autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load',
     ignoreMobileResize: true, // Ignore mobile resize events for better performance
-    refreshPriority: -1, // Lower priority for better performance
     syncInterval: 0.1, // Sync interval for better synchronization
   });
 

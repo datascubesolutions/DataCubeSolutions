@@ -48,8 +48,6 @@ export default function Footer() {
             toggleActions: 'play none none none',
             once: true, // Only animate once
             markers: false, // Set to true for debugging
-            // Refresh on resize for better sync
-            refreshPriority: -1,
           },
         }
       );
