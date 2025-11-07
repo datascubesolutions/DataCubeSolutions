@@ -68,7 +68,8 @@ enum StatusCode {
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: 'application/json',
   'Content-Type': 'application/json; charset=utf-8',
-  'Access-Control-Allow-Origin': '*',
+  // Note: Access-Control-Allow-Origin is a response header, not a request header
+  // The browser automatically sends the Origin header
 };
 
 const defaultSettings: ShowErrorMessage = {
@@ -123,12 +124,27 @@ const Http = async (apiDataProps: IAPIOptions) => {
   };
 
   const handleError = async (error: any) => {
-    const { status, data } = error;
+    // Handle Axios error structure: error.response contains status and data
+    // Axios errors have the structure: error.response.status and error.response.data
+    const status = error?.response?.status || error?.status;
+    const data = error?.response?.data || error?.data;
+    
+    // Handle network errors (no response)
+    if (!error.response && error.request) {
+      if (typeof window !== 'undefined' && messageSettings && !messageSettings.hideErrorMessage) {
+        Notification({
+          type: NOTIFICATION_TYPE_ERROR,
+          message: 'Network error. Please check your connection and try again.',
+        });
+      }
+      return Promise.reject(error);
+    }
+    
     if (status == 401) {
       if (typeof window !== 'undefined') {
         window.location.href = '/auth/login';
       }
-      return;
+      return Promise.reject(error);
     }
 
     if (typeof window !== 'undefined' && messageSettings && !messageSettings.hideErrorMessage) {
@@ -138,10 +154,21 @@ const Http = async (apiDataProps: IAPIOptions) => {
           //@ts-ignore
           message: messageSettings.errorMessage,
         });
+      } else if (data?.message) {
+        Notification({
+          type: NOTIFICATION_TYPE_ERROR,
+          message: data.message,
+        });
       } else if (typeof data?.data === 'string') {
         Notification({
           type: NOTIFICATION_TYPE_ERROR,
           message: data.data,
+        });
+      } else if (data?.errors && Array.isArray(data.errors)) {
+        // Handle validation errors array
+        Notification({
+          type: NOTIFICATION_TYPE_ERROR,
+          message: data.errors[0] || 'Validation error occurred.',
         });
       } else {
         switch (status) {
@@ -172,7 +199,7 @@ const Http = async (apiDataProps: IAPIOptions) => {
           default:
             Notification({
               type: NOTIFICATION_TYPE_ERROR,
-              message: 'Something Went Wrong.',
+              message: error?.message || 'Something Went Wrong.',
             });
             break;
         }
@@ -192,8 +219,8 @@ const Http = async (apiDataProps: IAPIOptions) => {
       return response.data;
     },
     (error) => {
-      const { response } = error;
-      return handleError(response);
+      // Pass the full error object, not just response
+      return handleError(error);
     }
   );
 
