@@ -10,23 +10,80 @@ interface Message {
   timestamp: Date;
 }
 
+// Format message text with markdown-like formatting
+const formatMessage = (text: string) => {
+  // Split by line breaks
+  const lines = text.split('\n').filter(line => line.trim() !== '');
+  
+  return lines.map((line, index) => {
+    const trimmedLine = line.trim();
+    
+    // Check for numbered list (1. **text** or 1. text)
+    const numberedListMatch = trimmedLine.match(/^(\d+)\.\s+(.+)$/);
+    if (numberedListMatch) {
+      const number = numberedListMatch[1];
+      const content = numberedListMatch[2];
+      // Process bold text in content
+      const formattedContent = content.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-cyan-300">$1</strong>');
+      return (
+        <div key={index} className="flex gap-2 mb-2 last:mb-0">
+          <span className="text-blue-400 font-semibold flex-shrink-0">{number}.</span>
+          <span className="flex-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedContent }} />
+        </div>
+      );
+    }
+    
+    // Check for bullet points (- or •)
+    if (trimmedLine.match(/^[-•]\s+(.+)$/)) {
+      const content = trimmedLine.replace(/^[-•]\s+/, '');
+      const formattedContent = content.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-cyan-300">$1</strong>');
+      return (
+        <div key={index} className="flex gap-2 mb-2 last:mb-0">
+          <span className="text-blue-400 flex-shrink-0">•</span>
+          <span className="flex-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedContent }} />
+        </div>
+      );
+    }
+    
+    // Regular line with bold text
+    const formattedLine = trimmedLine.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-cyan-300">$1</strong>');
+    
+    return (
+      <p key={index} className="mb-2 last:mb-0 leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedLine }} />
+    );
+  });
+};
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: "Hello! 👋\nHow can we help you today?",
-      sender: 'bot',
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [wsConnected, setWsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const recognitionRef = useRef<any>(null);
   const isListeningRef = useRef(false);
+  const wsRef = useRef<WebSocket | null>(null);
+  const tokenRef = useRef<string>('');
+
+  // Generate unique token for user
+  const generateToken = (): string => {
+    // Check if token exists in localStorage
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('chat_token');
+      if (storedToken) {
+        return storedToken;
+      }
+      
+      // Generate new token
+      const token = `user_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+      localStorage.setItem('chat_token', token);
+      return token;
+    }
+    return `user_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
+  };
 
   const toggleChat = () => {
     if (isOpen && isListening) {
@@ -131,6 +188,101 @@ export default function ChatWidget() {
     };
   }, []);
 
+  // Initialize token on mount
+  useEffect(() => {
+    tokenRef.current = generateToken();
+  }, []);
+
+  // WebSocket connection
+  useEffect(() => {
+    if (!isOpen) {
+      // Close WebSocket when chat is closed
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+        setWsConnected(false);
+      }
+      return;
+    }
+
+    // Generate token if not exists
+    if (!tokenRef.current) {
+      tokenRef.current = generateToken();
+    }
+
+    // Connect WebSocket
+    const wsUrl = `ws://localhost:8000/ws/${tokenRef.current}`;
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      console.log('WebSocket connected');
+      setWsConnected(true);
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        
+        // Handle bot response in new format: { type: "message", data: { content: "..." } }
+        let messageText = '';
+        
+        if (data.type === "message" && data.data && data.data.content) {
+          messageText = data.data.content;
+        } else if (data.message || data.text) {
+          // Fallback to old format
+          messageText = data.message || data.text;
+        } else if (data.content) {
+          // Direct content field
+          messageText = data.content;
+        }
+        
+        if (messageText) {
+          const botMessage: Message = {
+            id: Date.now().toString(),
+            text: messageText,
+            sender: 'bot',
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, botMessage]);
+          setIsTyping(false);
+        }
+      } catch (error) {
+        // If not JSON, treat as plain text
+        const botMessage: Message = {
+          id: Date.now().toString(),
+          text: event.data,
+          sender: 'bot',
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, botMessage]);
+        setIsTyping(false);
+      }
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+      setWsConnected(false);
+      // Fallback to local bot response on error
+      setIsTyping(false);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket disconnected');
+      setWsConnected(false);
+      wsRef.current = null;
+    };
+
+    wsRef.current = ws;
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+        setWsConnected(false);
+      }
+    };
+  }, [isOpen]);
+
   const getBotResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase();
     
@@ -168,17 +320,41 @@ export default function ChatWidget() {
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI bot response after a delay
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: getBotResponse(messageText),
-        sender: 'bot',
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, botResponse]);
-      setIsTyping(false);
-    }, 1000);
+    // Send message via WebSocket if connected
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      try {
+        // Send message in the required format
+        wsRef.current.send(JSON.stringify({
+          type: "message",
+          data: { content: messageText }
+        }));
+      } catch (error) {
+        console.error('Error sending message via WebSocket:', error);
+        // Fallback to local response
+        setTimeout(() => {
+          const botResponse: Message = {
+            id: (Date.now() + 1).toString(),
+            text: getBotResponse(messageText),
+            sender: 'bot',
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, botResponse]);
+          setIsTyping(false);
+        }, 1000);
+      }
+    } else {
+      // Fallback to local bot response if WebSocket not connected
+      setTimeout(() => {
+        const botResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          text: getBotResponse(messageText),
+          sender: 'bot',
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, botResponse]);
+        setIsTyping(false);
+      }, 1000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -244,7 +420,19 @@ export default function ChatWidget() {
               </div>
               <div>
                 <h3 className="text-white font-semibold text-sm">AI Chat Bot</h3>
-                <p className="text-blue-100 text-xs">We're here to help</p>
+                <p className="text-blue-100 text-xs flex items-center gap-1">
+                  {wsConnected ? (
+                    <>
+                      <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                      Connected
+                    </>
+                  ) : (
+                    <>
+                      <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
+                      Connecting...
+                    </>
+                  )}
+                </p>
               </div>
             </div>
             <button
@@ -286,9 +474,15 @@ export default function ChatWidget() {
                         : 'bg-slate-700/50 text-slate-200 max-w-[80%]'
                     }`}
                   >
-                    {message.text.split('\n').map((line, idx) => (
-                      <p key={idx}>{line}</p>
-                    ))}
+                    {message.sender === 'bot' ? (
+                      <div className="space-y-0.5">
+                        {formatMessage(message.text)}
+                      </div>
+                    ) : (
+                      message.text.split('\n').map((line, idx) => (
+                        <p key={idx}>{line}</p>
+                      ))
+                    )}
                   </div>
                   <span
                     className={`text-xs text-slate-400 mt-1 block ${
