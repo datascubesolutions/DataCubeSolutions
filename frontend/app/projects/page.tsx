@@ -364,7 +364,9 @@ export default function ProjectsPage() {
       <main className="relative z-10 pt-24">
         <Projects />
       </main>
-      <Footer />
+      <div className="footer-wrapper-home-about">
+        <Footer />
+      </div>
 
       <style jsx>{`
         @keyframes matrix-fall {
