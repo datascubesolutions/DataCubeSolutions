@@ -296,6 +296,51 @@ body {
   }
 }
 
+@keyframes coreGlowOuter {
+  0%, 48% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  49%, 70% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+  85%, 100% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes coreGlowInner {
+  0%, 48% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  49%, 70% {
+    opacity: 0.75;
+    transform: scale(1.05);
+  }
+  85%, 100% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes coreGlowText {
+  0%, 48% {
+    color: rgba(148, 163, 184, 0.4);
+    text-shadow: none;
+  }
+  49%, 70% {
+    color: #22d3ee;
+    text-shadow: 0 0 8px rgba(14, 165, 233, 0.8);
+  }
+  85%, 100% {
+    color: #38bdf8;
+    text-shadow: 0 0 14px rgba(56, 189, 248, 0.95);
+  }
+}
+
 /* Footer styling for home and about pages */
 .footer-wrapper-home-about footer {
   background: linear-gradient(to bottom right, rgb(2 6 23), rgb(15 23 42), rgb(2 6 23)) !important;
@@ -323,5 +368,35 @@ body {
   right: 0;
   height: 1px;
   background: linear-gradient(to right, transparent, rgb(51 65 85), transparent);
+}
+
+/* Mobile Menu Scrollbar Styling */
+nav[class*="overflow-y-auto"]::-webkit-scrollbar {
+  width: 6px;
+}
+
+nav[class*="overflow-y-auto"]::-webkit-scrollbar-track {
+  background: rgba(17, 24, 39, 0.5);
+  border-radius: 10px;
+}
+
+nav[class*="overflow-y-auto"]::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.5);
+  border-radius: 10px;
+}
+
+nav[class*="overflow-y-auto"]::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.8);
+}
+
+/* Smooth transitions for mobile menu - optimized for mobile performance */
+.mobile-menu-item {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+  /* Initial state set by JavaScript */
 }
 
