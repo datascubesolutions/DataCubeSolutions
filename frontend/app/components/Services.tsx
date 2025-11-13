@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Tabs from './Tabs';
-import { BarChart3, Users, Code, Rocket, TrendingUp, Star } from 'lucide-react';
+import { BarChart3, Users, Code, Rocket, Cloud, Palette } from 'lucide-react';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
@@ -14,6 +14,7 @@ const services = [
     title: 'ERP Solutions',
     description: 'Comprehensive Enterprise Resource Planning systems to streamline your business operations, manage resources efficiently, and boost productivity.',
     icon: BarChart3,
+    category: 'it',
     features: ['Inventory Management', 'Financial Planning', 'Supply Chain', 'Human Resources'],
     color: 'from-blue-500 to-blue-700',
     details: (
@@ -54,6 +55,7 @@ const services = [
     title: 'CRM Systems',
     description: 'Customer Relationship Management solutions to enhance customer engagement, track interactions, and drive sales growth.',
     icon: Users,
+    category: 'it',
     features: ['Customer Analytics', 'Sales Pipeline', 'Marketing Automation', 'Support Tickets'],
     color: 'from-purple-500 to-purple-700',
     details: (
@@ -94,6 +96,7 @@ const services = [
     title: 'Web Development',
     description: 'Modern, responsive, and scalable web applications built with latest technologies to bring your digital presence to life.',
     icon: Code,
+    category: 'it',
     features: ['React/Next.js', 'Node.js Backend', 'Mobile Responsive', 'SEO Optimized'],
     color: 'from-pink-500 to-pink-700',
     details: (
@@ -128,6 +131,98 @@ const services = [
         </div>
       </div>
     ),
+  },
+  {
+    id: 4,
+    title: 'Cloud & API Integrations',
+    description: 'Seamless cloud infrastructure and API integrations to connect your systems, enhance scalability, and enable real-time data synchronization.',
+    icon: Cloud,
+    category: 'it',
+    features: ['AWS/Azure Setup', 'RESTful APIs', 'Microservices', 'Data Sync'],
+    color: 'from-cyan-500 to-cyan-700',
+    details: (
+      <div className="space-y-6">
+        <div>
+          <h4 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Cloud & API Integration Services</h4>
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+            Connect your business systems with powerful cloud infrastructure and seamless API integrations. 
+            We help you migrate to the cloud, build scalable architectures, and integrate third-party services 
+            to streamline your operations.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-cyan-50 dark:bg-gray-800 p-4 rounded-lg">
+            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">Cloud Services</h5>
+            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+              <li>• AWS & Azure deployment</li>
+              <li>• Cloud migration</li>
+              <li>• Scalable infrastructure</li>
+              <li>• Cost optimization</li>
+            </ul>
+          </div>
+          <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded-lg">
+            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">API Integration</h5>
+            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+              <li>• RESTful & GraphQL APIs</li>
+              <li>• Third-party integrations</li>
+              <li>• Webhook setup</li>
+              <li>• Real-time synchronization</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 6,
+    title: 'UI/UX Design',
+    description: 'Beautiful, intuitive user interfaces and exceptional user experiences designed to engage users and drive conversions.',
+    icon: Palette,
+    category: 'it',
+    features: ['User Research', 'Wireframing', 'Prototyping', 'Design Systems'],
+    color: 'from-pink-500 to-rose-500',
+    details: (
+      <div className="space-y-6">
+        <div>
+          <h4 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">UI/UX Design Services</h4>
+          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+            Create stunning user interfaces and exceptional user experiences that captivate your audience. 
+            Our design team combines creativity with user research to build intuitive, accessible, and 
+            conversion-focused designs that align with your brand and business goals.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-pink-50 dark:bg-gray-800 p-4 rounded-lg">
+            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">User Experience</h5>
+            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+              <li>• User research & testing</li>
+              <li>• Information architecture</li>
+              <li>• User journey mapping</li>
+              <li>• Usability optimization</li>
+            </ul>
+          </div>
+          <div className="bg-rose-50 dark:bg-gray-800 p-4 rounded-lg">
+            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">User Interface</h5>
+            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+              <li>• Visual design</li>
+              <li>• Design systems</li>
+              <li>• Prototyping & mockups</li>
+              <li>• Responsive design</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+];
+
+const serviceGroups = [
+  {
+    key: 'it',
+    title: 'IT & Digital Solutions',
+    description: 'Build and modernize your digital products with enterprise-grade technology services.',
+    accent: 'from-blue-500 to-cyan-500',
+    services: services.filter((service) => service.category === 'it'),
   },
 ];
 
@@ -447,6 +542,14 @@ export default function Services() {
     return () => ctx.revert();
   }, []);
 
+  const servicePaths: Record<number, string> = {
+    1: '/services/erp',
+    2: '/services/crm',
+    3: '/services/web-development',
+    4: '/services/cloud-api',
+    6: '/services/ui-ux-design',
+  };
+
   return (
     <section
       id="services"
@@ -530,42 +633,35 @@ export default function Services() {
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 relative z-10">
             Comprehensive solutions tailored to your business needs. Transform your operations with cutting-edge technology.
           </p>
-
-          {/* Service Stats */}
-          <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto relative z-10">
-            {[
-              { label: 'Active Projects', value: '500+', icon: BarChart3, color: 'from-blue-500 to-cyan-500' },
-              { label: 'Happy Clients', value: '1000+', icon: Users, color: 'from-purple-500 to-pink-500' },
-              { label: 'Success Rate', value: '98%', icon: Star, color: 'from-green-500 to-emerald-500' },
-            ].map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-              <div
-                key={index}
-                className="bg-white/10 dark:bg-gray-800/40 backdrop-blur-md rounded-xl p-6 shadow-xl border border-blue-200/20 dark:border-blue-500/20 service-stat-card text-center"
-              >
-                <div className="flex justify-center mb-3">
-                  <IconComponent className="w-10 h-10 text-blue-400" />
-                </div>
-                <div className={`text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-2`}>
-                  {stat.value}
-                </div>
-                <div className="text-sm text-gray-300">{stat.label}</div>
-              </div>
-            );
-            })}
-          </div>
         </div>
 
         {/* Service Cards with Navigation */}
-        <div className="grid md:grid-cols-3 gap-8">
-          {services.map((service) => {
-            const servicePaths: Record<number, string> = {
-              1: '/services/erp',
-              2: '/services/crm',
-              3: '/services/web-development',
-            };
+        {serviceGroups.map((group) => {
+          const badgeTextClass = group.key === 'it' ? 'text-blue-300' : 'text-emerald-300';
+          const badgeBorderClass = group.key === 'it' ? 'border-blue-500/40' : 'border-emerald-500/40';
+          const badgeDotClass = group.key === 'it' ? 'bg-blue-400' : 'bg-emerald-400';
 
+          return (
+          <div key={group.key} className="mb-16">
+            <div className="text-center mb-10">
+              <div
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${badgeBorderClass} bg-slate-900/60 text-sm font-semibold ${badgeTextClass}`}
+              >
+                <span className={`flex h-2 w-2 rounded-full ${badgeDotClass}`}></span>
+                {group.title}
+              </div>
+              <h3 className="text-3xl md:text-4xl font-bold text-white mt-6 mb-3">
+                {group.title}
+              </h3>
+              <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+                {group.description}
+              </p>
+            </div>
+
+            <div
+              className={`grid gap-8 ${group.services.length === 1 ? 'max-w-3xl mx-auto md:grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-3'}`}
+            >
+              {group.services.map((service) => {
             return (
               <a
                 key={service.id}
@@ -615,7 +711,10 @@ export default function Services() {
               </a>
             );
           })}
-        </div>
+            </div>
+          </div>
+        );
+        })}
       </div>
     </section>
   );

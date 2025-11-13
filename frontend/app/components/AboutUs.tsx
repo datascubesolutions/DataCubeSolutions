@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Users, Target, User, Star, Lightbulb, Sparkles, Handshake, Shield, Rocket, Eye, Goal } from 'lucide-react';
+import { Users, Target, User, Star, Lightbulb, Sparkles, Handshake, Shield, Rocket, Eye, Goal, Briefcase, Calendar, Award, TrendingUp, ArrowRight } from 'lucide-react';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
@@ -16,24 +16,90 @@ const stats = [
 
 const values = [
   {
-    title: 'Innovation',
-    description: 'We stay ahead of technology trends to provide cutting-edge solutions.',
+    title: 'Complete Solutions',
+    description: 'We provide end-to-end services - from IT solutions to startup support, ensuring all your business needs are met in one place.',
     icon: Lightbulb,
   },
   {
-    title: 'Quality',
-    description: 'We deliver exceptional quality in every project we undertake.',
+    title: 'Expert Excellence',
+    description: 'Our team combines technology expertise with business consulting to deliver exceptional quality in every project.',
     icon: Sparkles,
   },
   {
-    title: 'Customer Focus',
-    description: 'Our clients success is our primary goal and driving force.',
+    title: 'Client Success',
+    description: 'Your success is our primary goal - whether you\'re a startup needing registration and funding or an enterprise requiring IT solutions.',
     icon: Handshake,
   },
   {
-    title: 'Integrity',
-    description: 'We maintain transparency and honesty in all our business dealings.',
+    title: 'Trusted Partnership',
+    description: 'We maintain transparency and integrity in all our dealings, building long-term partnerships with our clients.',
     icon: Shield,
+  },
+];
+
+const leadershipTeam = [
+  {
+    name: 'John Smith',
+    title: 'CEO & Co-Founder',
+    image: '/api/placeholder/200/200',
+    description: 'Visionary leader with 15+ years in enterprise technology and startup consulting',
+  },
+  {
+    name: 'Sarah Johnson',
+    title: 'CTO & Co-Founder',
+    image: '/api/placeholder/200/200',
+    description: 'Expert in scalable IT solutions, ERP/CRM systems, and digital transformation',
+  },
+  {
+    name: 'Michael Chen',
+    title: 'VP of Startup Services',
+    image: '/api/placeholder/200/200',
+    description: 'Specializes in company registration, funding support, and business documentation',
+  },
+  {
+    name: 'Emily Rodriguez',
+    title: 'VP of Customer Success',
+    image: '/api/placeholder/200/200',
+    description: 'Ensures exceptional client experiences across IT solutions and startup support',
+  },
+];
+
+const timeline = [
+  {
+    year: '2014',
+    title: 'Company Founded',
+    description: 'Started with a vision to transform business operations through technology',
+    icon: Rocket,
+  },
+  {
+    year: '2016',
+    title: 'First 100 Clients',
+    description: 'Reached milestone of serving 100+ satisfied clients',
+    icon: Target,
+  },
+  {
+    year: '2018',
+    title: 'International Expansion',
+    description: 'Expanded operations to serve clients across multiple countries',
+    icon: TrendingUp,
+  },
+  {
+    year: '2020',
+    title: '500+ Projects',
+    description: 'Completed over 500 successful projects across various industries',
+    icon: Award,
+  },
+  {
+    year: '2022',
+    title: '50+ Team Members',
+    description: 'Grew to a team of 50+ skilled professionals',
+    icon: Users,
+  },
+  {
+    year: '2024',
+    title: 'Industry Leader',
+    description: 'Recognized as a leading technology solutions provider',
+    icon: Star,
   },
 ];
 
@@ -224,138 +290,104 @@ export default function AboutUs() {
         );
       }
 
-      // Value cards animation with advanced effects
+      // Value cards animation - subtle entrance with hover effects
       if (valueCards) {
-        // Initial scroll animation - different effects for each card
         valueCards.forEach((card, index) => {
-          const delay = index * 0.15;
+          const icon = card.querySelector('.value-icon');
+          const title = card.querySelector('.value-title');
           
-          // Staggered entrance with rotation
+          // Entrance animation
           gsap.fromTo(
             card,
-            {
-              opacity: 0,
-              y: 100,
-              rotationY: -90,
-              scale: 0.5,
-              z: -200,
-            },
+            { opacity: 0, y: 50, scale: 0.9 },
             {
               opacity: 1,
               y: 0,
-              rotationY: 0,
               scale: 1,
-              z: 0,
-              duration: 1,
-              delay: delay,
-              ease: 'power3.out',
+              duration: 0.6,
+              delay: index * 0.1,
+              ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
                 start: 'top 85%',
-                toggleActions: 'play none none reverse',
+                toggleActions: 'play none none none',
               },
             }
           );
 
-          // Floating animation
-          gsap.to(card, {
-            y: -10,
-            duration: 2 + index * 0.3,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: delay + 1,
+          // Icon entrance animation
+          if (icon) {
+            gsap.fromTo(
+              icon,
+              { scale: 0, rotation: -180 },
+              {
+                scale: 1,
+                rotation: 0,
+                duration: 0.6,
+                delay: index * 0.1 + 0.2,
+                ease: 'back.out(1.7)',
+                scrollTrigger: {
+                  trigger: card,
+                  start: 'top 85%',
+                  toggleActions: 'play none none none',
+                },
+              }
+            );
+          }
+
+          // Hover effects
+          card.addEventListener('mouseenter', () => {
+            gsap.to(card, {
+              scale: 1.05,
+              y: -8,
+              duration: 0.3,
+              ease: 'power2.out',
+            });
+            
+            if (icon) {
+              gsap.to(icon, {
+                scale: 1.15,
+                rotation: 5,
+                duration: 0.3,
+                ease: 'power2.out',
+              });
+            }
+            
+            if (title) {
+              gsap.to(title, {
+                y: -2,
+                duration: 0.3,
+                ease: 'power2.out',
+              });
+            }
+          });
+
+          card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+              scale: 1,
+              y: 0,
+              duration: 0.3,
+              ease: 'power2.out',
+            });
+            
+            if (icon) {
+              gsap.to(icon, {
+                scale: 1,
+                rotation: 0,
+                duration: 0.3,
+                ease: 'power2.out',
+              });
+            }
+            
+            if (title) {
+              gsap.to(title, {
+                y: 0,
+                duration: 0.3,
+                ease: 'power2.out',
+              });
+            }
           });
         });
-
-        // Background animations
-        // Floating circles
-        const bgCircles = sectionRef.current?.querySelectorAll('.value-bg-circle-1, .value-bg-circle-2, .value-bg-circle-3, .value-bg-circle-4');
-        if (bgCircles) {
-          bgCircles.forEach((circle, index) => {
-            gsap.to(circle, {
-              x: 30 + index * 10,
-              y: 30 + index * 10,
-              scale: 1.1,
-              duration: 4 + index,
-              repeat: -1,
-              yoyo: true,
-              ease: 'sine.inOut',
-            });
-
-            // Rotate circles
-            gsap.to(circle, {
-              rotation: 360,
-              duration: 20 + index * 5,
-              repeat: -1,
-              ease: 'none',
-            });
-          });
-        }
-
-        // Animated particles
-        const particles = sectionRef.current?.querySelectorAll('[class*="value-particle-"]');
-        if (particles) {
-          particles.forEach((particle, index) => {
-            gsap.to(particle, {
-              y: -20 - Math.random() * 30,
-              x: 10 + Math.random() * 20,
-              opacity: 0.8,
-              scale: 1.5,
-              duration: 3 + Math.random() * 2,
-              repeat: -1,
-              yoyo: true,
-              ease: 'sine.inOut',
-              delay: index * 0.2,
-            });
-
-            // Random floating
-            gsap.to(particle, {
-              x: `+=${20 + Math.random() * 40}`,
-              y: `+=${20 + Math.random() * 40}`,
-              duration: 4 + Math.random() * 3,
-              repeat: -1,
-              yoyo: true,
-              ease: 'power1.inOut',
-            });
-          });
-        }
-
-        // Geometric shapes animation
-        const shapes = sectionRef.current?.querySelectorAll('.value-shape-1, .value-shape-2, .value-shape-3');
-        if (shapes) {
-          shapes.forEach((shape, index) => {
-            gsap.to(shape, {
-              rotation: 360,
-              duration: 15 + index * 5,
-              repeat: -1,
-              ease: 'none',
-            });
-
-            gsap.to(shape, {
-              scale: 1.2,
-              opacity: 0.6,
-              duration: 2 + index * 0.5,
-              repeat: -1,
-              yoyo: true,
-              ease: 'sine.inOut',
-            });
-          });
-        }
-
-        // Scroll parallax for background elements
-        if (bgCircles) {
-          gsap.to(bgCircles, {
-            y: -100,
-            opacity: 0.3,
-            scrollTrigger: {
-              trigger: sectionRef.current?.querySelector('.relative'),
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1,
-            },
-          });
-        }
       }
 
       // Circuit LED animations
@@ -389,114 +421,69 @@ export default function AboutUs() {
         });
       }
 
-      // Value cards animation with advanced effects
-      if (valueCards) {
-        // Initial scroll animation - different effects for each card
-        valueCards.forEach((card, index) => {
-          const delay = index * 0.15;
-          
-          // Staggered entrance with rotation
-          gsap.fromTo(
-            card,
-            {
-              opacity: 0,
-              y: 100,
-              rotationY: -90,
-              scale: 0.5,
-              z: -200,
+      // Leadership team cards animation
+      const leadershipCards = sectionRef.current?.querySelectorAll('.leadership-card');
+      if (leadershipCards) {
+        gsap.fromTo(
+          leadershipCards,
+          { opacity: 0, y: 50, scale: 0.9 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: leadershipCards[0]?.parentElement,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
             },
-            {
-              opacity: 1,
-              y: 0,
-              rotationY: 0,
-              scale: 1,
-              z: 0,
-              duration: 1,
-              delay: delay,
-              ease: 'power3.out',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          );
+          }
+        );
+      }
 
-          // Floating animation
-          gsap.to(card, {
-            y: -10,
-            duration: 2 + index * 0.3,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: delay + 1,
-          });
+      // Careers section animation
+      const careersSection = sectionRef.current?.querySelector('.careers-section');
+      if (careersSection) {
+        gsap.fromTo(
+          careersSection,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: careersSection,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+      }
 
-          // Mouse enter effect - glow and scale
-          card.addEventListener('mouseenter', () => {
-            gsap.to(card, {
-              scale: 1.1,
-              rotationY: 5,
-              rotationX: 5,
-              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-            
-            // Add glow effect
-            const glow = card.querySelector('.value-glow');
-            if (glow) {
-              gsap.to(glow, {
-                opacity: 1,
-                scale: 1.2,
-                duration: 0.3,
-              });
-            }
-          });
-
-          // Mouse leave effect
-          card.addEventListener('mouseleave', () => {
-            gsap.to(card, {
-              scale: 1,
-              rotationY: 0,
-              rotationX: 0,
-              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-            
-            const glow = card.querySelector('.value-glow');
-            if (glow) {
-              gsap.to(glow, {
-                opacity: 0.5,
-                scale: 1,
-                duration: 0.3,
-              });
-            }
-          });
-
-          // Mouse move parallax effect
-          card.addEventListener('mousemove', (e) => {
-            const event = e as MouseEvent;
-            const rect = card.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 20;
-            const rotateY = (centerX - x) / 20;
-            
-            gsap.to(card, {
-              rotationX: rotateX,
-              rotationY: rotateY,
-              transformPerspective: 1000,
-              duration: 0.5,
-              ease: 'power1.out',
-            });
-          });
-        });
+      // Value cards simple animation
+      if (valueCards) {
+        gsap.fromTo(
+          valueCards,
+          {
+            opacity: 0,
+            y: 40,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: valueCards[0]?.parentElement,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
       }
     }, sectionRef);
 
@@ -660,7 +647,7 @@ export default function AboutUs() {
             </span>
           </h2>
           <p className="about-subtitle text-xl text-gray-300 max-w-2xl mx-auto">
-            Empowering businesses with innovative technology solutions
+            Empowering businesses with complete IT solutions and comprehensive startup support
           </p>
         </div>
 
@@ -676,18 +663,20 @@ export default function AboutUs() {
               Who We Are
             </h3>
             <p className="text-lg text-gray-300 mb-4 leading-relaxed">
-              Data Scube is a leading technology company specializing in ERP solutions, 
-              CRM systems, and custom web development. We combine innovation with expertise 
-              to deliver solutions that transform businesses and drive growth.
+              Data Scube is a comprehensive business solutions provider offering both IT & Digital Solutions 
+              and Startup Support & Consulting services. We specialize in ERP systems, CRM platforms, 
+              website development, mobile apps, digital marketing, as well as company registration, 
+              certifications, funding support, and business documentation.
             </p>
             <p className="text-lg text-gray-300 mb-4 leading-relaxed">
-              With over a decade of experience, we've helped hundreds of companies streamline 
-              their operations, enhance customer relationships, and achieve digital transformation. 
-              Our team of skilled professionals is committed to delivering excellence in every project.
+              With over a decade of experience, we've helped 500+ companies and startups streamline 
+              their operations, launch successfully, secure funding, and achieve digital transformation. 
+              Our expert team combines technology expertise with business consulting to deliver complete solutions.
             </p>
             <p className="text-lg text-gray-300 leading-relaxed">
-              We believe in building long-term partnerships with our clients, understanding their 
-              unique needs, and providing tailored solutions that exceed expectations.
+              We believe in being your one-stop partner - from helping startups get registered and funded 
+              to providing enterprise-level IT solutions. We understand your unique needs and provide 
+              tailored solutions that help you launch, grow, and scale successfully.
             </p>
           </div>
 
@@ -714,8 +703,8 @@ export default function AboutUs() {
                     Our Mission
                   </h4>
                   <p className="text-gray-300">
-                    To empower businesses with cutting-edge technology solutions that drive 
-                    innovation, efficiency, and sustainable growth.
+                    To empower businesses with complete IT solutions and comprehensive startup support 
+                    that drive innovation, efficiency, and sustainable growth from launch to scale.
                   </p>
                 </div>
               </div>
@@ -748,14 +737,15 @@ export default function AboutUs() {
               </h3>
             </div>
             <p className="text-lg text-gray-300 leading-relaxed relative z-10">
-              To become the globally recognized leader in technology solutions, setting new 
-              standards for innovation, excellence, and customer satisfaction. We envision a 
-              future where every business, regardless of size, has access to world-class 
-              technology that empowers them to achieve extraordinary success.
+              To become the globally recognized one-stop solution provider for businesses - combining 
+              cutting-edge IT & Digital Solutions with comprehensive Startup Support & Consulting. 
+              We envision a future where every business, from startups to enterprises, has access to 
+              complete solutions that help them launch, grow, and scale successfully.
             </p>
             <p className="text-lg text-gray-300 leading-relaxed mt-4 relative z-10">
-              Our vision drives us to continuously innovate, expand our global presence, 
-              and build solutions that shape the future of business technology.
+              Our vision drives us to continuously innovate in both technology and business consulting, 
+              expand our service offerings, and build solutions that empower businesses at every stage 
+              of their journey - from registration and funding to digital transformation and growth.
             </p>
           </div>
 
@@ -779,14 +769,15 @@ export default function AboutUs() {
               </h3>
             </div>
             <p className="text-lg text-gray-300 leading-relaxed relative z-10">
-              To empower businesses worldwide with cutting-edge technology solutions that drive 
-              innovation, efficiency, and sustainable growth. We are committed to delivering 
-              exceptional value through our ERP, CRM, and web development services.
+              To empower businesses worldwide with complete IT & Digital Solutions (ERP, CRM, websites, 
+              apps, digital marketing) and comprehensive Startup Support (registration, certifications, 
+              funding, documentation). We are committed to delivering exceptional value through our 
+              integrated approach to business growth.
             </p>
             <p className="text-lg text-gray-300 leading-relaxed mt-4 relative z-10">
-              We strive to build long-lasting partnerships with our clients, understand their 
-              unique challenges, and provide tailored solutions that transform their operations 
-              and exceed their expectations.
+              We strive to be your trusted partner throughout your business journey - from startup 
+              registration and funding to enterprise-level technology solutions. We understand your 
+              unique challenges and provide tailored solutions that help you launch, grow, and scale successfully.
             </p>
           </div>
         </div>
@@ -828,133 +819,84 @@ export default function AboutUs() {
         </div>
 
         {/* Values Section */}
-        <div className="relative py-20 overflow-hidden bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-800 dark:via-blue-900/20 dark:to-purple-900/20">
-          {/* Animated Background Elements */}
-          <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* Animated Grid Pattern */}
-            <div 
-              className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
+        <div className="relative py-20 overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black">
+          {/* Circuit Board Background */}
+          <div className="absolute inset-0 opacity-40">
+            <div
+              className="absolute inset-0"
               style={{
                 backgroundImage: `
-                  linear-gradient(to right, rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-                  linear-gradient(to bottom, rgba(168, 85, 247, 0.1) 1px, transparent 1px)
+                  linear-gradient(to right, rgba(34, 197, 94, 0.2) 1px, transparent 1px),
+                  linear-gradient(to bottom, rgba(34, 197, 94, 0.2) 1px, transparent 1px)
                 `,
-                backgroundSize: '50px 50px',
-                animation: 'gridMove 20s linear infinite',
+                backgroundSize: '40px 40px',
               }}
             ></div>
-
-            {/* Floating Animated Circles */}
-            <div className="value-bg-circle-1 absolute w-96 h-96 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 dark:from-blue-600/10 dark:to-cyan-600/10 rounded-full blur-3xl top-0 left-0"></div>
-            <div className="value-bg-circle-2 absolute w-96 h-96 bg-gradient-to-r from-purple-400/20 to-pink-400/20 dark:from-purple-600/10 dark:to-pink-600/10 rounded-full blur-3xl bottom-0 right-0"></div>
-            <div className="value-bg-circle-3 absolute w-80 h-80 bg-gradient-to-r from-orange-400/20 to-red-400/20 dark:from-orange-600/10 dark:to-red-600/10 rounded-full blur-3xl top-1/2 right-1/4"></div>
-            <div className="value-bg-circle-4 absolute w-72 h-72 bg-gradient-to-r from-green-400/20 to-emerald-400/20 dark:from-green-600/10 dark:to-emerald-600/10 rounded-full blur-3xl bottom-1/4 left-1/3"></div>
-
-            {/* Animated Particles */}
-            {[...Array(15)].map((_, i) => (
-              <div
-                key={i}
-                className={`value-particle-${i} absolute w-2 h-2 rounded-full`}
-                style={{
-                  background: `hsl(${210 + i * 10}, 70%, ${50 + i * 2}%)`,
-                  left: `${10 + (i * 6)}%`,
-                  top: `${10 + (i * 5)}%`,
-                  opacity: 0.4,
-                  boxShadow: `0 0 ${10 + i * 2}px hsl(${210 + i * 10}, 70%, 60%)`,
-                }}
-              ></div>
-            ))}
-
-            {/* Decorative Geometric Shapes */}
-            <div className="value-shape-1 absolute top-10 right-10 w-32 h-32 border-2 border-blue-400/20 dark:border-blue-500/10 rotate-45 rounded-lg"></div>
-            <div className="value-shape-2 absolute bottom-20 left-20 w-24 h-24 border-2 border-purple-400/20 dark:border-purple-500/10 rotate-12 rounded-full"></div>
-            <div className="value-shape-3 absolute top-1/3 left-10 w-16 h-16 bg-gradient-to-br from-pink-400/10 to-orange-400/10 dark:from-pink-600/5 dark:to-orange-600/5 rotate-45 rounded-lg"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-green-900/20 via-gray-800/30 to-green-900/20"></div>
           </div>
 
           {/* Content Container */}
-          <div className="relative z-10">
-            <h3 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-16 text-center">
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+          <div className="relative z-10 container mx-auto px-6">
+            <div className="text-center mb-16 fade-in">
+              <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 Our Core Values
-              </span>
-            </h3>
+              </h3>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                The principles that guide our work and define our culture
+              </p>
+            </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => {
-              const gradients = [
-                'from-blue-500 via-cyan-500 to-blue-600',
-                'from-purple-500 via-pink-500 to-purple-600',
-                'from-orange-500 via-red-500 to-orange-600',
-                'from-green-500 via-emerald-500 to-green-600',
+              const borderColors = [
+                'border-blue-500/30',
+                'border-purple-500/30',
+                'border-orange-500/30',
+                'border-green-500/30',
               ];
-              const glowColors = [
-                'rgba(59, 130, 246, 0.4)',
-                'rgba(168, 85, 247, 0.4)',
-                'rgba(249, 115, 22, 0.4)',
-                'rgba(34, 197, 94, 0.4)',
+              const hoverBorderColors = [
+                'hover:border-blue-500/60',
+                'hover:border-purple-500/60',
+                'hover:border-orange-500/60',
+                'hover:border-green-500/60',
+              ];
+              const iconGradients = [
+                'from-blue-600 to-cyan-600',
+                'from-purple-600 to-pink-600',
+                'from-orange-600 to-red-600',
+                'from-green-600 to-emerald-600',
               ];
 
               return (
                 <div
                   key={index}
-                  className="value-card relative group cursor-pointer perspective-1000"
-                  style={{ transformStyle: 'preserve-3d' }}
+                  className="value-card relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border-2 border-gray-700/50 hover:border-gray-700 overflow-hidden"
                 >
-                  {/* Glow Effect */}
-                  <div
-                    className="value-glow absolute inset-0 rounded-2xl opacity-50 blur-2xl transition-opacity duration-300"
-                    style={{
-                      background: `linear-gradient(135deg, ${glowColors[index]}, transparent)`,
-                      transform: 'scale(0.9)',
-                    }}
-                  ></div>
-
-                  {/* Main Card */}
-                  <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-2xl border-2 border-gray-200 dark:border-gray-700 text-center overflow-hidden transform transition-all duration-300" style={{ transformStyle: 'preserve-3d' }}>
-                    {/* Animated Background Gradient */}
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${gradients[index]} opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-500`}
-                    ></div>
-
-                    {/* Shine Effect */}
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                    </div>
-
-                    {/* Icon with Glow */}
-                    <div className="relative z-10 mb-6">
-                      <div
-                        className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br ${gradients[index]} shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300`}
-                        style={{
-                          boxShadow: `0 10px 30px ${glowColors[index]}`,
-                        }}
-                      >
-                        <div className="transform group-hover:scale-110 transition-transform duration-300">
-                          {(() => {
-                            const IconComponent = value.icon;
-                            return <IconComponent className="w-12 h-12 text-white" />;
-                          })()}
-                        </div>
+                  {/* Circuit pattern */}
+                  <div className="absolute inset-0 opacity-10" style={{
+                    backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(34, 197, 94, 0.1) 2px, rgba(34, 197, 94, 0.1) 4px)`,
+                  }}></div>
+                  
+                  {/* LED indicator */}
+                  <div className={`absolute top-4 ${index % 2 === 0 ? 'left-4' : 'right-4'} w-2 h-2 bg-green-400 rounded-full shadow-lg shadow-green-400/50 animate-pulse circuit-card-led`}></div>
+                  
+                  <div className="relative z-10 text-center">
+                    {/* Icon */}
+                    <div className="mb-6 value-icon-container">
+                      <div className={`value-icon inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${iconGradients[index]} shadow-lg`}>
+                        {(() => {
+                          const IconComponent = value.icon;
+                          return <IconComponent className="w-8 h-8 text-white" />;
+                        })()}
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="relative z-10">
-                      <h4 className="text-xl font-bold text-gray-800 dark:text-white mb-4 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 dark:group-hover:from-blue-400 dark:group-hover:to-purple-400 transition-all duration-300">
-                        {value.title}
-                      </h4>
-                      <p className="text-gray-600 dark:text-gray-300 leading-relaxed group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
-                        {value.description}
-                      </p>
-                    </div>
-
-                    {/* Bottom Accent Line */}
-                    <div
-                      className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${gradients[index]} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}
-                    ></div>
-
-                    {/* Corner Accents */}
-                    <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-blue-500 dark:border-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-purple-500 dark:border-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <h4 className="text-xl font-bold text-white mb-4 value-title">
+                      {value.title}
+                    </h4>
+                    <p className="text-gray-300 leading-relaxed text-sm value-description">
+                      {value.description}
+                    </p>
                   </div>
                 </div>
               );
@@ -963,13 +905,166 @@ export default function AboutUs() {
           
             {/* Bottom Decorative Section */}
             <div className="relative z-10 mt-20 pt-16">
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 dark:from-blue-800 dark:via-purple-800 dark:to-pink-800"></div>
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-green-400/50 to-transparent"></div>
               <div className="text-center">
-                <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
                   These values guide everything we do, from the solutions we build to the partnerships we form. 
                   They are the foundation of our commitment to excellence and innovation.
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Leadership Team Section */}
+        <div className="relative py-20 overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black">
+          {/* Circuit Board Background */}
+          <div className="absolute inset-0 opacity-40">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `
+                  linear-gradient(to right, rgba(59, 130, 246, 0.2) 1px, transparent 1px),
+                  linear-gradient(to bottom, rgba(59, 130, 246, 0.2) 1px, transparent 1px)
+                `,
+                backgroundSize: '40px 40px',
+              }}
+            ></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-gray-800/30 to-blue-900/20"></div>
+          </div>
+
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="text-center mb-16 fade-in">
+              <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                Our Leadership Team
+              </h3>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                Meet the visionaries driving innovation and excellence
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {leadershipTeam.map((member, index) => (
+                <div
+                  key={index}
+                  className="leadership-card group relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border-2 border-blue-500/30 hover:border-blue-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden fade-in"
+                >
+                  {/* Circuit pattern */}
+                  <div className="absolute inset-0 opacity-10" style={{
+                    backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(59, 130, 246, 0.1) 2px, rgba(59, 130, 246, 0.1) 4px)`,
+                  }}></div>
+                  
+                  {/* LED indicator */}
+                  <div className={`absolute top-4 ${index % 2 === 0 ? 'left-4' : 'right-4'} w-2 h-2 bg-blue-400 rounded-full shadow-lg shadow-blue-400/50 animate-pulse circuit-card-led`}></div>
+                  
+                  <div className="relative z-10 text-center">
+                    <div className="mb-4 relative inline-block">
+                      <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
+                          <div className="w-full h-full bg-gradient-to-br from-blue-400/20 to-purple-400/20 flex items-center justify-center">
+                            <User className="w-14 h-14 text-blue-400" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-5 h-5 bg-green-400 rounded-full border-4 border-gray-800 shadow-lg"></div>
+                    </div>
+                    <h4 className="text-lg font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">
+                      {member.name}
+                    </h4>
+                    <p className="text-blue-400 font-semibold mb-3 text-sm">{member.title}</p>
+                    <p className="text-gray-400 text-xs leading-relaxed">{member.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Careers Section */}
+        <div className="careers-section relative py-20 overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black">
+          {/* Circuit Board Background */}
+          <div className="absolute inset-0 opacity-40">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `
+                  linear-gradient(to right, rgba(249, 115, 22, 0.2) 1px, transparent 1px),
+                  linear-gradient(to bottom, rgba(249, 115, 22, 0.2) 1px, transparent 1px)
+                `,
+                backgroundSize: '40px 40px',
+              }}
+            ></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-900/20 via-gray-800/30 to-orange-900/20"></div>
+          </div>
+
+          <div className="container mx-auto px-6 relative z-10">
+            <div className="max-w-4xl mx-auto text-center fade-in">
+              <div className="mb-8">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-600 to-red-600 shadow-lg mb-6">
+                  <Briefcase className="w-10 h-10 text-white" />
+                </div>
+                <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  Join Our Team
+                </h3>
+                <p className="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+                  Be part of a dynamic team that's shaping the future of technology. 
+                  We're always looking for talented individuals who share our passion for innovation.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6 mb-10">
+                <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border-2 border-blue-500/30 hover:border-blue-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+                  {/* Circuit pattern */}
+                  <div className="absolute inset-0 opacity-10" style={{
+                    backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(59, 130, 246, 0.1) 2px, rgba(59, 130, 246, 0.1) 4px)`,
+                  }}></div>
+                  {/* LED indicator */}
+                  <div className="absolute top-4 left-4 w-2 h-2 bg-blue-400 rounded-full shadow-lg shadow-blue-400/50 animate-pulse circuit-card-led"></div>
+                  <div className="relative z-10">
+                    <Users className="w-10 h-10 text-blue-400 mx-auto mb-4" />
+                    <h4 className="text-lg font-semibold text-white mb-2">Collaborative Culture</h4>
+                    <p className="text-gray-400 text-sm">Work with talented professionals in a supportive environment</p>
+                  </div>
+                </div>
+                <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border-2 border-purple-500/30 hover:border-purple-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+                  {/* Circuit pattern */}
+                  <div className="absolute inset-0 opacity-10" style={{
+                    backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(168, 85, 247, 0.1) 2px, rgba(168, 85, 247, 0.1) 4px)`,
+                  }}></div>
+                  {/* LED indicator */}
+                  <div className="absolute top-4 right-4 w-2 h-2 bg-purple-400 rounded-full shadow-lg shadow-purple-400/50 animate-pulse circuit-card-led"></div>
+                  <div className="relative z-10">
+                    <Rocket className="w-10 h-10 text-purple-400 mx-auto mb-4" />
+                    <h4 className="text-lg font-semibold text-white mb-2">Growth Opportunities</h4>
+                    <p className="text-gray-400 text-sm">Continuous learning and career development programs</p>
+                  </div>
+                </div>
+                <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border-2 border-orange-500/30 hover:border-orange-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+                  {/* Circuit pattern */}
+                  <div className="absolute inset-0 opacity-10" style={{
+                    backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(249, 115, 22, 0.1) 2px, rgba(249, 115, 22, 0.1) 4px)`,
+                  }}></div>
+                  {/* LED indicator */}
+                  <div className="absolute top-4 left-4 w-2 h-2 bg-orange-400 rounded-full shadow-lg shadow-orange-400/50 animate-pulse circuit-card-led"></div>
+                  <div className="relative z-10">
+                    <Award className="w-10 h-10 text-orange-400 mx-auto mb-4" />
+                    <h4 className="text-lg font-semibold text-white mb-2">Competitive Benefits</h4>
+                    <p className="text-gray-400 text-sm">Comprehensive benefits package and flexible work options</p>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => window.location.href = '/contact'}
+                className="group relative inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white text-lg font-semibold rounded-xl shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 transform hover:-translate-y-1 overflow-hidden"
+              >
+                {/* Circuit pattern on button */}
+                <div className="absolute inset-0 opacity-10" style={{
+                  backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255, 255, 255, 0.1) 2px, rgba(255, 255, 255, 0.1) 4px)`,
+                }}></div>
+                <span className="relative z-10">Explore Careers</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
+              </button>
             </div>
           </div>
         </div>

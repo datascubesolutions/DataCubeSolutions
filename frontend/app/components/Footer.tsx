@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Facebook, Twitter, Linkedin, Instagram, Mail, Phone, MapPin } from 'lucide-react';
@@ -59,12 +60,22 @@ export default function Footer() {
     };
   }, []);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const quickLinks = [
+    { label: 'Home', href: '/' },
+    { label: 'About Us', href: '/about' },
+    { label: 'Services', href: '/services' },
+    { label: 'Solutions', href: '/solutions' },
+    { label: 'Industries / Startups', href: '/industries' },
+    { label: 'Contact', href: '/contact' },
+  ];
+
+  const serviceLinks = [
+    { label: 'ERP Solutions', href: '/services/erp' },
+    { label: 'CRM Systems', href: '/services/crm' },
+    { label: 'Web Development', href: '/services/web-development' },
+    { label: 'Cloud & API Integrations', href: '/services/cloud-api' },
+    { label: 'UI/UX Design', href: '/services/ui-ux-design' },
+  ];
 
   return (
     <footer ref={footerRef} className="bg-gray-900 dark:bg-black text-white py-8 sm:py-10 md:py-12">
@@ -100,48 +111,15 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Quick Links</h4>
-            <ul className="space-y-1.5 sm:space-y-2">
-              <li>
-                <button
-                  onClick={() => scrollToSection('home')}
-                  className="text-sm sm:text-base text-gray-400 hover:text-white transition-colors"
-                >
-                  Home
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection('about')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  About Us
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection('services')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Services
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection('projects')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Projects
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => scrollToSection('contact')}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Contact
-                </button>
-              </li>
+            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+            <ul className="space-y-2">
+              {quickLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-gray-400 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -149,26 +127,13 @@ export default function Footer() {
           <div>
             <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Services</h4>
             <ul className="space-y-2">
-              <li>
-                <button className="text-sm sm:text-base text-gray-400 hover:text-white transition-colors">
-                  ERP Solutions
-                </button>
-              </li>
-              <li>
-                <button className="text-gray-400 hover:text-white transition-colors">
-                  CRM Systems
-                </button>
-              </li>
-              <li>
-                <button className="text-gray-400 hover:text-white transition-colors">
-                  Web Development
-                </button>
-              </li>
-              <li>
-                <button className="text-gray-400 hover:text-white transition-colors">
-                  Custom Software
-                </button>
-              </li>
+              {serviceLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-gray-400 hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -178,17 +143,17 @@ export default function Footer() {
             <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-gray-400">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                <span>info@datacube.com</span>
+                <span>datascubesolutions@gmail.com</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>+91 9510157477</span>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                <span>123 Business Street</span>
+                <span>Kaveri Sangam,Shilaj Cross Road</span>
               </li>
-              <li className="pl-6">Tech City, TC 12345</li>
+              <li className="pl-6">Ahmedabad,Gujrat,India - 380059</li>
             </ul>
           </div>
         </div>

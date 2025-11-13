@@ -6,9 +6,152 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Services from '../components/Services';
-import { BarChart3, Users, Code, Zap, Wrench } from 'lucide-react';
+import { BarChart3, Users, Code, Zap, Wrench, Search, Shield, Cloud, ChevronRight, Award, DollarSign, FileText, Globe, Building2, TrendingUp, CheckCircle2 } from 'lucide-react';
 
 // GSAP plugin is registered globally in gsapOptimizations
+
+const processSteps = [
+  {
+    number: '01',
+    title: 'Research',
+    description: 'We analyze your business needs, goals, and requirements to create a comprehensive strategy.',
+    icon: Search,
+  },
+  {
+    number: '02',
+    title: 'Design',
+    description: 'Our expert team designs custom solutions tailored to your specific requirements.',
+    icon: Code,
+  },
+  {
+    number: '03',
+    title: 'Develop',
+    description: 'We build robust solutions using cutting-edge technologies and best practices.',
+    icon: Shield,
+  },
+  {
+    number: '04',
+    title: 'Deploy',
+    description: 'Seamless deployment to production with zero downtime and comprehensive testing.',
+    icon: Cloud,
+  },
+  {
+    number: '05',
+    title: 'Support',
+    description: 'Ongoing support and optimization to ensure continued success and growth.',
+    icon: Wrench,
+  },
+];
+
+const technologies = [
+  { name: 'React', category: 'Frontend' },
+  { name: 'Node.js', category: 'Backend' },
+  { name: 'MongoDB', category: 'Database' },
+  { name: 'Python', category: 'Language' },
+  { name: 'AWS', category: 'Cloud' },
+  { name: 'Next.js', category: 'Framework' },
+  { name: 'TypeScript', category: 'Language' },
+  { name: 'PostgreSQL', category: 'Database' },
+];
+
+const allServices = [
+  {
+    category: 'Certification Services',
+    icon: Award,
+    color: 'from-blue-500 to-cyan-500',
+    services: [
+      'Start-Up India Certificate',
+      'ISO Certificate',
+      'MSME/Udyam Certificate',
+      'GST Certificate',
+      'IEC CODE Certificate',
+      'FSSAI Certificate',
+      'APEDA Certificate',
+      'BIS Certificate',
+      'NSIC Certificate',
+    ],
+  },
+  {
+    category: 'Fund Raising Support Services',
+    icon: DollarSign,
+    color: 'from-green-500 to-emerald-500',
+    services: [
+      'Seed Funding Support',
+      'I-Create Pro Fund',
+      'Nidhi Prayash Yojna',
+      'Nidhi Seed Support Scheme',
+      'Raftaar',
+      'MSME Hackathon',
+      'USAID Funding',
+      'DBS Grant',
+      'Gujarat Grant',
+      'CSR Funding',
+      'Angel Funding Support',
+      'VC Funding Support',
+      'Crowd Funding Support',
+      'StandUp India',
+      'CGTMSC',
+    ],
+  },
+  {
+    category: 'Documentation Services',
+    icon: FileText,
+    color: 'from-purple-500 to-pink-500',
+    services: [
+      'Pitch Deck Development',
+      'Financial Modeling',
+      'DPR Development',
+      'CMA Report Development',
+      'Company Profile',
+      'Company Brochure',
+      'Product Catalog',
+    ],
+  },
+  {
+    category: 'IT Services / Business Registration',
+    icon: Code,
+    color: 'from-orange-500 to-red-500',
+    services: [
+      'Website Development',
+      'E-Commerce Website',
+      'App Design & Development',
+      'Web Application Development',
+      'Software Development',
+      'CRM Development',
+      'ERP Development',
+      'Product Development',
+    ],
+  },
+  {
+    category: 'Registration Services',
+    icon: Building2,
+    color: 'from-indigo-500 to-purple-500',
+    services: [
+      'Sole Proprietorship Registration',
+      'Partnership Firm Registration',
+      'LLP Firm Registration',
+      'Private Limited Registration',
+      'Public Company Registration',
+      'Nidhi Company Registration',
+      'Producer Company Registration',
+    ],
+  },
+  {
+    category: 'Digital Marketing',
+    icon: TrendingUp,
+    color: 'from-pink-500 to-rose-500',
+    services: [
+      'SEO Services',
+      'Branding Services',
+      'Social Promotion Management',
+      'Email Marketing',
+      'Digital Content',
+      'Lead Generation',
+      'Whatsapp Marketing',
+      'Complete Digital Marketing',
+    ],
+  },
+];
 
 export default function ServicesPage() {
   const pageRef = useRef<HTMLDivElement>(null);
@@ -96,6 +239,47 @@ export default function ServicesPage() {
           });
         });
       }
+
+      // Service category cards animation
+      const serviceCategoryCards = pageRef.current?.querySelectorAll('.service-category-card');
+      if (serviceCategoryCards) {
+        serviceCategoryCards.forEach((card, index) => {
+          gsap.fromTo(
+            card,
+            { opacity: 0, y: 60, scale: 0.9 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.6,
+              delay: index * 0.1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 85%',
+                toggleActions: 'play none none reverse',
+              },
+            }
+          );
+        });
+      }
+
+      gsap.fromTo(
+        '.process-step',
+        { opacity: 0, x: -30 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          stagger: 0.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.how-we-work-section',
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
     }, pageRef);
 
     return () => ctx.revert();
@@ -359,11 +543,140 @@ export default function ServicesPage() {
 
         <Services />
 
+        {/* Comprehensive Services Section */}
+        <section className="py-24 relative z-10 px-6">
+          <div className="container mx-auto max-w-7xl">
+            <div className="text-center mb-16 fade-in">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                All Our Services
+              </h2>
+              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+                Comprehensive business solutions to help you grow and succeed
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {allServices.map((serviceCategory, index) => {
+                const IconComponent = serviceCategory.icon;
+                return (
+                  <div
+                    key={index}
+                    className="service-category-card group relative bg-gray-800/90 backdrop-blur-md rounded-2xl p-8 shadow-2xl border-2 border-gray-700/50 hover:border-blue-500/50 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
+                  >
+                    {/* Gradient background on hover */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${serviceCategory.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+                    
+                    {/* Shine effect */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    </div>
+
+                    <div className="relative z-10">
+                      <div className="mb-6 flex items-center gap-4">
+                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${serviceCategory.color} flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300`}>
+                          <IconComponent className="w-7 h-7 text-white" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300">
+                          {serviceCategory.category}
+                        </h3>
+                      </div>
+                      <ul className="space-y-3">
+                        {serviceCategory.services.map((service, serviceIndex) => (
+                          <li key={serviceIndex} className="text-gray-300 flex items-start group-hover:text-white transition-colors duration-300">
+                            <CheckCircle2 className="w-5 h-5 mr-3 mt-0.5 text-blue-400 flex-shrink-0" />
+                            <span className="text-sm leading-relaxed">{service}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    {/* Bottom gradient line */}
+                    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${serviceCategory.color} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Technologies Section */}
+        <section className="py-24 relative z-10 px-6">
+          <div className="container mx-auto">
+            <div className="text-center mb-12 fade-in">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                Tech Stack / Tools Used
+              </h2>
+              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+                Built with modern, reliable technologies so your products stay future-ready
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {technologies.map((tech, index) => (
+                  <div
+                    key={index}
+                    className="bg-slate-900/70 backdrop-blur-sm rounded-xl p-4 border border-slate-700/60 hover:border-blue-500/60 transition-all duration-300 text-center shadow-lg"
+                  >
+                    <div className="text-white font-semibold">{tech.name}</div>
+                    <div className="text-slate-400 text-xs mt-1 uppercase tracking-wide">{tech.category}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* How We Work Section */}
+        <section className="process-section how-we-work-section py-24 relative z-10 px-6">
+          <div className="container mx-auto">
+            <div className="text-center mb-16 fade-in">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                How We Work (Process)
+              </h2>
+              <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+                A proven methodology that ensures successful project delivery
+              </p>
+            </div>
+
+            <div className="max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
+                {processSteps.map((step, index) => {
+                  const IconComponent = step.icon;
+                  return (
+                    <div key={index} className="process-step relative">
+                      <div className="bg-slate-900/70 backdrop-blur-sm rounded-xl p-6 border border-slate-700/60 h-full shadow-lg">
+                        <div className="mb-4">
+                          <div className="text-4xl font-bold text-blue-400/20 mb-2">{step.number}</div>
+                          <div className="w-12 h-12 bg-blue-600/10 rounded-lg flex items-center justify-center mb-4 border border-blue-500/30">
+                            <IconComponent className="w-6 h-6 text-blue-300" />
+                          </div>
+                        </div>
+                        <h3 className="text-lg font-semibold text-white mb-2">
+                          {step.title}
+                        </h3>
+                        <p className="text-slate-300 text-sm leading-relaxed">
+                          {step.description}
+                        </p>
+                      </div>
+                      {index < processSteps.length - 1 && (
+                        <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-10">
+                          <ChevronRight className="w-6 h-6 text-blue-400/30" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <div className="mt-20 text-center relative z-10 px-6">
           <div className="max-w-3xl mx-auto bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-2xl p-12 border border-blue-400/30 shadow-2xl">
             <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Ready to Get Started?
+              Get a Free Consultation
             </h3>
             <p className="text-xl text-gray-300 mb-8">
               Let's discuss how our services can help grow your business
@@ -372,7 +685,7 @@ export default function ServicesPage() {
               href="/contact"
               className="inline-block px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-full shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
             >
-              Contact Us Now
+              Get a Free Consultation
             </a>
           </div>
         </div>
