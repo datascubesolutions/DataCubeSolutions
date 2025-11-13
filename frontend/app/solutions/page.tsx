@@ -767,7 +767,9 @@ export default function SolutionsPage() {
         </section>
       </main>
 
-      <Footer />
+      <div className="footer-wrapper-home-about">
+        <Footer />
+      </div>
     </div>
   );
 }

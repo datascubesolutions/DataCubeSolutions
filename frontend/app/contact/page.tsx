@@ -258,7 +258,9 @@ export default function ContactPage() {
 
         <Contact />
       </main>
-      <Footer />
+      <div className="footer-wrapper-home-about">
+        <Footer />
+      </div>
     </div>
   );
 }

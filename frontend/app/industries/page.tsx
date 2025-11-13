@@ -635,7 +635,9 @@ export default function IndustriesPage() {
         </section>
       </main>
 
-      <Footer />
+      <div className="footer-wrapper-home-about">
+        <Footer />
+      </div>
     </div>
   );
 }

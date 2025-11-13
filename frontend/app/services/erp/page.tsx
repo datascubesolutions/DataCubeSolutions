@@ -442,7 +442,9 @@ export default function ERPServicePage() {
           </div>
         </section>
       </main>
-      <Footer />
+      <div className="footer-wrapper-home-about">
+        <Footer />
+      </div>
     </div>
   );
 }
