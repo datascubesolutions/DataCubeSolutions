@@ -8,9 +8,7 @@ import Footer from '../../components/Footer';
 import Link from 'next/link';
 import { BarChart3, Zap, TrendingUp, DollarSign, Wrench } from 'lucide-react';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 export default function ERPServicePage() {
   const pageRef = useRef<HTMLDivElement>(null);

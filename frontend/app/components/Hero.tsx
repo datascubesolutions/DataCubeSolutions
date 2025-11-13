@@ -3,10 +3,9 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ChipPowerUp from './ChipPowerUp';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 const backgroundServices = [
   { text: 'ERP Solutions', position: 'top-20 left-10' },
@@ -242,6 +241,9 @@ export default function Hero() {
       ref={heroRef}
       className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
     >
+      {/* Chip Power-Up Animation */}
+      <ChipPowerUp />
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="floating-circle absolute w-72 h-72 bg-blue-200 dark:bg-blue-900 rounded-full opacity-20 dark:opacity-10 blur-3xl top-20 left-10"></div>

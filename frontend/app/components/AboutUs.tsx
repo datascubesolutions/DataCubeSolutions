@@ -5,9 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Users, Target, User, Star, Lightbulb, Sparkles, Handshake, Shield, Rocket, Eye, Goal, Briefcase, Calendar, Award, TrendingUp, ArrowRight } from 'lucide-react';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 const stats = [
   { number: '500+', label: 'Happy Clients', icon: Users },

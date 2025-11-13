@@ -252,25 +252,25 @@ export default function Home() {
   }, []);
 
   return (
-    <div ref={pageRef} className="min-h-screen w-full bg-slate-950">
+    <div ref={pageRef} className="min-h-screen w-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
       <Header />
 
-      {/* Hero Section */}
+      {/* Hero Section - Enhanced */}
       <section
         ref={heroRef}
         className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 md:pt-24 pb-12 md:pb-20"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900/95 to-slate-950"></div>
         
-        {/* Enhanced Grid Pattern */}
+        {/* Premium Grid Pattern */}
         <div 
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.05]"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)
+              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
             `,
-            backgroundSize: '50px 50px',
+            backgroundSize: '60px 60px',
           }}
         />
 
@@ -675,11 +675,11 @@ export default function Home() {
             ref={titleRef}
             className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-9xl font-extrabold mb-6 md:mb-8 text-white tracking-tight px-2"
             style={{
-              background: 'linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #cbd5e1 100%)',
+              background: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 40%, #e2e8f0 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              textShadow: '0 0 80px rgba(59, 130, 246, 0.3)',
+              filter: 'drop-shadow(0 0 60px rgba(59, 130, 246, 0.4))',
             }}
           >
             <span className="relative inline-block">
@@ -745,7 +745,6 @@ export default function Home() {
                 Get Free Consultation
                 <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
               </span>
-              <div className="absolute inset-0 bg-white/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
             </button>
             <button
               onClick={() => router.push('/services')}
@@ -812,13 +811,16 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="services-section py-24 relative z-10 bg-slate-900/50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16 fade-in-section">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                Our Services
+      <section className="services-section py-16 sm:py-20 md:py-24 lg:py-28 relative z-10 bg-gradient-to-b from-slate-950 to-slate-900/50">
+        <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16 lg:mb-20 fade-in-section">
+            <div className="inline-block mb-4">
+              <span className="text-sm font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent tracking-widest uppercase">Our Solutions</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white mb-3 sm:mb-4 md:mb-5">
+                Transform Your Business
             </h2>
-            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-3xl mx-auto font-light px-4">
               Comprehensive solutions tailored to your business needs
             </p>
           </div>
@@ -1022,7 +1024,7 @@ export default function Home() {
                     <StarIcon key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                   ))}
                     </div>
-                <p className="text-slate-300 leading-relaxed mb-6 italic">
+                <p className="text-sm sm:text-base text-slate-300 leading-relaxed mb-4 sm:mb-6 italic">
                   "{testimonial.content}"
                 </p>
                 <div className="pt-4 border-t border-slate-700/50">
@@ -1036,33 +1038,33 @@ export default function Home() {
       </section>
 
       {/* CTA Section - Redesigned to match UI */}
-      <section className="py-24 relative z-10 bg-slate-900/50">
-        <div className="container mx-auto px-6">
+      <section className="py-16 sm:py-20 md:py-24 relative z-10 bg-slate-900/50">
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-12 border border-slate-700/50 shadow-xl fade-in-section">
+            <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 sm:p-8 md:p-10 lg:p-12 border border-slate-700/50 shadow-xl fade-in-section">
               <div className="text-center">
-                <div className="mb-6 flex justify-center">
-                  <div className="w-16 h-16 bg-blue-600/10 rounded-xl flex items-center justify-center">
-                    <TrendingUp className="w-8 h-8 text-blue-400" />
+                <div className="mb-4 sm:mb-6 flex justify-center">
+                  <div className="w-12 sm:w-14 md:w-16 h-12 sm:h-14 md:h-16 bg-blue-600/10 rounded-xl flex items-center justify-center">
+                    <TrendingUp className="w-6 sm:w-7 md:w-8 h-6 sm:h-7 md:h-8 text-blue-400" />
                   </div>
                 </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
               Ready to Transform Your Business?
             </h2>
-                <p className="text-xl text-slate-400 mb-8 max-w-2xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-6 sm:mb-8 max-w-2xl mx-auto px-4">
                   Let's discuss how our solutions can help you achieve your business goals and drive sustainable growth
             </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={() => router.push('/contact')}
-                    className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group"
+                    className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group"
                   >
                     Get In Touch
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
                   <button
                     onClick={() => router.push('/services')}
-                    className="px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white text-lg font-semibold rounded-lg border border-slate-600 hover:border-slate-500 transition-all duration-300"
+                    className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-slate-700 hover:bg-slate-600 text-white text-base sm:text-lg font-semibold rounded-lg border border-slate-600 hover:border-slate-500 transition-all duration-300"
                   >
                     View Services
             </button>

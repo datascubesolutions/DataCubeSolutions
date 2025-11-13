@@ -5,6 +5,8 @@ import ReduxProvider from './providers/ReduxProvider'
 export const metadata: Metadata = {
   title: 'Data Scube',
   description: 'Data Scube Application',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
+  themeColor: '#0f172a',
 }
 
 export default function RootLayout({

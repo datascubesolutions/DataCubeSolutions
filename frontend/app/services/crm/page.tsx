@@ -8,9 +8,7 @@ import Footer from '../../components/Footer';
 import Link from 'next/link';
 import { Users, User } from 'lucide-react';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 export default function CRMServicePage() {
   const pageRef = useRef<HTMLDivElement>(null);

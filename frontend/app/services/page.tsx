@@ -8,9 +8,7 @@ import Footer from '../components/Footer';
 import Services from '../components/Services';
 import { BarChart3, Users, Code, Zap, Wrench, Search, Shield, Cloud, ChevronRight, Award, DollarSign, FileText, Globe, Building2, TrendingUp, CheckCircle2 } from 'lucide-react';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 const processSteps = [
   {

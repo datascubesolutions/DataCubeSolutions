@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { useEffect } from 'react';
 import { store } from '../../store';
 import { initializeTheme } from '../../store/slices/themeSlice';
+import { initGSAPOptimizations } from '../utils/gsapOptimizations';
 
 export default function ReduxProvider({
   children,
@@ -22,6 +23,9 @@ export default function ReduxProvider({
       // Remove light mode class if exists
       document.documentElement.classList.remove('light');
       document.body.classList.remove('light');
+
+      // Initialize GSAP optimizations for smooth animations
+      initGSAPOptimizations();
     }
   }, []);
 

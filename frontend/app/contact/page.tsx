@@ -8,9 +8,7 @@ import Footer from '../components/Footer';
 import Contact from '../components/Contact';
 import { Mail, MessageCircle, Smartphone, Phone } from 'lucide-react';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+// GSAP plugin is registered globally in gsapOptimizations
 
 export default function ContactPage() {
   const pageRef = useRef<HTMLDivElement>(null);
@@ -126,11 +124,11 @@ export default function ContactPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="min-h-screen bg-slate-950 overflow-hidden">
       <Header />
-      <main ref={pageRef} className="pt-20 relative">
+      <main ref={pageRef} className="pt-20 sm:pt-24 md:pt-32 relative">
         {/* Animated Background - Communication Theme */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 top-0">
           {/* Mesh Gradient Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-purple-900/40 to-pink-900/40"></div>
 
