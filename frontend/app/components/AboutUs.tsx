@@ -39,26 +39,26 @@ const values = [
 
 const leadershipTeam = [
   {
-    name: 'John Smith',
-    title: 'CEO & Co-Founder',
-    image: '/api/placeholder/200/200',
-    description: 'Visionary leader with 15+ years in enterprise technology and startup consulting',
+    name: 'Kaushal Jadav',
+    title: 'Partner',
+    image: 'https://media.licdn.com/dms/image/v2/D4D03AQHBkLuFoJ4cIA/profile-displayphoto-crop_800_800/B4DZlC85Z5JIAI-/0/1757764886828?e=1764806400&v=beta&t=JyUibtDBPiVKsa6oCId0myOf2M9Q1fG8zAxPbzQEdMo',
+    // description: 'Visionary leader with 15+ years in enterprise technology and startup consulting',
   },
   {
-    name: 'Sarah Johnson',
-    title: 'CTO & Co-Founder',
+    name: 'Amit Yadav',
+    title: 'Partner',
     image: '/api/placeholder/200/200',
-    description: 'Expert in scalable IT solutions, ERP/CRM systems, and digital transformation',
+    // description: 'Expert in scalable IT solutions, ERP/CRM systems, and digital transformation',
   },
   {
-    name: 'Michael Chen',
-    title: 'VP of Startup Services',
+    name: 'Nikul Prajapati',
+    title: 'Partner',
     image: '/api/placeholder/200/200',
-    description: 'Specializes in company registration, funding support, and business documentation',
+    // description: 'Specializes in company registration, funding support, and business documentation',
   },
   {
-    name: 'Emily Rodriguez',
-    title: 'VP of Customer Success',
+    name: 'Pratish Tripathi',
+    title: 'Partner',
     image: '/api/placeholder/200/200',
     description: 'Ensures exceptional client experiences across IT solutions and startup support',
   },
@@ -961,9 +961,20 @@ export default function AboutUs() {
                     <div className="mb-4 relative inline-block">
                       <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1 mx-auto group-hover:scale-110 transition-transform duration-300">
                         <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
-                          <div className="w-full h-full bg-gradient-to-br from-blue-400/20 to-purple-400/20 flex items-center justify-center">
-                            <User className="w-14 h-14 text-blue-400" />
-                          </div>
+                          <img 
+                            src={member.image} 
+                            alt={member.name}
+                            className="w-full h-full object-cover rounded-full"
+                            onError={(e) => {
+                              // Fallback to User icon if image fails to load
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-blue-400/20 to-purple-400/20 flex items-center justify-center"><svg class="w-14 h-14 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div>';
+                              }
+                            }}
+                          />
                         </div>
                       </div>
                       <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-5 h-5 bg-green-400 rounded-full border-4 border-gray-800 shadow-lg"></div>
@@ -972,7 +983,7 @@ export default function AboutUs() {
                       {member.name}
                     </h4>
                     <p className="text-blue-400 font-semibold mb-3 text-sm">{member.title}</p>
-                    <p className="text-gray-400 text-xs leading-relaxed">{member.description}</p>
+                    {/* <p className="text-gray-400 text-xs leading-relaxed">{member.description}</p> */}
                   </div>
                 </div>
               ))}

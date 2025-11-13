@@ -145,16 +145,6 @@ export default function ProjectsPage() {
             }
           );
 
-          // Floating animation
-          gsap.to(card, {
-            y: -5,
-            duration: 2 + index * 0.2,
-            repeat: -1,
-            yoyo: true,
-            ease: 'sine.inOut',
-            delay: index * 0.3,
-          });
-
           // Add window frame effect for desktop application feel
           const windowFrame = document.createElement('div');
           windowFrame.className = 'absolute inset-0 border-2 border-cyan-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none';

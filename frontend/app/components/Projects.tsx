@@ -1,227 +1,161 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Factory, Cloud, ShoppingCart, Building2, Home, Globe } from 'lucide-react';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
-// RequestAnimationFrame-based throttle for smoother performance
-function rafThrottle<T extends (...args: any[]) => any>(func: T): T {
-  let rafId: number | null = null;
-  let lastArgs: Parameters<T>;
-  
-  return ((...args: Parameters<T>) => {
-    lastArgs = args;
-    if (rafId === null) {
-      rafId = requestAnimationFrame(() => {
-        func(...lastArgs);
-        rafId = null;
-      });
-    }
-  }) as T;
-}
-
 const projects = [
   {
     id: 1,
-    title: 'Enterprise ERP System',
-    category: 'ERP',
-    description: 'Complete enterprise resource planning solution for manufacturing industry with real-time analytics, inventory management, and comprehensive financial reporting.',
-    image: Factory,
-    tech: ['React', 'Node.js', 'PostgreSQL'],
-    gradient: 'from-blue-500 to-cyan-500',
-    stats: { clients: '50+', efficiency: '85%', scale: 'Enterprise' },
+    title: 'AI-Powered Resume Builder',
+    category: 'Web Development',
+    description: 'Land your dream job with AI-powered resumes. Create, edit and download professional resumes with AI-powered assistance.',
+    image: '/assets/images/resume-website.png',
+    imageType: 'url', // Indicates this is an image URL, not an icon component
+    url: 'https://jioresume.com/',
+    tech: ['Next.js', 'AI', 'React'],
+    gradient: 'from-green-500 to-emerald-500',
+    stats: { clients: '10,000+', efficiency: '95%', scale: 'Global' },
   },
   {
     id: 2,
-    title: 'Cloud CRM Platform',
-    category: 'CRM',
-    description: 'Scalable CRM platform with advanced analytics, AI-powered automation, and seamless integration for sales teams worldwide.',
-    image: Cloud,
-    tech: ['Next.js', 'MongoDB', 'AWS'],
-    gradient: 'from-purple-500 to-pink-500',
-    stats: { clients: '200+', efficiency: '90%', scale: 'Cloud' },
+    title: 'Beauty Salon & Spa',
+    category: 'Web Development',
+    description: 'The Royal Spa & Salon - Experience Beauty Redefined. Modern beauty salon website with booking system and elegant design.',
+    image: '/assets/images/beauty-parlour web.png',
+    imageType: 'url',
+    url: 'https://beauty-salon-two-tau.vercel.app/',
+    tech: ['Next.js', 'React', 'Vercel'],
+    gradient: 'from-pink-500 to-purple-500',
+    stats: { clients: '500+', efficiency: '98%', scale: 'Premium' },
   },
   {
     id: 3,
-    title: 'E-Commerce Platform',
+    title: 'ClassyShop E-Commerce',
     category: 'Web Development',
-    description: 'Modern e-commerce solution with secure payment integration, real-time inventory management, and advanced analytics.',
-    image: ShoppingCart,
-    tech: ['React', 'Stripe API', 'Firebase'],
-    gradient: 'from-orange-500 to-red-500',
+    description: 'CLASSYSHOP BIG MEGA STORE - Stay Stylish with 7 Lakh+ Influencer-Approved Styles. Modern e-commerce platform with comprehensive shopping experience.',
+    image: '/assets/images/ecommerce-classy web.png',
+    imageType: 'url',
+    url: 'https://ecommerce-frontend-view.netlify.app/',
+    tech: ['React', 'Netlify', 'E-Commerce'],
+    gradient: 'from-red-500 to-pink-500',
     stats: { clients: '150+', efficiency: '95%', scale: 'Global' },
   },
   {
     id: 4,
-    title: 'Healthcare Management System',
-    category: 'ERP',
-    description: 'Comprehensive healthcare ERP for patient management, billing automation, and medical records with HIPAA compliance.',
-    image: Building2,
-    tech: ['Vue.js', 'Django', 'MySQL'],
-    gradient: 'from-green-500 to-emerald-500',
-    stats: { clients: '30+', efficiency: '88%', scale: 'Healthcare' },
+    title: 'ForeverBuy E-Commerce',
+    category: 'Web Development',
+    description: 'FOREVER - Latest Arrivals. Modern fashion e-commerce platform with bestsellers collection, clean design, and seamless shopping experience.',
+    image: '/assets/images/foreigner-client forever.png',
+    imageType: 'url',
+    url: 'https://foreverbuy.in/',
+    tech: ['React', 'E-Commerce', 'Modern UI'],
+    gradient: 'from-pink-500 to-rose-500',
+    stats: { clients: '200+', efficiency: '96%', scale: 'Fashion' },
   },
   {
     id: 5,
-    title: 'Real Estate CRM',
-    category: 'CRM',
-    description: 'Specialized CRM for real estate agencies with property listing management, client tracking, and automated lead generation.',
-    image: Home,
-    tech: ['Angular', 'Node.js', 'MongoDB'],
-    gradient: 'from-indigo-500 to-purple-500',
-    stats: { clients: '100+', efficiency: '92%', scale: 'Regional' },
+    title: 'Rentiz Real Estate',
+    category: 'Web Development',
+    description: 'Perfect way to buy and sell a home. Modern real estate platform with property search, listings, and seamless user experience.',
+    image: '/assets/images/rentiz-client web.png',
+    imageType: 'url',
+    url: 'https://themewagon.github.io/rentiz/index.html',
+    tech: ['Bootstrap', 'Real Estate', 'Property Search'],
+    gradient: 'from-teal-500 to-cyan-500',
+    stats: { clients: '100+', efficiency: '92%', scale: 'Real Estate' },
   },
   {
     id: 6,
-    title: 'Corporate Website',
+    title: 'Organic Foods E-Commerce',
     category: 'Web Development',
-    description: 'Modern corporate website with headless CMS integration, multilingual support, and advanced SEO optimization.',
-    image: Globe,
-    tech: ['Next.js', 'Contentful', 'Tailwind'],
-    gradient: 'from-teal-500 to-cyan-500',
-    stats: { clients: '80+', efficiency: '98%', scale: 'Corporate' },
+    description: 'Organic Foods at your Doorsteps. Fresh organic grocery delivery platform with 14k+ product varieties, 50k+ happy customers, and free delivery.',
+    image: '/assets/images/organic-web.png',
+    imageType: 'url',
+    url: 'https://themewagon.github.io/organic/index.html',
+    tech: ['Bootstrap', 'E-Commerce', 'Organic Groceries'],
+    gradient: 'from-green-500 to-emerald-500',
+    stats: { clients: '50k+', efficiency: '98%', scale: 'Organic' },
+  },
+  {
+    id: 7,
+    title: 'Indian Terrain Fashion',
+    category: 'Web Development',
+    description: 'Walk This Way - Premium smart-casual clothing for men. Indian Terrain offers shirts, bottom wear, winterwear, and exclusive collections with free shipping above Rs 1999.',
+    image: '/assets/images/indian-terrain-web.png',
+    imageType: 'url',
+    url: 'https://www.indianterrain.com/',
+    tech: ['E-Commerce', 'Fashion', 'Men\'s Clothing'],
+    gradient: 'from-blue-500 to-indigo-500',
+    stats: { clients: '100k+', efficiency: '97%', scale: 'Fashion' },
+  },
+  {
+    id: 8,
+    title: 'Fila India E-Commerce',
+    category: 'Web Development',
+    description: 'Season\'s Fresh - Cool New Drops, Hot New Styles. Redefining street style with sport-inspired fashion. Footwear, apparel, and accessories for men, women, and unisex collections.',
+    image: '/assets/images/fila-shoes-web.png',
+    imageType: 'url',
+    url: 'https://fila.co.in/',
+    tech: ['E-Commerce', 'Athleisure', 'Sports Fashion'],
+    gradient: 'from-red-500 to-pink-500',
+    stats: { clients: '200k+', efficiency: '96%', scale: 'Athleisure' },
+  },
+  {
+    id: 9,
+    title: 'Nailashes Beauty Salon',
+    category: 'Web Development',
+    description: 'India\'s Largest Nail Chain - Come in for luxurious beauty services performed by our highly skilled team. 80+ franchise outlets in 30+ cities with nail extensions, lash extensions, and beauty treatments.',
+    image: '/assets/images/nailashes-web.png',
+    imageType: 'url',
+    url: 'https://www.nailashes.in/',
+    tech: ['Beauty Services', 'Salon Booking', 'Franchise'],
+    gradient: 'from-pink-500 to-purple-500',
+    stats: { clients: '600+', efficiency: '98%', scale: 'Beauty' },
+  },
+  {
+    id: 10,
+    title: 'Ambitious Kitchen',
+    category: 'Web Development',
+    description: 'Good Mood Comfort Food - A New York Times Bestseller cookbook website. Discover healthy recipes, cooking guides, and lifestyle content. Fuel your body and honor your journey with balanced, real wellness.',
+    image: '/assets/images/ambitious-kitchen.png',
+    imageType: 'url',
+    url: 'https://www.ambitiouskitchen.com/',
+    tech: ['Recipe Blog', 'Food Content', 'Lifestyle'],
+    gradient: 'from-orange-500 to-amber-500',
+    stats: { clients: '500k+', efficiency: '95%', scale: 'Food Blog' },
+  },
+  {
+    id: 11,
+    title: 'Tonies E-Commerce',
+    category: 'Web Development',
+    description: 'Empowering kids through independent play - Screen-free audio stories, songs, and games. Toniebox 2 with 300+ Tonies and Tonieplay games. Perfect for ages 1-9+ with kid-friendly controls.',
+    image: '/assets/images/tonies-web.png',
+    imageType: 'url',
+    url: 'https://us.tonies.com/',
+    tech: ['E-Commerce', 'Kids Products', 'Audio Content'],
+    gradient: 'from-red-500 to-rose-500',
+    stats: { clients: '1M+', efficiency: '97%', scale: 'Kids Tech' },
   },
 ];
 
 export default function Projects() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const eventHandlersRef = useRef<Map<Element, { enter: () => void; leave: () => void; move: EventListener }>>(new Map());
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      const cards = sectionRef.current?.querySelectorAll('.project-card');
-      if (!cards || cards.length === 0) return;
-
-      cards.forEach((card, index) => {
-        const delay = index * 0.1; // Reduced delay for faster appearance
-        
-        // Initial entrance animation with 3D effect - faster
-        gsap.fromTo(
-          card,
-          {
-            opacity: 0,
-            y: 100,
-            rotationY: -30,
-            rotationX: 15,
-            scale: 0.8,
-            z: -200,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            rotationY: 0,
-            rotationX: 0,
-            scale: 1,
-            z: 0,
-            duration: 0.7, // Reduced from 1 to 0.7
-            delay: delay,
-            ease: 'power2.out', // Faster easing
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 85%',
-              toggleActions: 'play none none reverse',
-              once: true,
-            },
-          }
-        );
-
-        // Mouse enter 3D tilt effect - faster
-        const handleMouseEnter = () => {
-          gsap.to(card, {
-            rotationY: 5,
-            rotationX: -5,
-            scale: 1.05,
-            z: 50,
-            duration: 0.2, // Reduced from 0.3 to 0.2
-            ease: 'power1.out', // Faster easing
-          });
-        };
-
-        const handleMouseLeave = () => {
-          gsap.to(card, {
-            rotationY: 0,
-            rotationX: 0,
-            scale: 1,
-            z: 0,
-            duration: 0.2, // Reduced from 0.3 to 0.2
-            ease: 'power1.out', // Faster easing
-          });
-          // Reset transform on leave
-          (card as HTMLElement).style.transform = '';
-        };
-
-        // RequestAnimationFrame-based mousemove for smoother performance
-        const handleMouseMove = rafThrottle((e: Event) => {
-          const mouseEvent = e as MouseEvent;
-          const rect = card.getBoundingClientRect();
-          const x = mouseEvent.clientX - rect.left;
-          const y = mouseEvent.clientY - rect.top;
-          
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          
-          const rotateX = (y - centerY) / 25;
-          const rotateY = (centerX - x) / 25;
-          
-          // Use CSS transform directly with hardware acceleration
-          (card as HTMLElement).style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-
-        const moveListener = handleMouseMove as EventListener;
-        
-        card.addEventListener('mouseenter', handleMouseEnter);
-        card.addEventListener('mouseleave', handleMouseLeave);
-        card.addEventListener('mousemove', moveListener);
-
-        // Store handlers for cleanup
-        eventHandlersRef.current.set(card, {
-          enter: handleMouseEnter,
-          leave: handleMouseLeave,
-          move: moveListener,
-        });
-
-        // Removed infinite icon rotation for performance - it was causing lag
-        // Stats animation - faster and smoother
-        const stats = card.querySelectorAll('.project-stat');
-        if (stats && stats.length > 0) {
-          gsap.fromTo(
-            stats,
-            {
-              opacity: 0,
-              scale: 0.8,
-            },
-            {
-              opacity: 1,
-              scale: 1,
-              duration: 0.3, // Reduced from 0.4 to 0.3
-              delay: delay + 0.2, // Reduced from 0.3 to 0.2
-              ease: 'back.out(1.2)', // Faster easing
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-                once: true,
-              },
-              stagger: 0.03, // Reduced from 0.05 to 0.03
-            }
-          );
-        }
+    // Ensure all cards are fully visible immediately - no animation
+    const cards = sectionRef.current?.querySelectorAll('.project-card');
+    if (cards) {
+      cards.forEach((card) => {
+        const cardElement = card as HTMLElement;
+        cardElement.style.opacity = '1';
+        cardElement.style.transform = 'translateY(0)';
+        cardElement.style.visibility = 'visible';
       });
-    }, sectionRef);
-
-    return () => {
-      // Cleanup event listeners to prevent memory leaks
-      eventHandlersRef.current.forEach((handlers, card) => {
-        card.removeEventListener('mouseenter', handlers.enter);
-        card.removeEventListener('mouseleave', handlers.leave);
-        card.removeEventListener('mousemove', handlers.move);
-      });
-      eventHandlersRef.current.clear();
-      ctx.revert();
-    };
+    }
   }, []);
 
   return (
@@ -251,12 +185,18 @@ export default function Projects() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project) => (
+        <div className="max-h-[80vh] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projects.map((project) => (
             <div
               key={project.id}
-              className="project-card group relative bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-200 border-2 border-transparent hover:border-purple-500/30"
-              style={{ transformStyle: 'preserve-3d', willChange: 'transform', backfaceVisibility: 'hidden' }}
+              className={`project-card group relative bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-200 border-2 border-transparent hover:border-purple-500/30 ${project.url ? 'cursor-pointer' : ''}`}
+              style={{ transformStyle: 'preserve-3d', willChange: 'transform', backfaceVisibility: 'hidden', opacity: 1 }}
+              onClick={() => {
+                if (project.url) {
+                  window.open(project.url, '_blank', 'noopener,noreferrer');
+                }
+              }}
             >
               {/* Gradient glow overlay */}
               <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
@@ -267,25 +207,45 @@ export default function Projects() {
               </div>
 
               {/* Header Section */}
-              <div className={`relative bg-gradient-to-br ${project.gradient} p-12 text-center overflow-hidden`}>
-                {/* Background pattern */}
-                <div className="absolute inset-0 opacity-10" style={{
-                  backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)`,
-                }}></div>
-                
-                <div className="relative z-10">
-                  <div className="mb-4 flex justify-center">
-                    <div className="project-icon transform group-hover:scale-125 transition-transform duration-300 inline-block">
-                      {(() => {
-                        const IconComponent = project.image;
-                        return <IconComponent className="w-16 h-16 text-white" />;
-                      })()}
+              <div className={`relative ${project.imageType === 'url' ? 'h-48' : `bg-gradient-to-br ${project.gradient} p-12`} text-center overflow-hidden`}>
+                {project.imageType === 'url' ? (
+                  <>
+                    <img 
+                      src={project.image} 
+                      alt={project.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    {/* Overlay for better text visibility */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                    {/* Category badge positioned at bottom */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm font-semibold rounded-full border border-white/30">
+                        {project.category}
+                      </span>
                     </div>
-                  </div>
-                  <span className={`inline-block px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm font-semibold rounded-full border border-white/30`}>
-                    {project.category}
-                  </span>
-                </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Background pattern */}
+                    <div className="absolute inset-0 opacity-10" style={{
+                      backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.1) 10px, rgba(255,255,255,0.1) 20px)`,
+                    }}></div>
+                    
+                    <div className="relative z-10">
+                      <div className="mb-4 flex justify-center">
+                        <div className="project-icon transform group-hover:scale-125 transition-transform duration-300 inline-block">
+                          {(() => {
+                            const IconComponent = project.image as unknown as React.ComponentType<{ className?: string }>;
+                            return <IconComponent className="w-16 h-16 text-white" />;
+                          })()}
+                        </div>
+                      </div>
+                      <span className={`inline-block px-4 py-2 bg-white/20 backdrop-blur-sm text-white text-sm font-semibold rounded-full border border-white/30`}>
+                        {project.category}
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Content Section */}
@@ -327,7 +287,8 @@ export default function Projects() {
                 <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${project.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`}></div>
               </div>
             </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
