@@ -145,10 +145,24 @@ export default function ChatWidget() {
       document.body.style.width = '100%';
       document.body.style.top = `-${scrollY}px`;
       
-      // Hide background content
-      const mainContent = document.querySelector('main') || document.body;
-      if (mainContent) {
+      // Hide background content (but not chat widget)
+      const mainContent = document.querySelector('main');
+      const header = document.querySelector('header');
+      const footer = document.querySelector('footer');
+      const pageContent = document.querySelector('[class*="min-h-screen"]');
+      
+      // Hide only page content, not chat widget
+      if (mainContent && !mainContent.closest('[data-chat-widget]')) {
         (mainContent as HTMLElement).style.visibility = 'hidden';
+      }
+      if (header && !header.closest('[data-chat-widget]')) {
+        (header as HTMLElement).style.visibility = 'hidden';
+      }
+      if (footer && !footer.closest('[data-chat-widget]')) {
+        (footer as HTMLElement).style.visibility = 'hidden';
+      }
+      if (pageContent && !pageContent.closest('[data-chat-widget]')) {
+        (pageContent as HTMLElement).style.visibility = 'hidden';
       }
       
       return () => {
@@ -164,6 +178,15 @@ export default function ChatWidget() {
         // Show background content
         if (mainContent) {
           (mainContent as HTMLElement).style.visibility = '';
+        }
+        if (header) {
+          (header as HTMLElement).style.visibility = '';
+        }
+        if (footer) {
+          (footer as HTMLElement).style.visibility = '';
+        }
+        if (pageContent) {
+          (pageContent as HTMLElement).style.visibility = '';
         }
       };
     }
@@ -538,7 +561,7 @@ export default function ChatWidget() {
       {/* Chat Button - Hidden on mobile when chat is open */}
       {(!isOpen || !viewportInfo.isMobile) && (
         <div
-          className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50"
+          className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[10000]"
           style={{
             ...(mobileBottomOffset !== null && !isOpen
               ? { bottom: `${mobileBottomOffset}px` }
@@ -568,7 +591,8 @@ export default function ChatWidget() {
       {/* Chat Box - Full screen on mobile, normal on desktop */}
       {isOpen && (
         <div
-          className={`fixed z-[9999] flex flex-col ${
+          data-chat-widget
+          className={`fixed z-[10000] flex flex-col ${
             viewportInfo.isMobile
               ? 'inset-0 rounded-none bg-slate-900' // Solid background on mobile, no transparency
               : 'bottom-20 right-6 w-96 h-[600px] rounded-2xl bg-slate-800/95 backdrop-blur-xl shadow-2xl border border-slate-700/50'
