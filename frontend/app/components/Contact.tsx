@@ -33,144 +33,134 @@ export default function Contact() {
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Detect mobile/touch device
+    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
+                     'ontouchstart' in window || 
+                     navigator.maxTouchPoints > 0;
+
+    // Register ScrollTrigger only if available
+    if (typeof ScrollTrigger !== 'undefined' && typeof gsap.registerPlugin === 'function') {
+      try {
+        gsap.registerPlugin(ScrollTrigger);
+      } catch (e) {
+        console.warn('ScrollTrigger registration failed:', e);
+      }
+    }
+
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '.contact-form',
-        {
-          opacity: 0,
-          x: -50,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-            toggleActions: 'play none none reverse',
+      // Simplified animations for better performance
+      if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+        // Form entrance - simplified
+        gsap.fromTo(
+          '.contact-form',
+          {
+            opacity: 0,
+            y: 30,
           },
-        }
-      );
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
 
-      gsap.fromTo(
-        '.contact-info',
-        {
-          opacity: 0,
-          x: 50,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-            toggleActions: 'play none none reverse',
+        // Contact info entrance - simplified
+        gsap.fromTo(
+          '.contact-info',
+          {
+            opacity: 0,
+            y: 30,
           },
-        }
-      );
-
-      // Contact icon main animation
-      const mainIcon = sectionRef.current?.querySelector('.contact-icon-main');
-      if (mainIcon) {
-        gsap.to(mainIcon, {
-          scale: 1.15,
-          rotation: 5,
-          duration: 2,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-        });
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+      } else {
+        // Fallback without ScrollTrigger
+        gsap.fromTo('.contact-form', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, delay: 0.1 });
+        gsap.fromTo('.contact-info', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, delay: 0.2 });
       }
 
-      // Stat cards entrance animation
+      // Contact icon animation - only on desktop, lighter animation
+      if (!isMobile) {
+        const mainIcon = sectionRef.current?.querySelector('.contact-icon-main');
+        if (mainIcon) {
+          gsap.to(mainIcon, {
+            scale: 1.1,
+            rotation: 3,
+            duration: 3,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+          });
+        }
+      }
+
+      // Stat cards - simplified entrance, no hover on mobile
       const statCards = sectionRef.current?.querySelectorAll('.contact-stat-card');
-      if (statCards) {
+      if (statCards && !isMobile) {
         statCards.forEach((card, index) => {
           gsap.fromTo(
             card,
-            { scale: 0, opacity: 0, y: 30 },
+            { opacity: 0, y: 20 },
             {
-              scale: 1,
               opacity: 1,
               y: 0,
-              duration: 0.6,
-              delay: 0.3 + index * 0.2,
-              ease: 'back.out(1.7)',
+              duration: 0.5,
+              delay: 0.2 + index * 0.1,
+              ease: 'power2.out',
             }
           );
 
-          // Hover effect
-          card.addEventListener('mouseenter', () => {
-            gsap.to(card, {
-              scale: 1.08,
-              y: -5,
-              duration: 0.3,
-              ease: 'power2.out',
+          // Hover effect - only on desktop
+          if (!isMobile) {
+            card.addEventListener('mouseenter', () => {
+              gsap.to(card, {
+                scale: 1.05,
+                y: -3,
+                duration: 0.2,
+                ease: 'power2.out',
+              });
             });
-          });
-          card.addEventListener('mouseleave', () => {
-            gsap.to(card, {
-              scale: 1,
-              y: 0,
-              duration: 0.3,
-              ease: 'power2.out',
+            card.addEventListener('mouseleave', () => {
+              gsap.to(card, {
+                scale: 1,
+                y: 0,
+                duration: 0.2,
+                ease: 'power2.out',
+              });
             });
-          });
+          }
         });
-      }
-
-      // Send button animation on hover
-      const sendButton = sectionRef.current?.querySelector('.send-button');
-      if (sendButton) {
-        sendButton.addEventListener('mouseenter', () => {
-          gsap.to(sendButton.querySelector('span:first-child'), {
-            x: -5,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
-          gsap.to(sendButton.querySelector('span:last-child'), {
-            x: 10,
-            rotation: 15,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
-        });
-        sendButton.addEventListener('mouseleave', () => {
-          gsap.to(sendButton.querySelector('span:first-child'), {
-            x: 0,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
-          gsap.to(sendButton.querySelector('span:last-child'), {
-            x: 0,
-            rotation: 0,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
-        });
-      }
-
-      // Form input focus animations
-      const inputs = sectionRef.current?.querySelectorAll('input, textarea, select');
-      if (inputs) {
-        inputs.forEach((input) => {
-          input.addEventListener('focus', () => {
-            gsap.to(input, {
-              scale: 1.02,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
-          input.addEventListener('blur', () => {
-            gsap.to(input, {
-              scale: 1,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
+      } else if (statCards && isMobile) {
+        // Simple fade-in on mobile
+        statCards.forEach((card, index) => {
+          gsap.fromTo(
+            card,
+            { opacity: 0 },
+            {
+              opacity: 1,
+              duration: 0.4,
+              delay: 0.1 + index * 0.1,
+            }
+          );
         });
       }
     }, sectionRef);
@@ -212,17 +202,22 @@ export default function Contact() {
     } catch (error: any) {
       console.error('Contact form error:', error);
       
-      let errorMessage = 'Something went wrong. Please try again later.';
+      // User-friendly error message
+      let errorMessage = 'Sorry for the inconvenience. We are facing some technical issues. Please try again after some time.';
       
-      // Handle different error types
+      // Handle different error types but show user-friendly message
       if (error?.response) {
         // Server responded with error status
-        errorMessage = error.response.data?.message || error.response.statusText || errorMessage;
+        const serverMessage = error.response.data?.message || error.response.statusText;
+        // Only show server message if it's user-friendly, otherwise use default
+        if (serverMessage && serverMessage.length < 100 && !serverMessage.includes('ECONNREFUSED')) {
+          errorMessage = serverMessage;
+        }
       } else if (error?.request) {
         // Request was made but no response (CORS, network error, etc.)
-        errorMessage = 'Unable to connect to the server. Please check your connection or try again later.';
-      } else if (error?.message) {
-        // Something else happened
+        errorMessage = 'Sorry for the inconvenience. We are facing some technical issues. Please check your internet connection and try again after some time.';
+      } else if (error?.message && error.message.length < 100) {
+        // Only show error message if it's short and user-friendly
         errorMessage = error.message;
       }
       
@@ -246,15 +241,19 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative py-12 sm:py-16 md:py-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm z-10 overflow-hidden"
+      className="relative -mt-20 sm:-mt-24 md:-mt-32 pt-20 pb-12 sm:pt-28 sm:pb-16 md:pt-36 md:pb-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm z-10 overflow-hidden"
+      style={{
+        willChange: 'auto',
+        transform: 'translateZ(0)', // GPU acceleration
+      }}
     >
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-10 sm:mb-12 md:mb-16 relative z-10">
           <div className="relative inline-block mb-4 sm:mb-6">
-            <div className="contact-icon-main flex items-center justify-center">
+            <div className="contact-icon-main flex items-center justify-center" style={{ willChange: 'transform' }}>
               <Mail className="w-20 sm:w-24 md:w-28 h-20 sm:h-24 md:h-28 text-blue-400" />
             </div>
-            <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-2xl animate-pulse"></div>
+            <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-2xl animate-pulse" style={{ willChange: 'opacity' }}></div>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-3 sm:mb-4 relative z-10">
             Get In Touch
@@ -275,6 +274,7 @@ export default function Contact() {
               <div
                 key={index}
                 className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-4 sm:p-5 md:p-6 shadow-xl border border-blue-200/50 dark:border-blue-500/20 contact-stat-card text-center"
+                style={{ willChange: 'transform' }}
               >
                 <div className="flex justify-center mb-2 sm:mb-3">
                   <IconComponent className={`w-8 sm:w-9 md:w-10 h-8 sm:h-9 md:h-10 ${stat.color.includes('blue') ? 'text-blue-500' : stat.color.includes('purple') ? 'text-purple-500' : 'text-green-500'}`} />
@@ -304,7 +304,7 @@ export default function Contact() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                   placeholder="John Doe"
                 />
               </div>
@@ -320,7 +320,7 @@ export default function Contact() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                   placeholder="john@example.com"
                 />
               </div>
@@ -336,7 +336,7 @@ export default function Contact() {
                   required
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                   placeholder="+1 234 567 8900"
                 />
               </div>
@@ -351,7 +351,7 @@ export default function Contact() {
                   name="company"
                   value={formData.company}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                   placeholder="Your Company"
                 />
               </div>
@@ -366,7 +366,7 @@ export default function Contact() {
                   required
                   value={formData.inquiryType}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                 >
                   <option value="">Select an option</option>
                   {inquiryTypes.map((type) => (
@@ -388,27 +388,47 @@ export default function Contact() {
                   rows={5}
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all resize-none"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors resize-none"
                   placeholder="Tell us about your project..."
                 />
               </div>
 
               {submitMessage && (
                 <div
-                  className={`p-4 rounded-lg ${
+                  className={`p-4 sm:p-5 rounded-lg shadow-lg animate-in fade-in slide-in-from-top-2 duration-300 ${
                     submitMessage.type === 'success'
-                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-300 dark:border-green-700'
-                      : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-700'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-2 border-green-300 dark:border-green-700'
+                      : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-2 border-red-300 dark:border-red-700'
                   }`}
                 >
-                  {submitMessage.text}
+                  <div className="flex items-start gap-3">
+                    {submitMessage.type === 'success' ? (
+                      <div className="flex-shrink-0 mt-0.5">
+                        <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    ) : (
+                      <div className="flex-shrink-0 mt-0.5">
+                        <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <p className="text-sm sm:text-base font-medium leading-relaxed">
+                        {submitMessage.text}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-base sm:text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden send-button group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-base sm:text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl active:scale-95 sm:hover:scale-105 transition-transform duration-200 relative overflow-hidden send-button group disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 disabled:hover:scale-100"
+                style={{ willChange: 'transform' }}
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   <span>{isSubmitting ? 'Sending...' : 'Send Inquiry'}</span>
@@ -432,9 +452,9 @@ export default function Contact() {
                   <div>
                     <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Address</h4>
                     <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
-                      123 Business Street<br />
-                      Tech City, TC 12345<br />
-                      Country
+                      Kaveri Sangam,Shilaj Cross Road<br />
+                      Ahmedabad - 380059,Gujrat,India<br />
+                      
                     </p>
                   </div>
                 </div>
@@ -445,8 +465,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Email</h4>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">info@datacube.com</p>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">support@datacube.com</p>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">datascubesolutions@gmail.com</p>
+                    {/* <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">support@datacube.com</p> */}
                   </div>
                 </div>
 
@@ -456,8 +476,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Phone</h4>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+1 (555) 123-4567</p>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+1 (555) 123-4568</p>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+91 9510157477</p>
+                    {/* <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+1 (555) 123-4568</p> */}
                   </div>
                 </div>
 
