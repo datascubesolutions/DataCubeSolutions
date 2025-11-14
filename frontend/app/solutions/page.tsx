@@ -276,139 +276,182 @@ export default function SolutionsPage() {
   const pageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Detect mobile/touch device for performance optimization
+    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
+                     'ontouchstart' in window || 
+                     navigator.maxTouchPoints > 0;
+
+    // Register ScrollTrigger if available
+    if (typeof ScrollTrigger !== 'undefined' && typeof gsap.registerPlugin === 'function') {
+      try {
+        gsap.registerPlugin(ScrollTrigger);
+      } catch (e) {
+        console.warn('ScrollTrigger registration failed:', e);
+      }
+    }
+
     const ctx = gsap.context(() => {
-      // Fade in animations
-      gsap.fromTo(
-        '.fade-in',
-        { opacity: 0, y: 50 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: pageRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      );
-
-      // Solution cards animation
-      const solutionCards = pageRef.current?.querySelectorAll('.solution-card');
-      if (solutionCards) {
-        solutionCards.forEach((card, index) => {
-          gsap.fromTo(
-            card,
-            { opacity: 0, y: 60, scale: 0.9 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.6,
-              delay: index * 0.1,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          );
-        });
-      }
-
-      // Service category cards animation
-      const serviceCards = pageRef.current?.querySelectorAll('.service-category-card');
-      if (serviceCards) {
-        serviceCards.forEach((card, index) => {
-          gsap.fromTo(
-            card,
-            { opacity: 0, y: 60, scale: 0.9 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.6,
-              delay: index * 0.1,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          );
-        });
-      }
-
-      // Package cards animation
-      const packageCards = pageRef.current?.querySelectorAll('.solution-package-card');
-      if (packageCards) {
-        packageCards.forEach((card, index) => {
-          gsap.fromTo(
-            card,
-            { opacity: 0, y: 60, scale: 0.9 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.6,
-              delay: index * 0.15,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          );
-        });
-      }
-
-      // Case study cards animation
-      const caseCards = pageRef.current?.querySelectorAll('.case-card');
-      if (caseCards) {
-        caseCards.forEach((card, index) => {
-          gsap.fromTo(
-            card,
-            { opacity: 0, x: index % 2 === 0 ? -50 : 50 },
-            {
-              opacity: 1,
-              x: 0,
-              duration: 0.6,
-              delay: index * 0.15,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          );
-        });
-      }
-
-      // Integration partners animation
-      const partners = pageRef.current?.querySelectorAll('.partner-logo');
-      if (partners) {
+      // Fade in animations - very fast
+      if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
         gsap.fromTo(
-          partners,
-          { opacity: 0, scale: 0.8 },
+          '.fade-in',
+          { opacity: 0, y: 30 },
           {
             opacity: 1,
-            scale: 1,
-            duration: 0.5,
-            stagger: 0.1,
+            y: 0,
+            duration: 0.3,
+            stagger: 0.03,
             ease: 'power2.out',
             scrollTrigger: {
-              trigger: partners[0]?.parentElement,
-              start: 'top 80%',
-              toggleActions: 'play none none reverse',
+              trigger: pageRef.current,
+              start: 'top 90%',
+              toggleActions: 'play none none none',
+              once: true,
             },
           }
         );
+      }
+
+      // Solution cards animation - optimized
+      const solutionCards = pageRef.current?.querySelectorAll('.solution-card');
+      if (solutionCards) {
+        solutionCards.forEach((card, index) => {
+          gsap.set(card, {
+            opacity: 0,
+            y: 30,
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          });
+          
+          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+            gsap.to(card, {
+              opacity: 1,
+              y: 0,
+              duration: isMobile ? 0.25 : 0.3,
+              delay: index * (isMobile ? 0.02 : 0.03),
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            });
+          }
+        });
+      }
+
+      // Service category cards animation - optimized
+      const serviceCards = pageRef.current?.querySelectorAll('.service-category-card');
+      if (serviceCards) {
+        serviceCards.forEach((card, index) => {
+          gsap.set(card, {
+            opacity: 0,
+            y: 30,
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          });
+          
+          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+            gsap.to(card, {
+              opacity: 1,
+              y: 0,
+              duration: isMobile ? 0.25 : 0.3,
+              delay: index * (isMobile ? 0.02 : 0.03),
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            });
+          }
+        });
+      }
+
+      // Package cards animation - optimized
+      const packageCards = pageRef.current?.querySelectorAll('.solution-package-card');
+      if (packageCards) {
+        packageCards.forEach((card, index) => {
+          gsap.set(card, {
+            opacity: 0,
+            y: 30,
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          });
+          
+          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+            gsap.to(card, {
+              opacity: 1,
+              y: 0,
+              duration: isMobile ? 0.25 : 0.3,
+              delay: index * (isMobile ? 0.03 : 0.05),
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            });
+          }
+        });
+      }
+
+      // Case study cards animation - optimized
+      const caseCards = pageRef.current?.querySelectorAll('.case-card');
+      if (caseCards) {
+        caseCards.forEach((card, index) => {
+          gsap.set(card, {
+            opacity: 0,
+            x: index % 2 === 0 ? -30 : 30,
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          });
+          
+          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+            gsap.to(card, {
+              opacity: 1,
+              x: 0,
+              duration: isMobile ? 0.25 : 0.3,
+              delay: index * (isMobile ? 0.03 : 0.05),
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            });
+          }
+        });
+      }
+
+      // Integration partners animation - optimized
+      const partners = pageRef.current?.querySelectorAll('.partner-logo');
+      if (partners && partners.length > 0) {
+        if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+          gsap.fromTo(
+            partners,
+            { opacity: 0, scale: 0.9 },
+            {
+              opacity: 1,
+              scale: 1,
+              duration: 0.3,
+              stagger: 0.03,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: partners[0]?.parentElement || pageRef.current,
+                start: 'top 90%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            }
+          );
+        }
       }
     }, pageRef);
 

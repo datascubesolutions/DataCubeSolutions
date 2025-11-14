@@ -210,93 +210,133 @@ export default function IndustriesPage() {
   const pageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Detect mobile/touch device for performance optimization
+    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
+                     'ontouchstart' in window || 
+                     navigator.maxTouchPoints > 0;
+
+    // Register ScrollTrigger if available
+    if (typeof ScrollTrigger !== 'undefined' && typeof gsap.registerPlugin === 'function') {
+      try {
+        gsap.registerPlugin(ScrollTrigger);
+      } catch (e) {
+        console.warn('ScrollTrigger registration failed:', e);
+      }
+    }
+
     const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.fade-in').forEach((element, index) => {
-        gsap.fromTo(
-          element,
-          { opacity: 0, y: 50 },
-          {
+      // Fade in animations - very fast
+      if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+        gsap.utils.toArray<HTMLElement>('.fade-in').forEach((element, index) => {
+          gsap.set(element, {
+            opacity: 0,
+            y: 30,
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          });
+          
+          gsap.to(element, {
             opacity: 1,
             y: 0,
-            duration: 0.8,
-            delay: index * 0.1,
+            duration: 0.3,
+            delay: index * 0.03,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: element,
-              start: 'top 85%',
+              start: 'top 95%',
+              toggleActions: 'play none none none',
+              once: true,
             },
-          }
-        );
-      });
+          });
+        });
+      }
 
-      // Support steps animation
+      // Support steps animation - optimized
       const stepCards = pageRef.current?.querySelectorAll('.support-step-card');
       if (stepCards) {
         stepCards.forEach((card, index) => {
-          gsap.fromTo(
-            card,
-            { opacity: 0, y: 60, scale: 0.9 },
-            {
+          gsap.set(card, {
+            opacity: 0,
+            y: 30,
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          });
+          
+          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+            gsap.to(card, {
               opacity: 1,
               y: 0,
-              scale: 1,
-              duration: 0.6,
-              delay: index * 0.15,
+              duration: isMobile ? 0.25 : 0.3,
+              delay: index * (isMobile ? 0.03 : 0.05),
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+                once: true,
               },
-            }
-          );
+            });
+          }
         });
       }
 
-      // Scheme cards animation
+      // Scheme cards animation - optimized
       const schemeCards = pageRef.current?.querySelectorAll('.scheme-card');
       if (schemeCards) {
         schemeCards.forEach((card, index) => {
-          gsap.fromTo(
-            card,
-            { opacity: 0, x: index % 2 === 0 ? -50 : 50 },
-            {
+          gsap.set(card, {
+            opacity: 0,
+            x: index % 2 === 0 ? -30 : 30,
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          });
+          
+          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+            gsap.to(card, {
               opacity: 1,
               x: 0,
-              duration: 0.6,
-              delay: index * 0.1,
+              duration: isMobile ? 0.25 : 0.3,
+              delay: index * (isMobile ? 0.02 : 0.03),
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+                once: true,
               },
-            }
-          );
+            });
+          }
         });
       }
 
-      // Service category cards animation
+      // Service category cards animation - optimized
       const serviceCards = pageRef.current?.querySelectorAll('.startup-service-card');
       if (serviceCards) {
         serviceCards.forEach((card, index) => {
-          gsap.fromTo(
-            card,
-            { opacity: 0, y: 60, scale: 0.9 },
-            {
+          gsap.set(card, {
+            opacity: 0,
+            y: 30,
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)',
+          });
+          
+          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+            gsap.to(card, {
               opacity: 1,
               y: 0,
-              scale: 1,
-              duration: 0.6,
-              delay: index * 0.1,
+              duration: isMobile ? 0.25 : 0.3,
+              delay: index * (isMobile ? 0.02 : 0.03),
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+                once: true,
               },
-            }
-          );
+            });
+          }
         });
       }
     }, pageRef);

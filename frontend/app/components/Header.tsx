@@ -26,13 +26,6 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    gsap.fromTo(
-      '.nav-item',
-      { opacity: 0, y: -20 },
-      { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, delay: 0.5 }
-    );
-  }, []);
 
   useEffect(() => {
     // Close mobile menu when route changes

@@ -26,6 +26,116 @@ export default function ProjectsPage() {
           ease: 'sine.inOut',
         });
       }
+
+      // Floating code animation
+      const floatingCodes = pageRef.current?.querySelectorAll('.floating-code');
+      if (floatingCodes) {
+        floatingCodes.forEach((code, index) => {
+          gsap.to(code, {
+            y: -20,
+            x: 10,
+            opacity: 0.5,
+            duration: 4 + Math.random() * 2,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            delay: index * 0.5,
+          });
+        });
+      }
+
+      // Desktop icons animation
+      const desktopIcons = pageRef.current?.querySelectorAll('.desktop-icon');
+      if (desktopIcons) {
+        desktopIcons.forEach((icon, index) => {
+          gsap.to(icon, {
+            y: -5,
+            scale: 1.05,
+            duration: 2 + index * 0.3,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            delay: index * 0.2,
+          });
+        });
+      }
+
+      // Keyboard lighting effect
+      const keyboardKeys = pageRef.current?.querySelectorAll('.keyboard-key');
+      if (keyboardKeys) {
+        keyboardKeys.forEach((key, index) => {
+          gsap.to(key, {
+            opacity: 0.8,
+            scale: 1.1,
+            duration: 0.5,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            delay: index * 0.1,
+          });
+        });
+      }
+
+      // Project cards floating with laptop theme
+      const projectCards = pageRef.current?.querySelectorAll('.project-card');
+      if (projectCards) {
+        projectCards.forEach((card, index) => {
+          // Entrance animation - like loading on screen
+          gsap.fromTo(
+            card,
+            {
+              opacity: 0,
+              scale: 0.8,
+              filter: 'blur(10px)',
+            },
+            {
+              opacity: 1,
+              scale: 1,
+              filter: 'blur(0px)',
+              duration: 0.8,
+              delay: index * 0.2,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 85%',
+                toggleActions: 'play none none reverse',
+              },
+            }
+          );
+
+          // Add window frame effect for desktop application feel
+          const windowFrame = document.createElement('div');
+          windowFrame.className = 'absolute inset-0 border-2 border-cyan-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none';
+          card.appendChild(windowFrame);
+        });
+      }
+
+      // Monitor bezel lighting
+      const monitorBezel = pageRef.current?.querySelectorAll('.monitor-bezel-light');
+      if (monitorBezel) {
+        monitorBezel.forEach((bez, index) => {
+          gsap.to(bez, {
+            opacity: 0.4,
+            duration: 1.5,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+            delay: index * 0.5,
+          });
+        });
+      }
+
+      // Screen cursor blinking
+      const cursor = pageRef.current?.querySelector('.screen-cursor');
+      if (cursor) {
+        gsap.to(cursor, {
+          opacity: 0,
+          duration: 0.5,
+          repeat: -1,
+          yoyo: true,
+          ease: 'none',
+        });
+      }
     }, pageRef);
 
     return () => ctx.revert();
