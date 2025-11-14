@@ -461,45 +461,45 @@ export default function ChatWidget() {
       : null;
 
   return (
-    <div
-      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50"
-      style={{
-        ...(mobileBottomOffset !== null
-          ? { bottom: `${mobileBottomOffset}px` }
-          : undefined),
-        ...(dynamicChatHeight !== null
-          ? { height: `${dynamicChatHeight}px`, maxHeight: `${dynamicChatHeight}px` }
-          : undefined),
-      }}
-    >
-      {/* Chat Button */}
-      <button
-        onClick={toggleChat}
-        className={`relative w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 flex items-center justify-center group ${
-          isOpen ? 'scale-90' : 'scale-100 hover:scale-110'
-        }`}
-        aria-label="Open chat"
-      >
-        {isOpen ? (
-          <X className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300" />
-        ) : (
-          <MessageCircle className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300" />
-        )}
-        {/* Pulse animation when closed */}
-        {!isOpen && (
-          <span className="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-75"></span>
-        )}
-      </button>
+    <>
+      {/* Chat Button - Hidden on mobile when chat is open */}
+      {(!isOpen || !viewportInfo.isMobile) && (
+        <div
+          className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50"
+          style={{
+            ...(mobileBottomOffset !== null && !isOpen
+              ? { bottom: `${mobileBottomOffset}px` }
+              : undefined),
+          }}
+        >
+          <button
+            onClick={toggleChat}
+            className={`relative w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 flex items-center justify-center group ${
+              isOpen ? 'scale-90' : 'scale-100 hover:scale-110'
+            }`}
+            aria-label="Open chat"
+          >
+            {isOpen ? (
+              <X className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300" />
+            ) : (
+              <MessageCircle className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300" />
+            )}
+            {/* Pulse animation when closed */}
+            {!isOpen && (
+              <span className="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-75"></span>
+            )}
+          </button>
+        </div>
+      )}
 
-      {/* Chat Box */}
+      {/* Chat Box - Full screen on mobile, normal on desktop */}
       {isOpen && (
         <div
-          className="absolute bottom-16 right-0 md:bottom-20 w-[calc(100vw-2rem)] md:w-96 h-[550px] md:h-[600px] bg-slate-800/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col overflow-hidden transition-all duration-300 ease-in-out max-w-md"
-          style={
-            dynamicChatHeight !== null
-              ? { height: `${dynamicChatHeight}px` }
-              : undefined
-          }
+          className={`fixed z-50 bg-slate-800/95 backdrop-blur-xl shadow-2xl border border-slate-700/50 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${
+            viewportInfo.isMobile
+              ? 'inset-0 rounded-none'
+              : 'bottom-20 right-6 w-96 h-[600px] rounded-2xl'
+          }`}
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between">
@@ -650,7 +650,7 @@ export default function ChatWidget() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
