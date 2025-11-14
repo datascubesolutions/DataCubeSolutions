@@ -110,6 +110,16 @@ export default function ChatWidget() {
     scrollToBottom();
   }, [messages]);
 
+  // Auto-scroll when viewport height changes (keyboard opens/closes)
+  useEffect(() => {
+    if (isOpen && viewportInfo.isMobile) {
+      // Small delay to ensure layout has updated
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
+    }
+  }, [viewportInfo.viewportHeight, isOpen, viewportInfo.isMobile]);
+
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
@@ -495,14 +505,14 @@ export default function ChatWidget() {
       {/* Chat Box - Full screen on mobile, normal on desktop */}
       {isOpen && (
         <div
-          className={`fixed z-50 bg-slate-800/95 backdrop-blur-xl shadow-2xl border border-slate-700/50 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${
+          className={`fixed z-50 bg-slate-800/95 backdrop-blur-xl shadow-2xl border border-slate-700/50 flex flex-col transition-all duration-300 ease-in-out ${
             viewportInfo.isMobile
               ? 'inset-0 rounded-none'
-              : 'bottom-20 right-6 w-96 h-[600px] rounded-2xl'
+              : 'bottom-20 right-6 w-96 h-[600px] rounded-2xl overflow-hidden'
           }`}
         >
-          {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between">
+          {/* Header - Fixed at top */}
+          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
                 <Bot className="w-5 h-5 text-white" />
@@ -533,8 +543,19 @@ export default function ChatWidget() {
             </button>
           </div>
 
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+          {/* Messages Area - Scrollable, takes remaining space */}
+          <div 
+            className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-0"
+            style={{
+              ...(viewportInfo.isMobile && viewportInfo.viewportHeight
+                ? {
+                    // Header ~80px + Input ~120px = 200px, so messages area gets remaining space
+                    height: `${viewportInfo.viewportHeight - 200}px`,
+                    maxHeight: `${viewportInfo.viewportHeight - 200}px`,
+                  }
+                : {}),
+            }}
+          >
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -605,8 +626,8 @@ export default function ChatWidget() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
-          <div className="p-4 border-t border-slate-700/50 bg-slate-900/50">
+          {/* Input Area - Fixed at bottom */}
+          <div className="p-4 border-t border-slate-700/50 bg-slate-900/50 flex-shrink-0">
             <div className="flex items-center gap-2">
               <input
                 ref={inputRef}
