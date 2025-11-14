@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot, Mic, Square } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { MessageCircle, X, Send, Bot, Mic, Square, Loader2 } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -67,10 +67,15 @@ export default function ChatWidget() {
   const isListeningRef = useRef(false);
   const wsRef = useRef<WebSocket | null>(null);
   const tokenRef = useRef<string>('');
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectAttemptsRef = useRef(0);
+  const maxReconnectAttempts = 5;
+  const reconnectDelayRef = useRef(1000); // Start with 1 second delay
   const [viewportInfo, setViewportInfo] = useState({
     isMobile: false,
     keyboardOffset: 0,
     viewportHeight: 0,
+    isIOS: false,
   });
 
   // Generate unique token for user
@@ -219,6 +224,10 @@ export default function ChatWidget() {
       lastUpdate = now;
 
       const isMobile = mobileQuery.matches;
+      // Detect iOS
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      
       let keyboardOffset = 0;
       let viewportHeight = window.innerHeight;
 
@@ -233,6 +242,7 @@ export default function ChatWidget() {
         isMobile,
         keyboardOffset,
         viewportHeight,
+        isIOS,
       });
     };
 
@@ -345,21 +355,19 @@ export default function ChatWidget() {
     tokenRef.current = generateToken();
   }, []);
 
-  // WebSocket connection
-  useEffect(() => {
-    if (!isOpen) {
-      // Close WebSocket when chat is closed
-      if (wsRef.current) {
-        wsRef.current.close();
-        wsRef.current = null;
-        setWsConnected(false);
-      }
-      return;
-    }
+  // WebSocket connection with auto-reconnect
+  const connectWebSocket = useCallback(() => {
+    if (!isOpen) return;
 
     // Generate token if not exists
     if (!tokenRef.current) {
       tokenRef.current = generateToken();
+    }
+
+    // Clear any existing reconnection timeout
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
     }
 
     // Connect WebSocket
@@ -369,6 +377,8 @@ export default function ChatWidget() {
     ws.onopen = () => {
       console.log('WebSocket connected');
       setWsConnected(true);
+      reconnectAttemptsRef.current = 0; // Reset attempts on successful connection
+      reconnectDelayRef.current = 1000; // Reset delay
     };
 
     ws.onmessage = (event) => {
@@ -414,26 +424,74 @@ export default function ChatWidget() {
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
       setWsConnected(false);
-      // Fallback to local bot response on error
       setIsTyping(false);
+      // Error will trigger onclose, which will handle reconnection
     };
 
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
+    ws.onclose = (event) => {
+      console.log('WebSocket disconnected', event.code, event.reason);
       setWsConnected(false);
       wsRef.current = null;
+
+      // Auto-reconnect if chat is still open (continuously try to reconnect)
+      if (isOpen) {
+        // Always try to reconnect, regardless of close code
+        if (reconnectAttemptsRef.current < maxReconnectAttempts) {
+          reconnectAttemptsRef.current += 1;
+          
+          // Exponential backoff: 1s, 2s, 4s, 8s, 16s
+          const delay = Math.min(reconnectDelayRef.current * Math.pow(2, reconnectAttemptsRef.current - 1), 30000);
+          
+          console.log(`Reconnecting in ${delay}ms (attempt ${reconnectAttemptsRef.current}/${maxReconnectAttempts})...`);
+          
+          reconnectTimeoutRef.current = setTimeout(() => {
+            connectWebSocket();
+          }, delay);
+        } else {
+          // After max attempts, continuously try every 5 seconds
+          console.log('Max reconnect attempts reached, continuously trying every 5 seconds...');
+          reconnectTimeoutRef.current = setTimeout(() => {
+            reconnectAttemptsRef.current = 0; // Reset for continuous attempts
+            connectWebSocket();
+          }, 5000); // Try every 5 seconds continuously
+        }
+      }
     };
 
     wsRef.current = ws;
+  }, [isOpen]);
 
-    return () => {
+  useEffect(() => {
+    if (!isOpen) {
+      // Close WebSocket when chat is closed
       if (wsRef.current) {
-        wsRef.current.close();
+        wsRef.current.close(1000, 'Chat closed');
         wsRef.current = null;
         setWsConnected(false);
       }
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
+      reconnectAttemptsRef.current = 0;
+      return;
+    }
+
+    // Connect when chat opens
+    connectWebSocket();
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close(1000, 'Component unmounting');
+        wsRef.current = null;
+        setWsConnected(false);
+      }
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
     };
-  }, [isOpen]);
+  }, [isOpen, connectWebSocket]);
 
   const getBotResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase();
@@ -602,13 +660,22 @@ export default function ChatWidget() {
           style={{
             zIndex: 10002,
             pointerEvents: 'auto',
-            ...(viewportInfo.isMobile && viewportInfo.viewportHeight
+            ...(viewportInfo.isMobile && viewportInfo.viewportHeight && !viewportInfo.isIOS
               ? {
-                  // Use visualViewport height when keyboard is open
+                  // Use visualViewport height when keyboard is open (Android)
                   height: `${viewportInfo.viewportHeight}px`,
                   maxHeight: `${viewportInfo.viewportHeight}px`,
                   willChange: 'height',
                   transform: 'translateZ(0)', // GPU acceleration
+                }
+              : viewportInfo.isMobile && viewportInfo.isIOS
+              ? {
+                  // iOS: Use fixed positioning, don't resize container
+                  height: '100vh',
+                  maxHeight: '100vh',
+                  willChange: 'transform',
+                  transform: 'translateZ(0)', // GPU acceleration
+                  WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
                 }
               : {}),
           }}
@@ -620,7 +687,7 @@ export default function ChatWidget() {
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-sm">AI Chat Bot</h3>
+                <h3 className="text-white font-semibold text-sm">AI Chat Assistant</h3>
                 <p className="text-blue-100 text-xs flex items-center gap-1">
                   {wsConnected ? (
                     <>
@@ -630,7 +697,7 @@ export default function ChatWidget() {
                   ) : (
                     <>
                       <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-                      Connecting...
+                      Please Wait We Connect
                     </>
                   )}
                 </p>
@@ -651,8 +718,25 @@ export default function ChatWidget() {
             style={{
               willChange: 'scroll-position',
               transform: 'translateZ(0)', // GPU acceleration for smooth scrolling
+              ...(viewportInfo.isMobile && viewportInfo.isIOS
+                ? {
+                    paddingBottom: '140px', // Space for fixed input area
+                    WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+                  }
+                : {}),
             }}
           >
+            {/* Connection Status Message */}
+            {!wsConnected && (
+              <div className="flex items-center justify-center py-8">
+                <div className="flex flex-col items-center gap-3 bg-slate-700/30 rounded-lg px-6 py-4 border border-slate-600/50">
+                  <Loader2 className="w-8 h-8 text-yellow-400 animate-spin" />
+                  <p className="text-sm text-gray-300 font-medium">Please Wait We Connect</p>
+                  <p className="text-xs text-gray-400">Connecting to AI server...</p>
+                </div>
+              </div>
+            )}
+            
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -696,9 +780,10 @@ export default function ChatWidget() {
                       message.sender === 'user' ? 'text-right' : ''
                     }`}
                   >
-                    {message.timestamp.toLocaleTimeString([], {
-                      hour: '2-digit',
+                    {message.timestamp.toLocaleTimeString('en-US', {
+                      hour: 'numeric',
                       minute: '2-digit',
+                      hour12: true,
                     })}
                   </span>
                 </div>
@@ -724,7 +809,20 @@ export default function ChatWidget() {
           </div>
 
           {/* Input Area - Fixed at bottom (WhatsApp style) */}
-          <div className="p-4 border-t border-slate-700/50 bg-slate-900/50 flex-shrink-0">
+          <div 
+            className="p-4 border-t border-slate-700/50 bg-slate-900/50 flex-shrink-0"
+            style={{
+              ...(viewportInfo.isMobile && viewportInfo.isIOS
+                ? {
+                    paddingBottom: `calc(1rem + env(safe-area-inset-bottom))`,
+                    position: 'sticky',
+                    bottom: 0,
+                    backgroundColor: 'rgb(15 23 42 / 0.5)', // bg-slate-900/50
+                    backdropFilter: 'blur(8px)',
+                  }
+                : {}),
+            }}
+          >
             <div className="flex items-center gap-2">
               <input
                 ref={inputRef}

@@ -558,7 +558,7 @@ export default function Services() {
     >
       <div className="container mx-auto px-6 relative z-10">
         {/* Hero Section */}
-        <div className="text-center mb-20 relative">
+        <div className="text-center mb-20 relative" style={{ minHeight: '200px', position: 'relative' }}>
           {/* Wires connecting to Rocket */}
           <svg className="rocket-wires-container absolute inset-0 w-full h-full pointer-events-none opacity-0" style={{ zIndex: 1 }}>
             {[
@@ -610,9 +610,11 @@ export default function Services() {
             ))}
           </svg>
 
-          <div className="relative inline-block mb-6">
-            <div className="services-icon-main relative z-10 flex items-center justify-center">
-              <Rocket className="w-32 h-32 text-blue-400" />
+          <div className="relative inline-block mb-6 mx-auto">
+            <div className="services-icon-main relative z-10 flex items-center justify-center mx-auto" style={{ 
+              width: 'fit-content',
+            }}>
+              <Rocket className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 text-blue-400" />
             </div>
             <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-3xl animate-pulse"></div>
             {/* Connection point on rocket */}

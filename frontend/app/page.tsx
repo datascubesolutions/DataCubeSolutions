@@ -991,7 +991,7 @@ export default function Home() {
                 Trusted by businesses worldwide for delivering exceptional IT solutions and startup support
               </p>
             </div>
-            <div className="flex items-center justify-center md:justify-end gap-3">
+            <div className="hidden md:flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={handlePrevTestimonial}
@@ -1014,8 +1014,44 @@ export default function Home() {
             </div>
                     </div>
                     
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            {visibleTestimonials.map((testimonial, index) => (
+          {/* Mobile: Horizontal scroll, Desktop: Grid */}
+          <div className="md:grid md:grid-cols-2 md:gap-8 md:max-w-6xl md:mx-auto">
+            {/* Mobile horizontal scroll container */}
+            <div className="md:hidden overflow-x-auto pb-4 -mx-6 px-6 custom-scrollbar" style={{ scrollbarWidth: 'thin' }}>
+              <div className="flex gap-4" style={{ width: 'max-content' }}>
+                {testimonials.map((testimonial, index) => (
+                  <div
+                    key={`${testimonial.name}-${index}`}
+                    className="testimonial-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 flex-shrink-0"
+                    style={{ width: 'calc(100vw - 3rem)', maxWidth: '400px' }}
+                  >
+                    <div className="mb-4">
+                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                        testimonial.category === 'Startup Support' 
+                          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                          : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      }`}>
+                        {testimonial.category}
+                      </span>
+                    </div>
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <StarIcon key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                      ))}
+                    </div>
+                    <p className="text-slate-300 mb-6 italic">"{testimonial.content}"</p>
+                    <div>
+                      <div className="text-white font-semibold">{testimonial.name}</div>
+                      <div className="text-slate-400 text-sm">{testimonial.role}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Desktop grid layout */}
+            <div className="hidden md:contents">
+              {visibleTestimonials.map((testimonial, index) => (
               <div
                 key={`${testimonial.name}-${index}`}
                 className="testimonial-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10"
@@ -1042,7 +1078,8 @@ export default function Home() {
                   <div className="text-slate-400 text-sm">{testimonial.role}</div>
                 </div>
               </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

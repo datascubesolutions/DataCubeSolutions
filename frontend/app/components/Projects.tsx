@@ -167,21 +167,19 @@ export default function Projects() {
         
         if (cards.length === 0) return;
 
-        // Set initial state - cards hidden slightly below with minimal blur
+        // Set initial state - cards hidden slightly below
         gsap.set(cards, {
           opacity: 0,
           y: 40,
-          filter: 'blur(6px)',
         });
 
-        // Animate cards one by one on scroll with faster reveal and less blur
+        // Animate cards one by one on scroll
         cards.forEach((card, index) => {
           if (!card) return;
           
           gsap.to(card, {
             opacity: 1,
             y: 0,
-            filter: 'blur(0px)',
             duration: 0.45,
             ease: 'power2.out',
             scrollTrigger: {

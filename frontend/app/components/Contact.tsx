@@ -212,17 +212,22 @@ export default function Contact() {
     } catch (error: any) {
       console.error('Contact form error:', error);
       
-      let errorMessage = 'Something went wrong. Please try again later.';
+      // User-friendly error message
+      let errorMessage = 'Sorry for the inconvenience. We are facing some technical issues. Please try again after some time.';
       
-      // Handle different error types
+      // Handle different error types but show user-friendly message
       if (error?.response) {
         // Server responded with error status
-        errorMessage = error.response.data?.message || error.response.statusText || errorMessage;
+        const serverMessage = error.response.data?.message || error.response.statusText;
+        // Only show server message if it's user-friendly, otherwise use default
+        if (serverMessage && serverMessage.length < 100 && !serverMessage.includes('ECONNREFUSED')) {
+          errorMessage = serverMessage;
+        }
       } else if (error?.request) {
         // Request was made but no response (CORS, network error, etc.)
-        errorMessage = 'Unable to connect to the server. Please check your connection or try again later.';
-      } else if (error?.message) {
-        // Something else happened
+        errorMessage = 'Sorry for the inconvenience. We are facing some technical issues. Please check your internet connection and try again after some time.';
+      } else if (error?.message && error.message.length < 100) {
+        // Only show error message if it's short and user-friendly
         errorMessage = error.message;
       }
       
@@ -395,13 +400,32 @@ export default function Contact() {
 
               {submitMessage && (
                 <div
-                  className={`p-4 rounded-lg ${
+                  className={`p-4 sm:p-5 rounded-lg shadow-lg animate-in fade-in slide-in-from-top-2 duration-300 ${
                     submitMessage.type === 'success'
-                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-300 dark:border-green-700'
-                      : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-700'
+                      ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-2 border-green-300 dark:border-green-700'
+                      : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-2 border-red-300 dark:border-red-700'
                   }`}
                 >
-                  {submitMessage.text}
+                  <div className="flex items-start gap-3">
+                    {submitMessage.type === 'success' ? (
+                      <div className="flex-shrink-0 mt-0.5">
+                        <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    ) : (
+                      <div className="flex-shrink-0 mt-0.5">
+                        <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <p className="text-sm sm:text-base font-medium leading-relaxed">
+                        {submitMessage.text}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -432,9 +456,9 @@ export default function Contact() {
                   <div>
                     <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Address</h4>
                     <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
-                      123 Business Street<br />
-                      Tech City, TC 12345<br />
-                      Country
+                      Kaveri Sangam,Shilaj Cross Road<br />
+                      Ahmedabad - 380059,Gujrat,India<br />
+                      
                     </p>
                   </div>
                 </div>
@@ -445,8 +469,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Email</h4>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">info@datacube.com</p>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">support@datacube.com</p>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">datascubesolutions@gmail.com</p>
+                    {/* <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">support@datacube.com</p> */}
                   </div>
                 </div>
 
@@ -456,8 +480,8 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-white mb-1">Phone</h4>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+1 (555) 123-4567</p>
-                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+1 (555) 123-4568</p>
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+91 9510157477</p>
+                    {/* <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">+1 (555) 123-4568</p> */}
                   </div>
                 </div>
 
