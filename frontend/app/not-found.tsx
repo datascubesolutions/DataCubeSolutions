@@ -1,14 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import FastLink from './components/FastLink';
 import { gsap } from 'gsap';
 import { Home, ArrowLeft } from 'lucide-react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
 export default function NotFound() {
-  const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
@@ -157,16 +156,17 @@ export default function NotFound() {
             ref={buttonRef}
             className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center items-center px-4"
           >
-            <button
-              onClick={() => router.push('/')}
+            <FastLink
+              href="/"
+              prefetch={true}
               className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white text-sm sm:text-base font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
             >
               <Home className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Go to Home</span>
-            </button>
+            </FastLink>
             
             <button
-              onClick={() => router.back()}
+              onClick={() => window.history.back()}
               className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-slate-800/80 hover:bg-slate-700/80 text-white text-sm sm:text-base font-semibold rounded-lg border border-slate-700 hover:border-slate-600 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
             >
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />

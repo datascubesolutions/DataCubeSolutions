@@ -23,7 +23,18 @@ const nextConfig = {
   
   // Experimental features for better performance
   experimental: {
-    optimizePackageImports: ['lucide-react'],
+    optimizePackageImports: ['lucide-react', 'gsap'],
+    // Enable faster page transitions
+    optimizeCss: true,
+  },
+  
+  // Optimize production builds
+  productionBrowserSourceMaps: false,
+  
+  // Faster refresh
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
   },
   
   // Bundle optimization

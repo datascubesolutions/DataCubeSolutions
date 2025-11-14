@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import FastLink from './components/FastLink';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { 
@@ -10,6 +10,7 @@ import {
   MessageSquare, Star as StarIcon, Clock, Award, Sparkles, Layers,
   Cpu, Brain, Sparkle, Stars, Infinity, Code, ChevronLeft, ChevronRight
 } from 'lucide-react';
+import { Icon as PremiumIcon } from './components/icons/IconLibrary';
 
 const features = [
   {
@@ -40,6 +41,7 @@ const services = [
     description: 'Complete technology solutions including ERP, CRM, website development, mobile apps, and digital marketing to power your business operations and online presence.',
     features: ['ERP & CRM Systems', 'Website & E-Commerce', 'Mobile App Development', 'Digital Marketing & SEO'],
     icon: Code,
+    iconName: 'code' as const,
     link: '/solutions',
     color: 'from-blue-500 to-cyan-500',
   },
@@ -48,6 +50,7 @@ const services = [
     description: 'Comprehensive startup support from company registration, certifications, funding assistance, documentation, and business consulting to help you launch and scale successfully.',
     features: ['Company Registration', 'Certifications & Compliance', 'Funding & Grants Support', 'Documentation & Pitch Decks'],
     icon: Rocket,
+    iconName: 'rocket' as const,
     link: '/industries',
     color: 'from-green-500 to-emerald-500',
   },
@@ -82,16 +85,64 @@ const testimonials = [
     rating: 5,
     category: 'Startup Support',
   },
+  {
+    name: 'Vikram Singh',
+    role: 'CTO, FinTech Solutions',
+    content: 'Their CRM implementation revolutionized our customer management. Sales team productivity increased by 60% and customer satisfaction scores are at an all-time high. Excellent technical expertise and support.',
+    rating: 5,
+    category: 'IT Solutions',
+  },
+  {
+    name: 'Anjali Desai',
+    role: 'Founder, EduTech Platform',
+    content: 'From company incorporation to securing Series A funding, Data Scube guided us through every step. Their expertise in startup documentation and investor relations was invaluable. Highly recommended!',
+    rating: 5,
+    category: 'Startup Support',
+  },
+  {
+    name: 'Rohit Agarwal',
+    role: 'Operations Manager, Retail Chain',
+    content: 'The ERP solution streamlined our multi-location operations perfectly. Real-time inventory tracking, automated reporting, and seamless integration with our existing systems. Game changer for our business.',
+    rating: 5,
+    category: 'IT Solutions',
+  },
+  {
+    name: 'Kavita Nair',
+    role: 'CEO, Fashion E-Commerce',
+    content: 'Beautiful website design and robust e-commerce platform. Our online presence has never been stronger. The team understood our vision and delivered beyond expectations. Sales have tripled!',
+    rating: 5,
+    category: 'IT Solutions',
+  },
+  {
+    name: 'Arjun Reddy',
+    role: 'Co-Founder, AgriTech Startup',
+    content: 'Comprehensive startup support including DPIIT registration, patent filing assistance, and investor pitch preparation. They helped us secure funding from multiple investors. Truly exceptional service.',
+    rating: 5,
+    category: 'Startup Support',
+  },
+  {
+    name: 'Meera Joshi',
+    role: 'Director, Healthcare Services',
+    content: 'Custom software development for our patient management system was flawless. The team delivered on time, within budget, and provided excellent post-launch support. Our operations are now fully digitalized.',
+    rating: 5,
+    category: 'IT Solutions',
+  },
+  {
+    name: 'Siddharth Malhotra',
+    role: 'Founder, SaaS Platform',
+    content: 'Data Scube handled all our compliance requirements, helped with trademark registration, and prepared comprehensive pitch decks. Their startup support services are top-notch. We\'re now scaling rapidly!',
+    rating: 5,
+    category: 'Startup Support',
+  },
 ];
 
 export default function Home() {
-  const router = useRouter();
   const pageRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
-  const testimonialsPerSlide = 2;
+  const testimonialsPerSlide = 4;
   const [currentTestimonialSlide, setCurrentTestimonialSlide] = useState(0);
   const totalTestimonialSlides = Math.max(1, Math.ceil(testimonials.length / testimonialsPerSlide));
 
@@ -746,8 +797,9 @@ export default function Home() {
           </div>
           
           <div ref={ctaRef} className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center px-4">
-            <button
-              onClick={() => router.push('/contact')}
+            <FastLink
+              href="/contact"
+              prefetch={true}
               className="group relative w-full sm:w-auto px-6 md:px-10 py-3 md:py-5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white text-base md:text-lg font-semibold rounded-xl shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 flex items-center justify-center gap-2 md:gap-3 overflow-hidden"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
@@ -755,13 +807,14 @@ export default function Home() {
                 Get Free Consultation
                 <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
               </span>
-            </button>
-            <button
-              onClick={() => router.push('/services')}
+            </FastLink>
+            <FastLink
+              href="/services"
+              prefetch={true}
               className="w-full sm:w-auto px-6 md:px-10 py-3 md:py-5 bg-slate-800/60 hover:bg-slate-700/60 backdrop-blur-sm text-white text-base md:text-lg font-semibold rounded-xl border-2 border-slate-600/50 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               View All Services
-            </button>
+            </FastLink>
           </div>
 
           {/* Key Value Propositions */}
@@ -769,12 +822,12 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
               <div className="group relative bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-800/30 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700/50 hover:border-emerald-500/70 transition-all duration-500 shadow-2xl hover:shadow-emerald-500/20 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/0 to-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative z-10 flex flex-col h-full">
-                  <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-emerald-600/30 to-emerald-500/20 rounded-2xl flex items-center justify-center mb-4 md:mb-6 border-2 border-emerald-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-emerald-500/20 mx-auto md:mx-0">
-                    <TrendingUp className="w-7 h-7 md:w-8 md:h-8 text-emerald-400" />
+                <div className="relative z-10 flex flex-col h-full items-center text-center">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-emerald-600/30 to-emerald-500/20 rounded-2xl flex items-center justify-center mb-4 md:mb-6 border-2 border-emerald-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-emerald-500/20">
+                    <PremiumIcon name="award" size="xl" className="text-emerald-400" />
                   </div>
-                  <div className="text-white text-base md:text-lg font-bold mb-2 md:mb-3 group-hover:text-emerald-300 transition-colors text-center md:text-left">Proven Results</div>
-                  <div className="text-slate-400 text-xs md:text-sm leading-relaxed group-hover:text-slate-300 transition-colors text-center md:text-left flex-grow">40% average efficiency increase across all implementations</div>
+                  <div className="text-white text-base md:text-lg font-bold mb-2 md:mb-3 group-hover:text-emerald-300 transition-colors">Proven Results</div>
+                  <div className="text-slate-400 text-xs md:text-sm leading-relaxed group-hover:text-slate-300 transition-colors flex-grow">40% average efficiency increase across all implementations</div>
                 </div>
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Award className="w-5 h-5 text-emerald-400" />
@@ -782,12 +835,12 @@ export default function Home() {
               </div>
               <div className="group relative bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-800/30 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700/50 hover:border-amber-500/70 transition-all duration-500 shadow-2xl hover:shadow-amber-500/20 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-amber-600/0 to-amber-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative z-10 flex flex-col h-full">
-                  <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-amber-600/30 to-amber-500/20 rounded-2xl flex items-center justify-center mb-4 md:mb-6 border-2 border-amber-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-amber-500/20 mx-auto md:mx-0">
-                    <Clock className="w-7 h-7 md:w-8 md:h-8 text-amber-400" />
+                <div className="relative z-10 flex flex-col h-full items-center text-center">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-amber-600/30 to-amber-500/20 rounded-2xl flex items-center justify-center mb-4 md:mb-6 border-2 border-amber-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-amber-500/20">
+                    <PremiumIcon name="zap" size="xl" className="text-amber-400" />
                   </div>
-                  <div className="text-white text-base md:text-lg font-bold mb-2 md:mb-3 group-hover:text-amber-300 transition-colors text-center md:text-left">Fast Delivery</div>
-                  <div className="text-slate-400 text-xs md:text-sm leading-relaxed group-hover:text-slate-300 transition-colors text-center md:text-left flex-grow">Rapid deployment with 24/7 support and continuous optimization</div>
+                  <div className="text-white text-base md:text-lg font-bold mb-2 md:mb-3 group-hover:text-amber-300 transition-colors">Fast Delivery</div>
+                  <div className="text-slate-400 text-xs md:text-sm leading-relaxed group-hover:text-slate-300 transition-colors flex-grow">Rapid deployment with 24/7 support and continuous optimization</div>
                 </div>
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Zap className="w-5 h-5 text-amber-400" />
@@ -795,12 +848,12 @@ export default function Home() {
               </div>
               <div className="group relative bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-800/30 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-slate-700/50 hover:border-rose-500/70 transition-all duration-500 shadow-2xl hover:shadow-rose-500/20 hover:-translate-y-2 overflow-hidden flex flex-col h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-rose-600/0 to-rose-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative z-10 flex flex-col h-full">
-                  <div className="w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-rose-600/30 to-rose-500/20 rounded-2xl flex items-center justify-center mb-4 md:mb-6 border-2 border-rose-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-rose-500/20 mx-auto md:mx-0">
-                    <MessageSquare className="w-7 h-7 md:w-8 md:h-8 text-rose-400" />
+                <div className="relative z-10 flex flex-col h-full items-center text-center">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-rose-600/30 to-rose-500/20 rounded-2xl flex items-center justify-center mb-4 md:mb-6 border-2 border-rose-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-rose-500/20">
+                    <PremiumIcon name="users" size="xl" className="text-rose-400" />
                   </div>
-                  <div className="text-white text-base md:text-lg font-bold mb-2 md:mb-3 group-hover:text-rose-300 transition-colors text-center md:text-left">Expert Support</div>
-                  <div className="text-slate-400 text-xs md:text-sm leading-relaxed group-hover:text-slate-300 transition-colors text-center md:text-left flex-grow">Dedicated team of 50+ experts ready to assist your business growth</div>
+                  <div className="text-white text-base md:text-lg font-bold mb-2 md:mb-3 group-hover:text-rose-300 transition-colors">Expert Support</div>
+                  <div className="text-slate-400 text-xs md:text-sm leading-relaxed group-hover:text-slate-300 transition-colors flex-grow">Dedicated team of 50+ experts ready to assist your business growth</div>
                 </div>
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Users className="w-5 h-5 text-rose-400" />
@@ -811,11 +864,8 @@ export default function Home() {
         </div>
 
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
-          <div className="flex flex-col items-center text-slate-500">
-            <span className="text-sm mb-2">Scroll</span>
-            <svg className="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
+          <div className="flex flex-col items-center">
+            <PremiumIcon name="chevron-down" size="lg" className="text-slate-400 animate-bounce" />
           </div>
         </div>
       </section>
@@ -839,10 +889,11 @@ export default function Home() {
             {services.map((service, index) => {
               const IconComponent = service.icon;
               return (
-              <div
+              <FastLink
                 key={index}
-                  className="service-card group cursor-pointer"
-                onClick={() => router.push(service.link)}
+                href={service.link}
+                prefetch={true}
+                className="service-card group cursor-pointer"
               >
                   <div className="relative bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20 h-full flex flex-col overflow-hidden">
                     {/* Gradient background on hover */}
@@ -851,7 +902,7 @@ export default function Home() {
                     <div className="relative z-10">
                     <div className="mb-6 flex justify-center">
                         <div className={`w-20 h-20 bg-gradient-to-br ${service.color} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
-                          <IconComponent className="w-10 h-10 text-white" />
+                          <PremiumIcon name={service.iconName} size="xl" className="text-white" />
                       </div>
                     </div>
                       <h3 className="text-3xl font-bold text-white mb-4 text-center group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300">
@@ -863,22 +914,22 @@ export default function Home() {
                       <div className="mb-6 space-y-3">
                       {service.features.map((feature, idx) => (
                         <div key={idx} className="flex items-center text-slate-300 text-sm">
-                            <CheckCircle2 className="w-5 h-5 text-blue-400 mr-3 flex-shrink-0" />
+                            <PremiumIcon name="check-circle" size="md" className="text-blue-400 mr-3 flex-shrink-0" />
                           <span>{feature}</span>
                         </div>
                       ))}
                     </div>
                       <div className="flex items-center justify-center text-blue-400 font-semibold group-hover:text-blue-300 group-hover:gap-2 transition-all pt-6 border-t border-slate-700/50">
                         <span>Explore Services</span>
-                        <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" />
+                        <PremiumIcon name="arrow-right" size="md" className="ml-2 group-hover:translate-x-2 transition-transform" />
                     </div>
                     </div>
                     
                     {/* Bottom gradient line */}
                     <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${service.color} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
                   </div>
-                </div>
-              );
+              </FastLink>
+            );
             })}
           </div>
         </div>
@@ -944,13 +995,14 @@ export default function Home() {
               <p>Our vision is to be the one-stop solution for businesses - from startups needing registration and funding support to enterprises requiring advanced technology solutions.</p>
               <p>We combine cutting-edge technology with expert business consulting to ensure your success at every stage of growth.</p>
                     </div>
-            <button
-              onClick={() => router.push('/about')}
+            <FastLink
+              href="/about"
+              prefetch={true}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-semibold shadow-lg hover:shadow-blue-500/40 transition-all duration-300 hover:translate-y-[-2px]"
             >
               Read More
               <ArrowRight className="w-5 h-5" />
-            </button>
+            </FastLink>
                       </div>
           <div className="flex-1 w-full">
             <div className="relative rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-slate-700/60 p-10 overflow-hidden shadow-2xl">
@@ -982,102 +1034,106 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className="testimonials-section py-24 relative z-10 bg-slate-950">
         <div className="container mx-auto px-6">
-          <div className="fade-in-section flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
-            <div className="text-center md:text-left">
+          <div className="fade-in-section text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               What Our Clients Say
             </h2>
-              <p className="text-xl text-slate-400 max-w-2xl">
-                Trusted by businesses worldwide for delivering exceptional IT solutions and startup support
-              </p>
-            </div>
-            <div className="hidden md:flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={handlePrevTestimonial}
-                className="p-3 rounded-full border border-slate-700/50 text-slate-300 hover:border-blue-500/60 hover:text-blue-300 transition-all"
-                aria-label="Previous testimonial"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <span className="text-sm font-medium text-slate-400">
-                {currentTestimonialSlide + 1} / {totalTestimonialSlides}
-              </span>
-              <button
-                type="button"
-                onClick={handleNextTestimonial}
-                className="p-3 rounded-full border border-slate-700/50 text-slate-300 hover:border-blue-500/60 hover:text-blue-300 transition-all"
-                aria-label="Next testimonial"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-                    </div>
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+              Trusted by businesses worldwide for delivering exceptional IT solutions and startup support
+            </p>
+          </div>
                     
-          {/* Mobile: Horizontal scroll, Desktop: Grid */}
-          <div className="md:grid md:grid-cols-2 md:gap-8 md:max-w-6xl md:mx-auto">
-            {/* Mobile horizontal scroll container */}
-            <div className="md:hidden overflow-x-auto pb-4 -mx-6 px-6 custom-scrollbar" style={{ scrollbarWidth: 'thin' }}>
-              <div className="flex gap-4" style={{ width: 'max-content' }}>
-                {testimonials.map((testimonial, index) => (
-                  <div
-                    key={`${testimonial.name}-${index}`}
-                    className="testimonial-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 flex-shrink-0"
-                    style={{ width: 'calc(100vw - 3rem)', maxWidth: '400px' }}
-                  >
-                    <div className="mb-4">
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                        testimonial.category === 'Startup Support' 
-                          ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                          : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
-                      }`}>
-                        {testimonial.category}
-                      </span>
-                    </div>
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <StarIcon key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                      ))}
-                    </div>
-                    <p className="text-slate-300 mb-6 italic">"{testimonial.content}"</p>
-                    <div>
-                      <div className="text-white font-semibold">{testimonial.name}</div>
-                      <div className="text-slate-400 text-sm">{testimonial.role}</div>
-                    </div>
+          {/* Desktop: Grid with Navigation Arrows */}
+          <div className="hidden md:flex items-center gap-6 max-w-[1600px] mx-auto">
+            {/* Left Arrow */}
+            <button
+              type="button"
+              onClick={handlePrevTestimonial}
+              className="flex-shrink-0 p-3 rounded-full border border-slate-700/50 text-slate-300 hover:border-blue-500/60 hover:text-blue-300 transition-all bg-slate-800/50 hover:bg-slate-700/50 shadow-lg hover:shadow-blue-500/20"
+              aria-label="Previous testimonial"
+            >
+              <PremiumIcon name="chevron-left" size="lg" />
+            </button>
+            
+            {/* Testimonials Grid - 4 columns */}
+            <div className="flex-1 grid grid-cols-4 gap-5">
+              {visibleTestimonials.map((testimonial, index) => (
+                <div
+                  key={`${testimonial.name}-${index}`}
+                  className="testimonial-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 hover:-translate-y-1"
+                >
+                  <div className="mb-3">
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                      testimonial.category === 'Startup Support' 
+                        ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                    }`}>
+                      {testimonial.category}
+                    </span>
                   </div>
-                ))}
-              </div>
+                  <div className="flex items-center mb-3">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <StarIcon key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-slate-300 leading-relaxed mb-4 italic line-clamp-4">
+                    "{testimonial.content}"
+                  </p>
+                  <div className="pt-3 border-t border-slate-700/50">
+                    <div className="text-white font-semibold text-sm">{testimonial.name}</div>
+                    <div className="text-slate-400 text-xs">{testimonial.role}</div>
+                  </div>
+                </div>
+              ))}
             </div>
             
-            {/* Desktop grid layout */}
-            <div className="hidden md:contents">
-              {visibleTestimonials.map((testimonial, index) => (
-              <div
-                key={`${testimonial.name}-${index}`}
-                className="testimonial-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10"
-              >
-                <div className="mb-4">
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold mb-4 ${
-                    testimonial.category === 'Startup Support' 
-                      ? 'bg-green-500/20 text-green-300 border border-green-500/30'
-                      : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
-                  }`}>
-                    {testimonial.category}
-                  </span>
+            {/* Right Arrow */}
+            <button
+              type="button"
+              onClick={handleNextTestimonial}
+              className="flex-shrink-0 p-3 rounded-full border border-slate-700/50 text-slate-300 hover:border-blue-500/60 hover:text-blue-300 transition-all bg-slate-800/50 hover:bg-slate-700/50 shadow-lg hover:shadow-blue-500/20"
+              aria-label="Next testimonial"
+            >
+              <PremiumIcon name="chevron-right" size="lg" />
+            </button>
+          </div>
+          
+          {/* Page Indicator */}
+          <div className="hidden md:flex justify-center mt-6">
+            <span className="text-sm font-medium text-slate-400">
+              {currentTestimonialSlide + 1} / {totalTestimonialSlides}
+            </span>
+          </div>
+
+          {/* Mobile: Horizontal scroll container */}
+          <div className="md:hidden overflow-x-auto pb-4 -mx-6 px-6 custom-scrollbar" style={{ scrollbarWidth: 'thin' }}>
+            <div className="flex gap-4" style={{ width: 'max-content' }}>
+              {testimonials.map((testimonial, index) => (
+                <div
+                  key={`${testimonial.name}-${index}`}
+                  className="testimonial-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 flex-shrink-0"
+                  style={{ width: 'calc(100vw - 3rem)', maxWidth: '400px' }}
+                >
+                  <div className="mb-4">
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                      testimonial.category === 'Startup Support' 
+                        ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                        : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                    }`}>
+                      {testimonial.category}
+                    </span>
+                  </div>
+                  <div className="flex gap-1 mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <StarIcon key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-slate-300 mb-6 italic">"{testimonial.content}"</p>
+                  <div>
+                    <div className="text-white font-semibold">{testimonial.name}</div>
+                    <div className="text-slate-400 text-sm">{testimonial.role}</div>
+                  </div>
                 </div>
-                <div className="flex items-center mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <StarIcon key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                  ))}
-                    </div>
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed mb-4 sm:mb-6 italic">
-                  "{testimonial.content}"
-                </p>
-                <div className="pt-4 border-t border-slate-700/50">
-                  <div className="text-white font-semibold">{testimonial.name}</div>
-                  <div className="text-slate-400 text-sm">{testimonial.role}</div>
-                </div>
-              </div>
               ))}
             </div>
           </div>
@@ -1102,19 +1158,21 @@ export default function Home() {
                   Let's discuss how our solutions can help you achieve your business goals and drive sustainable growth
             </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button
-              onClick={() => router.push('/contact')}
+            <FastLink
+              href="/contact"
+              prefetch={true}
                     className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group"
                   >
                     Get In Touch
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                  <button
-                    onClick={() => router.push('/services')}
+                  </FastLink>
+                  <FastLink
+                    href="/services"
+                    prefetch={true}
                     className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-slate-700 hover:bg-slate-600 text-white text-base sm:text-lg font-semibold rounded-lg border border-slate-600 hover:border-slate-500 transition-all duration-300"
                   >
                     View Services
-            </button>
+            </FastLink>
                 </div>
               </div>
             </div>
