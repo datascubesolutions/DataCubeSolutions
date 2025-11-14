@@ -557,12 +557,14 @@ export default function ChatWidget() {
       : null;
 
   return (
-    <>
-      {/* Chat Button - Hidden on mobile when chat is open */}
+    <div style={{ position: 'fixed', zIndex: 10000, pointerEvents: 'none' }}>
+      {/* Chat Button - Always visible, hidden on mobile when chat is open */}
       {(!isOpen || !viewportInfo.isMobile) && (
         <div
-          className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[10000]"
+          className="fixed bottom-4 right-4 md:bottom-6 md:right-6"
           style={{
+            zIndex: 10001,
+            pointerEvents: 'auto',
             ...(mobileBottomOffset !== null && !isOpen
               ? { bottom: `${mobileBottomOffset}px` }
               : undefined),
@@ -592,12 +594,14 @@ export default function ChatWidget() {
       {isOpen && (
         <div
           data-chat-widget
-          className={`fixed z-[10000] flex flex-col ${
+          className={`fixed flex flex-col ${
             viewportInfo.isMobile
               ? 'inset-0 rounded-none bg-slate-900' // Solid background on mobile, no transparency
               : 'bottom-20 right-6 w-96 h-[600px] rounded-2xl bg-slate-800/95 backdrop-blur-xl shadow-2xl border border-slate-700/50'
           }`}
           style={{
+            zIndex: 10002,
+            pointerEvents: 'auto',
             ...(viewportInfo.isMobile && viewportInfo.viewportHeight
               ? {
                   // Use visualViewport height when keyboard is open
@@ -774,7 +778,7 @@ export default function ChatWidget() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
