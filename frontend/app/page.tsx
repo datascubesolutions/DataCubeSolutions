@@ -30,7 +30,7 @@ const features = [
   {
     icon: Award,
     title: 'Proven Track Record',
-    description: '500+ successful projects, 1000+ happy clients, and 10+ years of experience delivering excellence in IT and startup support.',
+    description: '12+ successful projects, 30+ happy clients, and 2.3+ years of experience delivering excellence in IT and startup support.',
   },
 ];
 
@@ -118,13 +118,20 @@ export default function Home() {
     let ctx: any = null;
     
     const initGSAP = async () => {
-      const { gsap } = await import('gsap');
-      const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-      
-      gsap.registerPlugin(ScrollTrigger);
-      
-      ctx = gsap.context(() => {
-      // Simple fade-in animations
+      try {
+        const { gsap } = await import('gsap');
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger');
+        
+        // Check if ScrollTrigger is available and registerPlugin exists
+        if (ScrollTrigger && typeof gsap.registerPlugin === 'function') {
+          gsap.registerPlugin(ScrollTrigger);
+        } else {
+          console.warn('ScrollTrigger or registerPlugin not available');
+          return;
+        }
+        
+        ctx = gsap.context(() => {
+          // Simple fade-in animations
       if (titleRef.current) {
         gsap.fromTo(
           titleRef.current,
@@ -240,6 +247,9 @@ export default function Home() {
         }
       );
       }, pageRef);
+      } catch (error) {
+        console.error('Error initializing GSAP:', error);
+      }
     };
     
     initGSAP();

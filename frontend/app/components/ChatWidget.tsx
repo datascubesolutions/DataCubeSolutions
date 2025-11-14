@@ -67,6 +67,11 @@ export default function ChatWidget() {
   const isListeningRef = useRef(false);
   const wsRef = useRef<WebSocket | null>(null);
   const tokenRef = useRef<string>('');
+  const [viewportInfo, setViewportInfo] = useState({
+    isMobile: false,
+    keyboardOffset: 0,
+    viewportHeight: 0,
+  });
 
   // Generate unique token for user
   const generateToken = (): string => {
@@ -110,6 +115,57 @@ export default function ChatWidget() {
       inputRef.current.focus();
     }
   }, [isOpen]);
+
+  // Track viewport + keyboard offset for mobile to prevent layout jumps
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
+
+    const updateViewportState = () => {
+      const isMobile = mobileQuery.matches;
+      let keyboardOffset = 0;
+      let viewportHeight = window.innerHeight;
+
+      if (isMobile && window.visualViewport) {
+        const { height, offsetTop } = window.visualViewport;
+        viewportHeight = height;
+        const offset = window.innerHeight - height - offsetTop;
+        keyboardOffset = offset > 0 ? offset : 0;
+      }
+
+      setViewportInfo({
+        isMobile,
+        keyboardOffset,
+        viewportHeight,
+      });
+    };
+
+    const visualViewport = window.visualViewport;
+
+    updateViewportState();
+
+    if (mobileQuery.addEventListener) {
+      mobileQuery.addEventListener('change', updateViewportState);
+    } else {
+      mobileQuery.addListener(updateViewportState);
+    }
+
+    window.addEventListener('resize', updateViewportState);
+    visualViewport?.addEventListener('resize', updateViewportState);
+    visualViewport?.addEventListener('scroll', updateViewportState);
+
+    return () => {
+      if (mobileQuery.removeEventListener) {
+        mobileQuery.removeEventListener('change', updateViewportState);
+      } else {
+        mobileQuery.removeListener(updateViewportState);
+      }
+      window.removeEventListener('resize', updateViewportState);
+      visualViewport?.removeEventListener('resize', updateViewportState);
+      visualViewport?.removeEventListener('scroll', updateViewportState);
+    };
+  }, []);
 
   // Initialize Speech Recognition
   useEffect(() => {
@@ -388,8 +444,34 @@ export default function ChatWidget() {
     }
   };
 
+  const mobileBottomOffset =
+    isOpen && viewportInfo.isMobile
+      ? Math.max(16, viewportInfo.keyboardOffset + 16)
+      : null;
+
+  const dynamicChatHeight =
+    isOpen && viewportInfo.isMobile && viewportInfo.viewportHeight
+      ? Math.max(
+          360,
+          Math.min(
+            viewportInfo.viewportHeight - (mobileBottomOffset ?? 16) - 48,
+            600
+          )
+        )
+      : null;
+
   return (
-    <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50">
+    <div
+      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50"
+      style={{
+        ...(mobileBottomOffset !== null
+          ? { bottom: `${mobileBottomOffset}px` }
+          : undefined),
+        ...(dynamicChatHeight !== null
+          ? { height: `${dynamicChatHeight}px`, maxHeight: `${dynamicChatHeight}px` }
+          : undefined),
+      }}
+    >
       {/* Chat Button */}
       <button
         onClick={toggleChat}
@@ -411,7 +493,14 @@ export default function ChatWidget() {
 
       {/* Chat Box */}
       {isOpen && (
-        <div className="absolute bottom-16 right-0 md:bottom-20 w-[calc(100vw-2rem)] md:w-96 h-[550px] md:h-[600px] bg-slate-800/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col overflow-hidden transition-all duration-300 ease-in-out max-w-md">
+        <div
+          className="absolute bottom-16 right-0 md:bottom-20 w-[calc(100vw-2rem)] md:w-96 h-[550px] md:h-[600px] bg-slate-800/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col overflow-hidden transition-all duration-300 ease-in-out max-w-md"
+          style={
+            dynamicChatHeight !== null
+              ? { height: `${dynamicChatHeight}px` }
+              : undefined
+          }
+        >
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">

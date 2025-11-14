@@ -144,18 +144,77 @@ const projects = [
 
 export default function Projects() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // Ensure all cards are fully visible immediately - no animation
-    const cards = sectionRef.current?.querySelectorAll('.project-card');
-    if (cards) {
-      cards.forEach((card) => {
-        const cardElement = card as HTMLElement;
-        cardElement.style.opacity = '1';
-        cardElement.style.transform = 'translateY(0)';
-        cardElement.style.visibility = 'visible';
-      });
-    }
+    if (typeof window === 'undefined') return;
+    
+    // Use a small delay to ensure everything is loaded (Chrome-specific fix)
+    const timer = setTimeout(() => {
+      try {
+        // Ensure ScrollTrigger is available before registering
+        if (!ScrollTrigger || typeof ScrollTrigger !== 'object') {
+          console.warn('ScrollTrigger is not available');
+          return;
+        }
+        
+        // Register ScrollTrigger safely
+        if (typeof gsap.registerPlugin === 'function') {
+          gsap.registerPlugin(ScrollTrigger);
+        }
+        
+        const cards = cardsRef.current.filter(Boolean) as HTMLElement[];
+        
+        if (cards.length === 0) return;
+
+        // Set initial state - cards hidden slightly below with minimal blur
+        gsap.set(cards, {
+          opacity: 0,
+          y: 40,
+          filter: 'blur(6px)',
+        });
+
+        // Animate cards one by one on scroll with faster reveal and less blur
+        cards.forEach((card, index) => {
+          if (!card) return;
+          
+          gsap.to(card, {
+            opacity: 1,
+            y: 0,
+            filter: 'blur(0px)',
+            duration: 0.45,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 90%',
+              end: 'top 70%',
+              toggleActions: 'play none none reverse',
+            },
+            delay: index * 0.05,
+          });
+        });
+      } catch (error) {
+        console.error('Error setting up card animations:', error);
+      }
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+      try {
+        if (ScrollTrigger && typeof ScrollTrigger.getAll === 'function') {
+          const triggers = ScrollTrigger.getAll();
+          if (Array.isArray(triggers)) {
+            triggers.forEach((trigger) => {
+              if (trigger && typeof trigger.kill === 'function') {
+                trigger.kill();
+              }
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error cleaning up ScrollTrigger:', error);
+      }
+    };
   }, []);
 
   return (
@@ -185,13 +244,15 @@ export default function Projects() {
           </p>
         </div>
 
-        <div className="max-h-[80vh] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map((project, index) => (
             <div
               key={project.id}
+              ref={(el) => {
+                cardsRef.current[index] = el;
+              }}
               className={`project-card group relative bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-200 border-2 border-transparent hover:border-purple-500/30 ${project.url ? 'cursor-pointer' : ''}`}
-              style={{ transformStyle: 'preserve-3d', willChange: 'transform', backfaceVisibility: 'hidden', opacity: 1 }}
+              style={{ transformStyle: 'preserve-3d', willChange: 'transform', backfaceVisibility: 'hidden' }}
               onClick={() => {
                 if (project.url) {
                   window.open(project.url, '_blank', 'noopener,noreferrer');
@@ -287,8 +348,7 @@ export default function Projects() {
                 <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${project.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`}></div>
               </div>
             </div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
     </section>

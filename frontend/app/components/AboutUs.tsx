@@ -8,10 +8,10 @@ import { Users, Target, User, Star, Lightbulb, Sparkles, Handshake, Shield, Rock
 // GSAP plugin is registered globally in gsapOptimizations
 
 const stats = [
-  { number: '500+', label: 'Happy Clients', icon: Users },
-  { number: '1000+', label: 'Projects Completed', icon: Target },
-  { number: '50+', label: 'Team Members', icon: User },
-  { number: '10+', label: 'Years Experience', icon: Star },
+  { number: '30+', label: 'Happy Clients', icon: Users },
+  { number: '12+', label: 'Projects Completed', icon: Target },
+  { number: '15+', label: 'Team Members', icon: User },
+  { number: '2.3+', label: 'Years Experience', icon: Star },
 ];
 
 const values = [
