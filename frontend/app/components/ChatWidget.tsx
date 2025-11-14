@@ -507,12 +507,20 @@ export default function ChatWidget() {
         <div
           className={`fixed z-50 bg-slate-800/95 backdrop-blur-xl shadow-2xl border border-slate-700/50 flex flex-col transition-all duration-300 ease-in-out ${
             viewportInfo.isMobile
-              ? 'inset-0 rounded-none'
+              ? 'inset-0 rounded-none overflow-hidden'
               : 'bottom-20 right-6 w-96 h-[600px] rounded-2xl overflow-hidden'
           }`}
+          style={{
+            ...(viewportInfo.isMobile && viewportInfo.viewportHeight
+              ? {
+                  height: `${viewportInfo.viewportHeight}px`,
+                  maxHeight: `${viewportInfo.viewportHeight}px`,
+                }
+              : {}),
+          }}
         >
-          {/* Header - Fixed at top */}
-          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between flex-shrink-0">
+          {/* Header - Fixed at top, always visible */}
+          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between flex-shrink-0 relative z-10">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
                 <Bot className="w-5 h-5 text-white" />
@@ -550,8 +558,10 @@ export default function ChatWidget() {
               ...(viewportInfo.isMobile && viewportInfo.viewportHeight
                 ? {
                     // Header ~80px + Input ~120px = 200px, so messages area gets remaining space
-                    height: `${viewportInfo.viewportHeight - 200}px`,
-                    maxHeight: `${viewportInfo.viewportHeight - 200}px`,
+                    // Ensure header is always visible by using calc
+                    height: `calc(${viewportInfo.viewportHeight}px - 200px)`,
+                    maxHeight: `calc(${viewportInfo.viewportHeight}px - 200px)`,
+                    minHeight: 0,
                   }
                 : {}),
             }}
