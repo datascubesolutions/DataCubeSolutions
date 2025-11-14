@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Factory, Cloud, ShoppingCart, Building2, Home, Globe } from 'lucide-react';
@@ -145,51 +145,77 @@ const projects = [
 export default function Projects() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Ensure component is mounted on client before running animations
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !isMounted) return;
     
-    // Use a small delay to ensure everything is loaded (Chrome-specific fix)
+    // Detect mobile/touch device for performance optimization
+    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
+                     'ontouchstart' in window || 
+                     navigator.maxTouchPoints > 0;
+
+    // Register ScrollTrigger if available
+    if (typeof ScrollTrigger !== 'undefined' && typeof gsap.registerPlugin === 'function') {
+      try {
+        gsap.registerPlugin(ScrollTrigger);
+      } catch (e) {
+        console.warn('ScrollTrigger registration failed:', e);
+      }
+    }
+    
+    // Use a small delay to ensure everything is loaded
     const timer = setTimeout(() => {
       try {
-        // Ensure ScrollTrigger is available before registering
-        if (!ScrollTrigger || typeof ScrollTrigger !== 'object') {
-          console.warn('ScrollTrigger is not available');
-          return;
-        }
-        
-        // Register ScrollTrigger safely
-        if (typeof gsap.registerPlugin === 'function') {
-          gsap.registerPlugin(ScrollTrigger);
-        }
-        
         const cards = cardsRef.current.filter(Boolean) as HTMLElement[];
         
         if (cards.length === 0) return;
 
-        // Set initial state - cards hidden slightly below
-        gsap.set(cards, {
-          opacity: 0,
-          y: 40,
+        // Set initial state with GPU acceleration - only on client
+        cards.forEach((card) => {
+          if (card) {
+            gsap.set(card, {
+              opacity: 0,
+              y: 30,
+              willChange: 'transform, opacity',
+              transform: 'translateZ(0)', // GPU acceleration
+            });
+          }
         });
 
-        // Animate cards one by one on scroll
+        // Optimized card animations - fast and smooth
         cards.forEach((card, index) => {
           if (!card) return;
           
-          gsap.to(card, {
-            opacity: 1,
-            y: 0,
-            duration: 0.45,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 90%',
-              end: 'top 70%',
-              toggleActions: 'play none none reverse',
-            },
-            delay: index * 0.05,
-          });
+          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+            gsap.to(card, {
+              opacity: 1,
+              y: 0,
+              duration: isMobile ? 0.25 : 0.3,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+                once: true, // Only animate once for better performance
+              },
+              delay: index * (isMobile ? 0.02 : 0.03),
+            });
+          } else {
+            // Fallback without ScrollTrigger
+            gsap.to(card, {
+              opacity: 1,
+              y: 0,
+              duration: 0.25,
+              delay: index * 0.03,
+              ease: 'power2.out',
+            });
+          }
         });
       } catch (error) {
         console.error('Error setting up card animations:', error);
@@ -199,7 +225,7 @@ export default function Projects() {
     return () => {
       clearTimeout(timer);
       try {
-        if (ScrollTrigger && typeof ScrollTrigger.getAll === 'function') {
+        if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger && typeof ScrollTrigger.getAll === 'function') {
           const triggers = ScrollTrigger.getAll();
           if (Array.isArray(triggers)) {
             triggers.forEach((trigger) => {
@@ -213,7 +239,7 @@ export default function Projects() {
         console.error('Error cleaning up ScrollTrigger:', error);
       }
     };
-  }, []);
+  }, [isMounted]);
 
   return (
     <section
@@ -249,20 +275,23 @@ export default function Projects() {
               ref={(el) => {
                 cardsRef.current[index] = el;
               }}
-              className={`project-card group relative bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-200 border-2 border-transparent hover:border-purple-500/30 ${project.url ? 'cursor-pointer' : ''}`}
-              style={{ transformStyle: 'preserve-3d', willChange: 'transform', backfaceVisibility: 'hidden' }}
+              className={`project-card group relative bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden sm:hover:shadow-3xl transition-transform duration-200 border-2 border-transparent sm:hover:border-purple-500/30 ${project.url ? 'cursor-pointer' : ''}`}
+              style={{ 
+                willChange: isMounted ? 'transform, opacity' : 'auto',
+              }}
+              suppressHydrationWarning
               onClick={() => {
                 if (project.url) {
                   window.open(project.url, '_blank', 'noopener,noreferrer');
                 }
               }}
             >
-              {/* Gradient glow overlay */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
+              {/* Gradient glow overlay - desktop only */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 sm:group-hover:opacity-20 transition-opacity duration-200`}></div>
               
-              {/* Shine effect */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              {/* Shine effect - desktop only */}
+              <div className="absolute inset-0 opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full sm:group-hover:translate-x-full transition-transform duration-500"></div>
               </div>
 
               {/* Header Section */}
@@ -309,10 +338,10 @@ export default function Projects() {
 
               {/* Content Section */}
               <div className="relative z-10 p-6">
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 transition-all duration-200">
+                <h3 className="text-xl font-bold text-white mb-3 sm:group-hover:text-transparent sm:group-hover:bg-clip-text sm:group-hover:bg-gradient-to-r sm:group-hover:from-purple-400 sm:group-hover:to-pink-400 transition-colors duration-200">
                   {project.title}
                 </h3>
-                <p className="text-gray-300 mb-6 text-sm leading-relaxed group-hover:text-gray-200 transition-colors duration-200">
+                <p className="text-gray-300 mb-6 text-sm leading-relaxed sm:group-hover:text-gray-200 transition-colors duration-200">
                   {project.description}
                 </p>
 
@@ -335,15 +364,15 @@ export default function Projects() {
                   {project.tech.map((tech, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-gray-700/50 backdrop-blur-sm text-gray-300 text-xs font-medium rounded-full border border-gray-600/50 group-hover:border-gray-500 group-hover:text-white transition-all duration-200"
+                      className="px-3 py-1 bg-gray-700/50 backdrop-blur-sm text-gray-300 text-xs font-medium rounded-full border border-gray-600/50 sm:group-hover:border-gray-500 sm:group-hover:text-white transition-colors duration-200"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
 
-                {/* Bottom gradient line */}
-                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${project.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`}></div>
+                {/* Bottom gradient line - desktop only */}
+                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${project.gradient} transform scale-x-0 sm:group-hover:scale-x-100 transition-transform duration-200`}></div>
               </div>
             </div>
           ))}

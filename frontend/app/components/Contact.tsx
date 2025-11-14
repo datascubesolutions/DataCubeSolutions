@@ -33,144 +33,134 @@ export default function Contact() {
   const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Detect mobile/touch device
+    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
+                     'ontouchstart' in window || 
+                     navigator.maxTouchPoints > 0;
+
+    // Register ScrollTrigger only if available
+    if (typeof ScrollTrigger !== 'undefined' && typeof gsap.registerPlugin === 'function') {
+      try {
+        gsap.registerPlugin(ScrollTrigger);
+      } catch (e) {
+        console.warn('ScrollTrigger registration failed:', e);
+      }
+    }
+
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        '.contact-form',
-        {
-          opacity: 0,
-          x: -50,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-            toggleActions: 'play none none reverse',
+      // Simplified animations for better performance
+      if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+        // Form entrance - simplified
+        gsap.fromTo(
+          '.contact-form',
+          {
+            opacity: 0,
+            y: 30,
           },
-        }
-      );
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
 
-      gsap.fromTo(
-        '.contact-info',
-        {
-          opacity: 0,
-          x: 50,
-        },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.8,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 70%',
-            toggleActions: 'play none none reverse',
+        // Contact info entrance - simplified
+        gsap.fromTo(
+          '.contact-info',
+          {
+            opacity: 0,
+            y: 30,
           },
-        }
-      );
-
-      // Contact icon main animation
-      const mainIcon = sectionRef.current?.querySelector('.contact-icon-main');
-      if (mainIcon) {
-        gsap.to(mainIcon, {
-          scale: 1.15,
-          rotation: 5,
-          duration: 2,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-        });
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 0.1,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+      } else {
+        // Fallback without ScrollTrigger
+        gsap.fromTo('.contact-form', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, delay: 0.1 });
+        gsap.fromTo('.contact-info', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, delay: 0.2 });
       }
 
-      // Stat cards entrance animation
+      // Contact icon animation - only on desktop, lighter animation
+      if (!isMobile) {
+        const mainIcon = sectionRef.current?.querySelector('.contact-icon-main');
+        if (mainIcon) {
+          gsap.to(mainIcon, {
+            scale: 1.1,
+            rotation: 3,
+            duration: 3,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+          });
+        }
+      }
+
+      // Stat cards - simplified entrance, no hover on mobile
       const statCards = sectionRef.current?.querySelectorAll('.contact-stat-card');
-      if (statCards) {
+      if (statCards && !isMobile) {
         statCards.forEach((card, index) => {
           gsap.fromTo(
             card,
-            { scale: 0, opacity: 0, y: 30 },
+            { opacity: 0, y: 20 },
             {
-              scale: 1,
               opacity: 1,
               y: 0,
-              duration: 0.6,
-              delay: 0.3 + index * 0.2,
-              ease: 'back.out(1.7)',
+              duration: 0.5,
+              delay: 0.2 + index * 0.1,
+              ease: 'power2.out',
             }
           );
 
-          // Hover effect
-          card.addEventListener('mouseenter', () => {
-            gsap.to(card, {
-              scale: 1.08,
-              y: -5,
-              duration: 0.3,
-              ease: 'power2.out',
+          // Hover effect - only on desktop
+          if (!isMobile) {
+            card.addEventListener('mouseenter', () => {
+              gsap.to(card, {
+                scale: 1.05,
+                y: -3,
+                duration: 0.2,
+                ease: 'power2.out',
+              });
             });
-          });
-          card.addEventListener('mouseleave', () => {
-            gsap.to(card, {
-              scale: 1,
-              y: 0,
-              duration: 0.3,
-              ease: 'power2.out',
+            card.addEventListener('mouseleave', () => {
+              gsap.to(card, {
+                scale: 1,
+                y: 0,
+                duration: 0.2,
+                ease: 'power2.out',
+              });
             });
-          });
+          }
         });
-      }
-
-      // Send button animation on hover
-      const sendButton = sectionRef.current?.querySelector('.send-button');
-      if (sendButton) {
-        sendButton.addEventListener('mouseenter', () => {
-          gsap.to(sendButton.querySelector('span:first-child'), {
-            x: -5,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
-          gsap.to(sendButton.querySelector('span:last-child'), {
-            x: 10,
-            rotation: 15,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
-        });
-        sendButton.addEventListener('mouseleave', () => {
-          gsap.to(sendButton.querySelector('span:first-child'), {
-            x: 0,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
-          gsap.to(sendButton.querySelector('span:last-child'), {
-            x: 0,
-            rotation: 0,
-            duration: 0.3,
-            ease: 'power2.out',
-          });
-        });
-      }
-
-      // Form input focus animations
-      const inputs = sectionRef.current?.querySelectorAll('input, textarea, select');
-      if (inputs) {
-        inputs.forEach((input) => {
-          input.addEventListener('focus', () => {
-            gsap.to(input, {
-              scale: 1.02,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
-          input.addEventListener('blur', () => {
-            gsap.to(input, {
-              scale: 1,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
+      } else if (statCards && isMobile) {
+        // Simple fade-in on mobile
+        statCards.forEach((card, index) => {
+          gsap.fromTo(
+            card,
+            { opacity: 0 },
+            {
+              opacity: 1,
+              duration: 0.4,
+              delay: 0.1 + index * 0.1,
+            }
+          );
         });
       }
     }, sectionRef);
@@ -251,15 +241,19 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="relative py-12 sm:py-16 md:py-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm z-10 overflow-hidden"
+      className="relative pt-2 pb-12 sm:pt-10 sm:pb-16 md:pt-12 md:pb-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm z-10 overflow-hidden"
+      style={{
+        willChange: 'auto',
+        transform: 'translateZ(0)', // GPU acceleration
+      }}
     >
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-10 sm:mb-12 md:mb-16 relative z-10">
+        <div className="text-center mb-10 sm:mb-12 md:mb-16 relative z-10 -mt-4 sm:-mt-2">
           <div className="relative inline-block mb-4 sm:mb-6">
-            <div className="contact-icon-main flex items-center justify-center">
+            <div className="contact-icon-main flex items-center justify-center" style={{ willChange: 'transform' }}>
               <Mail className="w-20 sm:w-24 md:w-28 h-20 sm:h-24 md:h-28 text-blue-400" />
             </div>
-            <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-2xl animate-pulse"></div>
+            <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-2xl animate-pulse" style={{ willChange: 'opacity' }}></div>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-3 sm:mb-4 relative z-10">
             Get In Touch
@@ -280,6 +274,7 @@ export default function Contact() {
               <div
                 key={index}
                 className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl p-4 sm:p-5 md:p-6 shadow-xl border border-blue-200/50 dark:border-blue-500/20 contact-stat-card text-center"
+                style={{ willChange: 'transform' }}
               >
                 <div className="flex justify-center mb-2 sm:mb-3">
                   <IconComponent className={`w-8 sm:w-9 md:w-10 h-8 sm:h-9 md:h-10 ${stat.color.includes('blue') ? 'text-blue-500' : stat.color.includes('purple') ? 'text-purple-500' : 'text-green-500'}`} />
@@ -309,7 +304,7 @@ export default function Contact() {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                   placeholder="John Doe"
                 />
               </div>
@@ -325,7 +320,7 @@ export default function Contact() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                   placeholder="john@example.com"
                 />
               </div>
@@ -341,7 +336,7 @@ export default function Contact() {
                   required
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                   placeholder="+1 234 567 8900"
                 />
               </div>
@@ -356,7 +351,7 @@ export default function Contact() {
                   name="company"
                   value={formData.company}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                   placeholder="Your Company"
                 />
               </div>
@@ -371,7 +366,7 @@ export default function Contact() {
                   required
                   value={formData.inquiryType}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors"
                 >
                   <option value="">Select an option</option>
                   {inquiryTypes.map((type) => (
@@ -393,7 +388,7 @@ export default function Contact() {
                   rows={5}
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all resize-none"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-colors resize-none"
                   placeholder="Tell us about your project..."
                 />
               </div>
@@ -432,7 +427,8 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-base sm:text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden send-button group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-base sm:text-lg font-semibold rounded-lg shadow-xl hover:shadow-2xl active:scale-95 sm:hover:scale-105 transition-transform duration-200 relative overflow-hidden send-button group disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 disabled:hover:scale-100"
+                style={{ willChange: 'transform' }}
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   <span>{isSubmitting ? 'Sending...' : 'Send Inquiry'}</span>

@@ -230,64 +230,86 @@ export default function Services() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Detect mobile/touch device for performance optimization
+    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
+                     'ontouchstart' in window || 
+                     navigator.maxTouchPoints > 0;
+
+    // Register ScrollTrigger if available
+    if (typeof ScrollTrigger !== 'undefined' && typeof gsap.registerPlugin === 'function') {
+      try {
+        gsap.registerPlugin(ScrollTrigger);
+      } catch (e) {
+        console.warn('ScrollTrigger registration failed:', e);
+      }
+    }
+
     const ctx = gsap.context(() => {
       const title = sectionRef.current?.querySelector('h2');
       const subtitle = sectionRef.current?.querySelector('p');
       const cards = sectionRef.current?.querySelectorAll('.service-card');
 
-      // Title animation
+      // Title animation - very fast
       if (title) {
-        gsap.fromTo(
-          title,
-          {
-            opacity: 0,
-            y: 50,
-            scale: 0.9,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none reverse',
+        if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+          gsap.fromTo(
+            title,
+            {
+              opacity: 0,
+              y: 20,
             },
-          }
-        );
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.3,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 90%',
+                toggleActions: 'play none none none',
+              },
+            }
+          );
+        } else {
+          gsap.fromTo(title, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.3 });
+        }
       }
 
-      // Subtitle animation
+      // Subtitle animation - very fast
       if (subtitle) {
-        gsap.fromTo(
-          subtitle,
-          {
-            opacity: 0,
-            y: 30,
-          },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            delay: 0.2,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none reverse',
+        if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+          gsap.fromTo(
+            subtitle,
+            {
+              opacity: 0,
+              y: 15,
             },
-          }
-        );
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.3,
+              delay: 0.05,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 90%',
+                toggleActions: 'play none none none',
+              },
+            }
+          );
+        } else {
+          gsap.fromTo(subtitle, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, delay: 0.05 });
+        }
       }
 
-      // Services icon main animation
+      // Services icon main animation - lighter on mobile
       const mainIcon = sectionRef.current?.querySelector('.services-icon-main');
-      if (mainIcon) {
+      if (mainIcon && !isMobile) {
         gsap.to(mainIcon, {
-          scale: 1.2,
-          rotation: 360,
+          scale: 1.15,
+          rotation: 5,
           duration: 3,
           repeat: -1,
           ease: 'sine.inOut',
@@ -395,146 +417,65 @@ export default function Services() {
         });
       }
 
-      // Enhanced card animations
+      // Optimized card animations for performance
       if (cards) {
         cards.forEach((card, index) => {
-          const icon = card.querySelector('.text-6xl');
-          const title = card.querySelector('h3');
-          const description = card.querySelector('p');
-          const features = card.querySelectorAll('li');
+          // Set initial state with GPU acceleration
+          gsap.set(card, {
+            opacity: 0,
+            y: 30,
+            willChange: 'transform, opacity',
+            transform: 'translateZ(0)', // GPU acceleration
+          });
 
-          // Card entrance with 3D effect
-          gsap.fromTo(
-            card,
-            {
-              opacity: 0,
-              y: 100,
-              scale: 0.8,
-              rotationX: -20,
-              z: -100,
-            },
-            {
+          // Simplified card entrance - very fast and smooth
+          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
+            gsap.to(card, {
               opacity: 1,
               y: 0,
-              scale: 1,
-              rotationX: 0,
-              z: 0,
-              duration: 0.8,
-              delay: index * 0.2,
-              ease: 'power3.out',
+              duration: isMobile ? 0.25 : 0.3,
+              delay: index * (isMobile ? 0.02 : 0.03),
+              ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+                once: true, // Only animate once for better performance
               },
-            }
-          );
+            });
+          } else {
+            // Fallback without ScrollTrigger
+            gsap.to(card, {
+              opacity: 1,
+              y: 0,
+              duration: 0.25,
+              delay: index * 0.03,
+              ease: 'power2.out',
+            });
+          }
 
-          // Icon animation
-          if (icon) {
-            gsap.fromTo(
-              icon,
-              {
-                scale: 0,
-                rotation: -180,
-                opacity: 0,
-              },
-              {
+          // Simplified - removed nested animations for better performance
+          // Cards animate as a whole unit for smoother performance on Android
+          
+          // Light hover effect - only on desktop
+          if (!isMobile) {
+            card.addEventListener('mouseenter', () => {
+              gsap.to(card, {
+                scale: 1.03,
+                y: -5,
+                duration: 0.2,
+                ease: 'power2.out',
+              });
+            });
+            card.addEventListener('mouseleave', () => {
+              gsap.to(card, {
                 scale: 1,
-                rotation: 0,
-                opacity: 1,
-                duration: 0.6,
-                delay: index * 0.15 + 0.3,
-                ease: 'back.out(2)',
-                scrollTrigger: {
-                  trigger: card,
-                  start: 'top 85%',
-                  toggleActions: 'play none none reverse',
-                },
-              }
-            );
-          }
-
-          // Title fade in
-          if (title) {
-            gsap.fromTo(
-              title,
-              {
-                opacity: 0,
-                x: -20,
-              },
-              {
-                opacity: 1,
-                x: 0,
-                duration: 0.6,
-                delay: index * 0.15 + 0.4,
-                ease: 'power2.out',
-                scrollTrigger: {
-                  trigger: card,
-                  start: 'top 85%',
-                  toggleActions: 'play none none reverse',
-                },
-              }
-            );
-          }
-
-          // Description fade in
-          if (description) {
-            gsap.fromTo(
-              description,
-              {
-                opacity: 0,
-                y: 20,
-              },
-              {
-                opacity: 1,
                 y: 0,
-                duration: 0.6,
-                delay: index * 0.15 + 0.5,
+                duration: 0.2,
                 ease: 'power2.out',
-                scrollTrigger: {
-                  trigger: card,
-                  start: 'top 85%',
-                  toggleActions: 'play none none reverse',
-                },
-              }
-            );
+              });
+            });
           }
-
-          // Features stagger animation
-          features.forEach((feature, featureIndex) => {
-            gsap.fromTo(
-              feature,
-              {
-                opacity: 0,
-                x: -30,
-              },
-              {
-                opacity: 1,
-                x: 0,
-                duration: 0.5,
-                delay: index * 0.15 + 0.6 + featureIndex * 0.1,
-                ease: 'power2.out',
-                scrollTrigger: {
-                  trigger: card,
-                  start: 'top 85%',
-                  toggleActions: 'play none none reverse',
-                },
-              }
-            );
-          });
-
-          // Hover animation on scroll parallax
-          gsap.to(card, {
-            y: -10,
-            scale: 1.02,
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 80%',
-              end: 'top 20%',
-              scrub: 1,
-            },
-          });
         });
       }
     }, sectionRef);
@@ -558,7 +499,14 @@ export default function Services() {
     >
       <div className="container mx-auto px-6 relative z-10">
         {/* Hero Section */}
-        <div className="text-center mb-20 relative" style={{ minHeight: '200px', position: 'relative' }}>
+        <div className="text-center mb-20 relative" style={{ 
+          minHeight: '200px', 
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
           {/* Wires connecting to Rocket */}
           <svg className="rocket-wires-container absolute inset-0 w-full h-full pointer-events-none opacity-0" style={{ zIndex: 1 }}>
             {[
@@ -610,13 +558,25 @@ export default function Services() {
             ))}
           </svg>
 
-          <div className="relative inline-block mb-6 mx-auto">
-            <div className="services-icon-main relative z-10 flex items-center justify-center mx-auto" style={{ 
+          <div className="relative mb-6 mx-auto" style={{ 
+            width: 'fit-content',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <div className="services-icon-main relative z-10 flex items-center justify-center" style={{ 
               width: 'fit-content',
+              position: 'relative',
             }}>
               <Rocket className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 text-blue-400" />
             </div>
-            <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-3xl animate-pulse" style={{
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '100%',
+              height: '100%',
+            }}></div>
             {/* Connection point on rocket */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-blue-400 rounded-full opacity-0 rocket-connection-point">
               <div className="absolute inset-0 w-4 h-4 bg-blue-400 rounded-full animate-ping opacity-75"></div>
@@ -668,7 +628,8 @@ export default function Services() {
               <a
                 key={service.id}
                 href={servicePaths[service.id]}
-                className="service-card group relative bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-6 hover:scale-105 border-2 border-transparent hover:border-blue-500/50 block cursor-pointer overflow-hidden"
+                className="service-card group relative bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 hover:shadow-3xl transition-transform duration-200 sm:hover:-translate-y-6 sm:hover:scale-105 border-2 border-transparent sm:hover:border-blue-500/50 block cursor-pointer overflow-hidden"
+                style={{ willChange: 'transform, opacity' }}
               >
                 {/* Gradient background on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>

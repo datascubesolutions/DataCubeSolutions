@@ -660,22 +660,18 @@ export default function ChatWidget() {
           style={{
             zIndex: 10002,
             pointerEvents: 'auto',
-            ...(viewportInfo.isMobile && viewportInfo.viewportHeight && !viewportInfo.isIOS
+            ...(viewportInfo.isMobile && viewportInfo.viewportHeight
               ? {
-                  // Use visualViewport height when keyboard is open (Android)
+                  // Use visualViewport height when keyboard is open (works for both iOS and Android)
                   height: `${viewportInfo.viewportHeight}px`,
                   maxHeight: `${viewportInfo.viewportHeight}px`,
                   willChange: 'height',
                   transform: 'translateZ(0)', // GPU acceleration
-                }
-              : viewportInfo.isMobile && viewportInfo.isIOS
-              ? {
-                  // iOS: Use fixed positioning, don't resize container
-                  height: '100vh',
-                  maxHeight: '100vh',
-                  willChange: 'transform',
-                  transform: 'translateZ(0)', // GPU acceleration
-                  WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+                  ...(viewportInfo.isIOS
+                    ? {
+                        WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+                      }
+                    : {}),
                 }
               : {}),
           }}
@@ -718,9 +714,8 @@ export default function ChatWidget() {
             style={{
               willChange: 'scroll-position',
               transform: 'translateZ(0)', // GPU acceleration for smooth scrolling
-              ...(viewportInfo.isMobile && viewportInfo.isIOS
+              ...(viewportInfo.isIOS
                 ? {
-                    paddingBottom: '140px', // Space for fixed input area
                     WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
                   }
                 : {}),
@@ -812,13 +807,9 @@ export default function ChatWidget() {
           <div 
             className="p-4 border-t border-slate-700/50 bg-slate-900/50 flex-shrink-0"
             style={{
-              ...(viewportInfo.isMobile && viewportInfo.isIOS
+              ...(viewportInfo.isIOS
                 ? {
                     paddingBottom: `calc(1rem + env(safe-area-inset-bottom))`,
-                    position: 'sticky',
-                    bottom: 0,
-                    backgroundColor: 'rgb(15 23 42 / 0.5)', // bg-slate-900/50
-                    backdropFilter: 'blur(8px)',
                   }
                 : {}),
             }}
