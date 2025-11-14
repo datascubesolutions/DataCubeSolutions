@@ -103,22 +103,71 @@ export default function ChatWidget() {
   };
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+      // Use requestAnimationFrame for smooth scrolling without lag
+      requestAnimationFrame(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  // Auto-scroll when viewport height changes (keyboard opens/closes)
+  // Auto-scroll when viewport height changes (keyboard opens/closes) - optimized
   useEffect(() => {
     if (isOpen && viewportInfo.isMobile) {
-      // Small delay to ensure layout has updated
-      setTimeout(() => {
-        scrollToBottom();
-      }, 100);
+      // Use requestAnimationFrame for smooth updates
+      const rafId = requestAnimationFrame(() => {
+        setTimeout(() => {
+          scrollToBottom();
+        }, 50); // Reduced delay for better responsiveness
+      });
+      return () => cancelAnimationFrame(rafId);
     }
   }, [viewportInfo.viewportHeight, isOpen, viewportInfo.isMobile]);
+
+  // Prevent body scroll and hide background when chat is open on mobile (WhatsApp style)
+  useEffect(() => {
+    if (isOpen && viewportInfo.isMobile) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPosition = document.body.style.position;
+      const originalWidth = document.body.style.width;
+      const originalTop = document.body.style.top;
+      
+      // Get current scroll position
+      const scrollY = window.scrollY;
+      
+      // Prevent background scroll
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${scrollY}px`;
+      
+      // Hide background content
+      const mainContent = document.querySelector('main') || document.body;
+      if (mainContent) {
+        (mainContent as HTMLElement).style.visibility = 'hidden';
+      }
+      
+      return () => {
+        // Restore body styles
+        document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.width = originalWidth;
+        document.body.style.top = originalTop;
+        
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+        
+        // Show background content
+        if (mainContent) {
+          (mainContent as HTMLElement).style.visibility = '';
+        }
+      };
+    }
+  }, [isOpen, viewportInfo.isMobile]);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -126,13 +175,26 @@ export default function ChatWidget() {
     }
   }, [isOpen]);
 
-  // Track viewport + keyboard offset for mobile to prevent layout jumps
+  // Track viewport + keyboard offset for mobile to prevent layout jumps (optimized with throttling)
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const mobileQuery = window.matchMedia('(max-width: 768px)');
+    let rafId: number | null = null;
+    let lastUpdate = 0;
+    const throttleDelay = 16; // ~60fps
 
     const updateViewportState = () => {
+      const now = Date.now();
+      if (now - lastUpdate < throttleDelay) {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          updateViewportState();
+        });
+        return;
+      }
+      lastUpdate = now;
+
       const isMobile = mobileQuery.matches;
       let keyboardOffset = 0;
       let viewportHeight = window.innerHeight;
@@ -161,11 +223,12 @@ export default function ChatWidget() {
       mobileQuery.addListener(updateViewportState);
     }
 
-    window.addEventListener('resize', updateViewportState);
-    visualViewport?.addEventListener('resize', updateViewportState);
-    visualViewport?.addEventListener('scroll', updateViewportState);
+    window.addEventListener('resize', updateViewportState, { passive: true });
+    visualViewport?.addEventListener('resize', updateViewportState, { passive: true });
+    visualViewport?.addEventListener('scroll', updateViewportState, { passive: true });
 
     return () => {
+      if (rafId) cancelAnimationFrame(rafId);
       if (mobileQuery.removeEventListener) {
         mobileQuery.removeEventListener('change', updateViewportState);
       } else {
@@ -505,22 +568,25 @@ export default function ChatWidget() {
       {/* Chat Box - Full screen on mobile, normal on desktop */}
       {isOpen && (
         <div
-          className={`fixed z-50 bg-slate-800/95 backdrop-blur-xl shadow-2xl border border-slate-700/50 flex flex-col transition-all duration-300 ease-in-out ${
+          className={`fixed z-[9999] flex flex-col ${
             viewportInfo.isMobile
-              ? 'inset-0 rounded-none overflow-hidden'
-              : 'bottom-20 right-6 w-96 h-[600px] rounded-2xl overflow-hidden'
+              ? 'inset-0 rounded-none bg-slate-900' // Solid background on mobile, no transparency
+              : 'bottom-20 right-6 w-96 h-[600px] rounded-2xl bg-slate-800/95 backdrop-blur-xl shadow-2xl border border-slate-700/50'
           }`}
           style={{
             ...(viewportInfo.isMobile && viewportInfo.viewportHeight
               ? {
+                  // Use visualViewport height when keyboard is open
                   height: `${viewportInfo.viewportHeight}px`,
                   maxHeight: `${viewportInfo.viewportHeight}px`,
+                  willChange: 'height',
+                  transform: 'translateZ(0)', // GPU acceleration
                 }
               : {}),
           }}
         >
-          {/* Header - Fixed at top, always visible */}
-          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between flex-shrink-0 relative z-10">
+          {/* Header - Sticky at top (WhatsApp style) */}
+          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
                 <Bot className="w-5 h-5 text-white" />
@@ -551,19 +617,12 @@ export default function ChatWidget() {
             </button>
           </div>
 
-          {/* Messages Area - Scrollable, takes remaining space */}
+          {/* Messages Area - Scrollable middle section (WhatsApp style) */}
           <div 
             className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-0"
             style={{
-              ...(viewportInfo.isMobile && viewportInfo.viewportHeight
-                ? {
-                    // Header ~80px + Input ~120px = 200px, so messages area gets remaining space
-                    // Ensure header is always visible by using calc
-                    height: `calc(${viewportInfo.viewportHeight}px - 200px)`,
-                    maxHeight: `calc(${viewportInfo.viewportHeight}px - 200px)`,
-                    minHeight: 0,
-                  }
-                : {}),
+              willChange: 'scroll-position',
+              transform: 'translateZ(0)', // GPU acceleration for smooth scrolling
             }}
           >
             {messages.map((message) => (
@@ -636,7 +695,7 @@ export default function ChatWidget() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area - Fixed at bottom */}
+          {/* Input Area - Fixed at bottom (WhatsApp style) */}
           <div className="p-4 border-t border-slate-700/50 bg-slate-900/50 flex-shrink-0">
             <div className="flex items-center gap-2">
               <input
@@ -645,6 +704,16 @@ export default function ChatWidget() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
+                onFocus={() => {
+                  // Scroll to bottom when input is focused (keyboard opens) - optimized
+                  if (viewportInfo.isMobile) {
+                    requestAnimationFrame(() => {
+                      setTimeout(() => {
+                        scrollToBottom();
+                      }, 200); // Reduced delay for smoother experience
+                    });
+                  }
+                }}
                 placeholder="Type your message..."
                 className="flex-1 bg-slate-700/50 border border-slate-600/50 rounded-lg px-4 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 disabled={isTyping}
