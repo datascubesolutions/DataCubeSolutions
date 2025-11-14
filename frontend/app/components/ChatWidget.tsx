@@ -211,7 +211,7 @@ export default function ChatWidget() {
     }
 
     // Connect WebSocket
-    const wsUrl = `ws://localhost:8000/ws/${tokenRef.current}`;
+    const wsUrl = `wss://data-scube-ai.onrender.com/ws/${tokenRef.current}`;
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
