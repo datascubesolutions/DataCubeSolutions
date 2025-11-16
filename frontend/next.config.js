@@ -77,8 +77,8 @@ const nextConfig = {
   // Experimental features for better performance
   experimental: {
     optimizePackageImports: ['lucide-react', 'gsap'],
-    // Enable faster page transitions
-    optimizeCss: true,
+    // Disable optimizeCss to avoid critters dependency issue
+    // optimizeCss: true,
   },
   
   // Optimize production builds
@@ -141,6 +141,9 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  
+  // Skip static generation for error pages during build
+  // Error pages are handled dynamically
 }
 
 module.exports = nextConfig

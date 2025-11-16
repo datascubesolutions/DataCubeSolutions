@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import FastLink from './components/FastLink';
-import { gsap } from 'gsap';
+import { useGSAP } from './utils/useGSAP';
+import { shouldAnimate } from './utils/motion';
 import { Home, ArrowLeft } from 'lucide-react';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -12,87 +13,61 @@ export default function NotFound() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  // Use optimized GSAP hook for animations
+  useGSAP((gsap) => {
+    if (!shouldAnimate() || typeof window === 'undefined') return;
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+    try {
+      // Title animation
+      if (titleRef.current) {
+        gsap.fromTo(
+          titleRef.current,
+          { opacity: 0, y: -30, scale: 0.9 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: 'power3.out',
+          }
+        );
+      }
 
-    // Simple fade-in animations without GSAP context
-    const timer = setTimeout(() => {
-      try {
-        // Title animation
-        if (titleRef.current) {
-          gsap.fromTo(
-            titleRef.current,
-            { opacity: 0, y: -30, scale: 0.9 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.8,
-              ease: 'power3.out',
-            }
-          );
-        }
+      // Subtitle animation
+      if (subtitleRef.current) {
+        gsap.fromTo(
+          subtitleRef.current,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            delay: 0.2,
+            ease: 'power3.out',
+          }
+        );
+      }
 
-        // Subtitle animation
-        if (subtitleRef.current) {
-          gsap.fromTo(
-            subtitleRef.current,
-            { opacity: 0, y: 20 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.8,
-              delay: 0.2,
-              ease: 'power3.out',
-            }
-          );
-        }
-
-        // Button animation
-        if (buttonRef.current) {
-          gsap.fromTo(
-            buttonRef.current,
-            { opacity: 0, scale: 0.8 },
-            {
-              opacity: 1,
-              scale: 1,
-              duration: 0.6,
-              delay: 0.4,
-              ease: 'back.out(1.7)',
-            }
-          );
-        }
-      } catch (error) {
+      // Button animation
+      if (buttonRef.current) {
+        gsap.fromTo(
+          buttonRef.current,
+          { opacity: 0, scale: 0.8 },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.6,
+            delay: 0.4,
+            ease: 'back.out(1.7)',
+          }
+        );
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
         console.error('Animation error:', error);
       }
-    }, 100);
-
-    return () => {
-      clearTimeout(timer);
-      // Cleanup animations
-      if (titleRef.current) {
-        gsap.killTweensOf(titleRef.current);
-      }
-      if (subtitleRef.current) {
-        gsap.killTweensOf(subtitleRef.current);
-      }
-      if (buttonRef.current) {
-        gsap.killTweensOf(buttonRef.current);
-      }
-    };
+    }
   }, []);
 
   return (
@@ -159,15 +134,21 @@ export default function NotFound() {
             <FastLink
               href="/"
               prefetch={true}
-              className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white text-sm sm:text-base font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+              className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white text-sm sm:text-base font-semibold rounded-lg shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 min-h-[44px] touch-manipulation"
             >
               <Home className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Go to Home</span>
             </FastLink>
             
             <button
-              onClick={() => window.history.back()}
-              className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-slate-800/80 hover:bg-slate-700/80 text-white text-sm sm:text-base font-semibold rounded-lg border border-slate-700 hover:border-slate-600 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.history.length > 1) {
+                  window.history.back();
+                } else {
+                  window.location.href = '/';
+                }
+              }}
+              className="group w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-slate-800/80 hover:bg-slate-700/80 text-white text-sm sm:text-base font-semibold rounded-lg border border-slate-700 hover:border-slate-600 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 min-h-[44px] touch-manipulation"
             >
               <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               <span>Go Back</span>
