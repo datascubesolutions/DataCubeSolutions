@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Services from '../components/Services';
 import { BarChart3, Users, Code, Zap, Wrench, Search, Shield, Cloud, ChevronRight, Award, DollarSign, FileText, Globe, Building2, TrendingUp, CheckCircle2 } from 'lucide-react';
+import { useGSAP } from '../utils/useGSAP';
+import { shouldAnimate } from '../utils/motion';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
@@ -156,27 +156,81 @@ const allServices = [
 export default function ServicesPage() {
   const pageRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Fade in animations
+  // Use optimized GSAP hook
+  useGSAP((gsap, ScrollTrigger) => {
+    if (!shouldAnimate()) return;
+
+    // Detect mobile for reduced animations
+    const isMobile = typeof window !== 'undefined' && (
+      window.matchMedia('(max-width: 768px)').matches || 
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0
+    );
+
+    // Fade in animations
+    if (ScrollTrigger) {
       gsap.fromTo(
         '.fade-in',
         { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: isMobile ? 0.6 : 1,
           stagger: 0.2,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: pageRef.current,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
 
-      // Floating service icons animation
+      // Service category cards animation
+      const serviceCategoryCards = pageRef.current?.querySelectorAll('.service-category-card');
+      if (serviceCategoryCards) {
+        serviceCategoryCards.forEach((card, index) => {
+          gsap.fromTo(
+            card,
+            { opacity: 0, y: 60, scale: 0.9 },
+            {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+              duration: isMobile ? 0.4 : 0.6,
+              delay: isMobile ? 0 : index * 0.1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: card,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              },
+            }
+          );
+        });
+      }
+
+      gsap.fromTo(
+        '.process-step',
+        { opacity: 0, x: -30 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: isMobile ? 0.4 : 0.6,
+          stagger: 0.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.how-we-work-section',
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    }
+
+    // Reduced animations on mobile - only desktop gets floating animations
+    if (!isMobile) {
+      // Floating service icons animation - desktop only
       const serviceIcons = pageRef.current?.querySelectorAll('.service-float-icon');
       if (serviceIcons) {
         serviceIcons.forEach((icon, index) => {
@@ -194,7 +248,7 @@ export default function ServicesPage() {
         });
       }
 
-      // Service hub animations
+      // Service hub animations - desktop only
       const serviceHubs = pageRef.current?.querySelectorAll('.service-hub');
       if (serviceHubs) {
         serviceHubs.forEach((hub, index) => {
@@ -209,7 +263,7 @@ export default function ServicesPage() {
         });
       }
 
-      // Service nodes pulse
+      // Service nodes pulse - desktop only
       const serviceNodes = pageRef.current?.querySelectorAll('.service-node');
       if (serviceNodes) {
         serviceNodes.forEach((node, index) => {
@@ -225,7 +279,7 @@ export default function ServicesPage() {
         });
       }
 
-      // Connection lines animation enhancement
+      // Connection lines animation - desktop only
       const connections = pageRef.current?.querySelectorAll('.service-connection');
       if (connections) {
         connections.forEach((connection, index) => {
@@ -239,58 +293,15 @@ export default function ServicesPage() {
           });
         });
       }
-
-      // Service category cards animation
-      const serviceCategoryCards = pageRef.current?.querySelectorAll('.service-category-card');
-      if (serviceCategoryCards) {
-        serviceCategoryCards.forEach((card, index) => {
-          gsap.fromTo(
-            card,
-            { opacity: 0, y: 60, scale: 0.9 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.6,
-              delay: index * 0.1,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          );
-        });
-      }
-
-      gsap.fromTo(
-        '.process-step',
-        { opacity: 0, x: -30 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.6,
-          stagger: 0.2,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: '.how-we-work-section',
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
-    }, pageRef);
-
-    return () => ctx.revert();
+    }
   }, []);
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-gradient-to-b from-gray-950 via-blue-950/50 to-purple-950/50 relative overflow-hidden">
+    <div ref={pageRef} className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
       {/* New Services Network Background Theme */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         {/* Dark base with subtle gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-slate-950 to-gray-950"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950" aria-hidden="true"></div>
 
         {/* Interconnected Service Nodes Network */}
         <svg className="absolute inset-0 w-full h-full opacity-70">

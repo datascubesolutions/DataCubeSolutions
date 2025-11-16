@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { MessageCircle, X, Send, Bot, Mic, Square, Loader2 } from 'lucide-react';
+import { sanitizeHTML } from '../utils/sanitize';
 
 interface Message {
   id: string;
@@ -28,7 +29,7 @@ const formatMessage = (text: string) => {
       return (
         <div key={index} className="flex gap-2 mb-2 last:mb-0">
           <span className="text-blue-400 font-semibold flex-shrink-0">{number}.</span>
-          <span className="flex-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedContent }} />
+          <span className="flex-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitizeHTML(formattedContent) }} />
         </div>
       );
     }
@@ -40,7 +41,7 @@ const formatMessage = (text: string) => {
       return (
         <div key={index} className="flex gap-2 mb-2 last:mb-0">
           <span className="text-blue-400 flex-shrink-0">•</span>
-          <span className="flex-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedContent }} />
+          <span className="flex-1 leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitizeHTML(formattedContent) }} />
         </div>
       );
     }
@@ -49,7 +50,7 @@ const formatMessage = (text: string) => {
     const formattedLine = trimmedLine.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-cyan-300">$1</strong>');
     
     return (
-      <p key={index} className="mb-2 last:mb-0 leading-relaxed" dangerouslySetInnerHTML={{ __html: formattedLine }} />
+      <p key={index} className="mb-2 last:mb-0 leading-relaxed" dangerouslySetInnerHTML={{ __html: sanitizeHTML(formattedLine) }} />
     );
   });
 };
@@ -63,7 +64,45 @@ export default function ChatWidget() {
   const [wsConnected, setWsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const recognitionRef = useRef<any>(null);
+  interface SpeechRecognition extends EventTarget {
+    continuous: boolean;
+    interimResults: boolean;
+    lang: string;
+    onstart: (() => void) | null;
+    onresult: ((event: SpeechRecognitionEvent) => void) | null;
+    onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+    onend: (() => void) | null;
+    start(): void;
+    stop(): void;
+  }
+
+  interface SpeechRecognitionEvent {
+    resultIndex: number;
+    results: SpeechRecognitionResultList;
+  }
+
+  interface SpeechRecognitionErrorEvent {
+    error: string;
+  }
+
+  interface SpeechRecognitionResultList {
+    length: number;
+    [index: number]: SpeechRecognitionResult;
+  }
+
+  interface SpeechRecognitionResult {
+    isFinal: boolean;
+    [index: number]: {
+      transcript: string;
+    };
+  }
+
+  interface WindowWithSpeechRecognition extends Window {
+    SpeechRecognition?: new () => SpeechRecognition;
+    webkitSpeechRecognition?: new () => SpeechRecognition;
+  }
+
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const isListeningRef = useRef(false);
   const wsRef = useRef<WebSocket | null>(null);
   const tokenRef = useRef<string>('');
@@ -276,7 +315,8 @@ export default function ChatWidget() {
   // Initialize Speech Recognition
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const win = window as WindowWithSpeechRecognition;
+      const SpeechRecognition = win.SpeechRecognition || win.webkitSpeechRecognition;
       
       if (SpeechRecognition) {
         const recognition = new SpeechRecognition();
@@ -291,16 +331,19 @@ export default function ChatWidget() {
           isListeningRef.current = true;
         };
 
-        recognition.onresult = (event: any) => {
+        recognition.onresult = (event: SpeechRecognitionEvent) => {
           let interimTranscript = '';
           let finalTranscript = '';
 
           for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
-            if (event.results[i].isFinal) {
-              finalTranscript += transcript + ' ';
-            } else {
-              interimTranscript += transcript;
+            const result = event.results[i];
+            if (result && result[0]) {
+              const transcript = result[0].transcript || '';
+              if (result.isFinal) {
+                finalTranscript += transcript + ' ';
+              } else {
+                interimTranscript += transcript;
+              }
             }
           }
 
@@ -309,7 +352,7 @@ export default function ChatWidget() {
           }
         };
 
-        recognition.onerror = (event: any) => {
+        recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
           console.error('Speech recognition error:', event.error);
           // Don't stop on error, let user manually stop
           if (event.error === 'no-speech') {

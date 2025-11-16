@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Factory, Cloud, ShoppingCart, Building2, Home, Globe } from 'lucide-react';
+import React, { useEffect, useRef, useState, memo } from 'react';
+import { Factory, Cloud, ShoppingCart, Building2, Home, Globe, ExternalLink } from 'lucide-react';
+import { useGSAP } from '../utils/useGSAP';
+import { shouldAnimate } from '../utils/motion';
+import EmptyState from './ui/EmptyState';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
@@ -141,6 +142,18 @@ const projects = [
     gradient: 'from-red-500 to-rose-500',
     stats: { clients: '1M+', efficiency: '97%', scale: 'Kids Tech' },
   },
+  {
+    id: 12,
+    title: 'Business Management Platform',
+    category: 'Web Development',
+    description: 'Comprehensive business management solution with CRM, project tracking, invoicing, and team collaboration. Streamline operations, boost productivity, and scale your business with all-in-one platform.',
+    image: '/assets/images/business-platform.svg',
+    imageType: 'url',
+    url: '#',
+    tech: ['SaaS', 'CRM', 'Project Management'],
+    gradient: 'from-violet-500 to-indigo-500',
+    stats: { clients: '5,000+', efficiency: '94%', scale: 'Enterprise' },
+  },
 ];
 
 function Projects() {
@@ -153,93 +166,53 @@ function Projects() {
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || !isMounted) return;
+  // Use optimized GSAP hook
+  useGSAP((gsap, ScrollTrigger) => {
+    if (!isMounted || !shouldAnimate()) return;
     
     // Detect mobile/touch device for performance optimization
-    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
-                     'ontouchstart' in window || 
-                     navigator.maxTouchPoints > 0;
-
-    // Register ScrollTrigger if available
-    if (typeof ScrollTrigger !== 'undefined' && typeof gsap.registerPlugin === 'function') {
-      try {
-        gsap.registerPlugin(ScrollTrigger);
-      } catch (e) {
-        console.warn('ScrollTrigger registration failed:', e);
-      }
-    }
+    const isMobile = typeof window !== 'undefined' && (
+      window.matchMedia('(max-width: 768px)').matches || 
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0
+    );
     
-    // Use a small delay to ensure everything is loaded
-    const timer = setTimeout(() => {
-      try {
-        const cards = cardsRef.current.filter(Boolean) as HTMLElement[];
+    try {
+      const cards = cardsRef.current.filter(Boolean) as HTMLElement[];
+      
+      if (cards.length === 0) return;
+
+      // Optimized card animations - fast and smooth
+      cards.forEach((card, index) => {
+        if (!card || !ScrollTrigger) return;
         
-        if (cards.length === 0) return;
-
-        // Set initial state with GPU acceleration - only on client
-        cards.forEach((card) => {
-          if (card) {
-            gsap.set(card, {
-              opacity: 0,
-              y: 30,
-              willChange: 'transform, opacity',
-              transform: 'translateZ(0)', // GPU acceleration
-            });
+        gsap.fromTo(
+          card,
+          {
+            opacity: 0,
+            y: 20,
+            scale: 0.95,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: isMobile ? 0.4 : 0.6,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+            },
+            delay: isMobile ? 0 : index * 0.1,
           }
-        });
-
-        // Optimized card animations - fast and smooth
-        cards.forEach((card, index) => {
-          if (!card) return;
-          
-          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
-            gsap.to(card, {
-              opacity: 1,
-              y: 0,
-              duration: isMobile ? 0.25 : 0.3,
-              ease: 'power2.out',
-              scrollTrigger: {
-                trigger: card,
-                start: 'top 95%',
-                toggleActions: 'play none none none',
-                once: true, // Only animate once for better performance
-              },
-              delay: index * (isMobile ? 0.02 : 0.03),
-            });
-          } else {
-            // Fallback without ScrollTrigger
-            gsap.to(card, {
-              opacity: 1,
-              y: 0,
-              duration: 0.25,
-              delay: index * 0.03,
-              ease: 'power2.out',
-            });
-          }
-        });
-      } catch (error) {
+        );
+      });
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
         console.error('Error setting up card animations:', error);
       }
-    }, 100);
-
-    return () => {
-      clearTimeout(timer);
-      try {
-        if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger && typeof ScrollTrigger.getAll === 'function') {
-          const triggers = ScrollTrigger.getAll();
-          if (Array.isArray(triggers)) {
-            triggers.forEach((trigger) => {
-              if (trigger && typeof trigger.kill === 'function') {
-                trigger.kill();
-              }
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Error cleaning up ScrollTrigger:', error);
-      }
-    };
+    }
   }, [isMounted]);
 
   return (
@@ -248,7 +221,7 @@ function Projects() {
       ref={sectionRef}
       className="py-20 relative overflow-hidden"
     >
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16 relative">
           {/* Glowing indicator */}
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-8">
@@ -264,34 +237,52 @@ function Projects() {
               Our Projects
             </span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-slate-300 max-w-2xl mx-auto">
             Showcasing our successful implementations across various industries
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {projects.length === 0 ? (
+          <EmptyState
+            icon="file"
+            title="No Projects Available"
+            description="We're working on adding more projects to showcase. Check back soon!"
+          />
+        ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {projects.map((project, index) => (
             <div
               key={project.id}
               ref={(el) => {
                 cardsRef.current[index] = el;
               }}
-              className={`project-card group relative bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden sm:hover:shadow-3xl transition-transform duration-200 border-2 border-transparent sm:hover:border-purple-500/30 ${project.url ? 'cursor-pointer' : ''}`}
+              className={`project-card group relative bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden sm:hover:shadow-3xl transition-all duration-200 border-2 border-transparent sm:hover:border-purple-500/30 ${project.url ? 'cursor-pointer focus-within:ring-2 focus-within:ring-purple-500 focus-within:ring-offset-2 focus-within:outline-none' : ''}`}
               style={{ 
                 willChange: isMounted ? 'transform, opacity' : 'auto',
               }}
-              suppressHydrationWarning
+              tabIndex={project.url ? 0 : -1}
+              role={project.url ? 'button' : 'article'}
+              aria-label={project.url ? `View ${project.title} project` : project.title}
               onClick={() => {
                 if (project.url) {
                   window.open(project.url, '_blank', 'noopener,noreferrer');
                 }
               }}
+              onKeyDown={(e) => {
+                if (project.url && (e.key === 'Enter' || e.key === ' ')) {
+                  e.preventDefault();
+                  window.open(project.url, '_blank', 'noopener,noreferrer');
+                }
+              }}
             >
+              {/* Window frame effect - React element instead of DOM manipulation */}
+              <div className="absolute inset-0 border-2 border-cyan-400/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" aria-hidden="true"></div>
+              
               {/* Gradient glow overlay - desktop only */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 sm:group-hover:opacity-20 transition-opacity duration-200`}></div>
+              <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 sm:group-hover:opacity-20 transition-opacity duration-200`} aria-hidden="true"></div>
               
               {/* Shine effect - desktop only */}
-              <div className="absolute inset-0 opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 hidden sm:block">
+              <div className="absolute inset-0 opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 hidden sm:block" aria-hidden="true">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full sm:group-hover:translate-x-full transition-transform duration-500"></div>
               </div>
 
@@ -342,7 +333,7 @@ function Projects() {
                 <h3 className="text-xl font-bold text-white mb-3 sm:group-hover:text-transparent sm:group-hover:bg-clip-text sm:group-hover:bg-gradient-to-r sm:group-hover:from-purple-400 sm:group-hover:to-pink-400 transition-colors duration-200">
                   {project.title}
                 </h3>
-                <p className="text-gray-300 mb-6 text-sm leading-relaxed sm:group-hover:text-gray-200 transition-colors duration-200">
+                <p className="text-slate-300 mb-6 text-sm leading-relaxed sm:group-hover:text-slate-200 transition-colors duration-200">
                   {project.description}
                 </p>
 
@@ -353,7 +344,7 @@ function Projects() {
                       <div className={`text-lg font-bold bg-gradient-to-r ${project.gradient} bg-clip-text text-transparent`}>
                         {value}
                       </div>
-                      <div className="text-xs text-gray-400 uppercase tracking-wider">
+                      <div className="text-xs text-slate-400 uppercase tracking-wider">
                         {key}
                       </div>
                     </div>
@@ -365,23 +356,31 @@ function Projects() {
                   {project.tech.map((tech, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-gray-700/50 backdrop-blur-sm text-gray-300 text-xs font-medium rounded-full border border-gray-600/50 sm:group-hover:border-gray-500 sm:group-hover:text-white transition-colors duration-200"
+                      className="px-3 py-1 bg-slate-700/50 backdrop-blur-sm text-slate-300 text-xs font-medium rounded-full border border-slate-600/50 sm:group-hover:border-slate-500 sm:group-hover:text-white transition-colors duration-200"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
 
+                {/* External link indicator */}
+                {project.url && (
+                  <div className="mt-4 flex items-center justify-end">
+                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-purple-400 transition-colors duration-200" aria-hidden="true" />
+                  </div>
+                )}
+
                 {/* Bottom gradient line - desktop only */}
-                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${project.gradient} transform scale-x-0 sm:group-hover:scale-x-100 transition-transform duration-200`}></div>
+                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${project.gradient} transform scale-x-0 sm:group-hover:scale-x-100 transition-transform duration-200`} aria-hidden="true"></div>
               </div>
             </div>
           ))}
         </div>
+        )}
       </div>
     </section>
   );
 }
 
-export default Projects;
+export default memo(Projects);
 

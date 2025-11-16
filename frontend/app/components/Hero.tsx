@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ChipPowerUp from './ChipPowerUp';
+import { shouldAnimate, getAnimationDuration } from '../utils/motion';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
@@ -25,6 +26,8 @@ export default function Hero() {
   const bgTextRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
+    if (!shouldAnimate()) return; // Skip animations if user prefers reduced motion
+
     const ctx = gsap.context(() => {
       // Set GSAP defaults for smooth performance
       gsap.defaults({ 
@@ -33,7 +36,8 @@ export default function Hero() {
       });
 
       // Create a master timeline for coordinated entrance
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      const duration = getAnimationDuration(1.2);
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration } });
 
       // Entrance animations - staggered and smooth
       if (titleRef.current) {
@@ -254,7 +258,7 @@ export default function Hero() {
       </div>
 
       {/* Animated Background Text */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         {backgroundServices.map((service, index) => (
           <div
             key={index}
@@ -263,7 +267,7 @@ export default function Hero() {
             }}
             className={`absolute ${service.position} transform -translate-x-1/2 -translate-y-1/2`}
           >
-            <span className="text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 dark:from-blue-500/10 dark:via-purple-500/10 dark:to-pink-500/10 select-none whitespace-nowrap">
+            <span className="text-4xl sm:text-6xl md:text-8xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 dark:from-blue-500/10 dark:via-purple-500/10 dark:to-pink-500/10 select-none whitespace-nowrap">
               {service.text}
             </span>
           </div>
@@ -285,33 +289,37 @@ export default function Hero() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-6 text-center relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <h1
           ref={titleRef}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent leading-tight"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent leading-tight"
         >
           Data Scube
         </h1>
         <p
           ref={subtitleRef}
-          className="text-xl md:text-2xl lg:text-3xl text-gray-700 dark:text-gray-200 mb-6 max-w-3xl mx-auto leading-relaxed font-medium"
+          className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-gray-700 dark:text-gray-200 mb-4 sm:mb-6 max-w-3xl mx-auto leading-relaxed font-semibold px-2"
         >
           Transforming Businesses with{' '}
-          <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent font-bold">
+          <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent font-bold">
             ERP, CRM & Web Development
           </span>{' '}
           Solutions
         </p>
         <p 
           ref={descRef}
-          className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-12 max-w-2xl mx-auto"
+          className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed px-2"
         >
           Empowering your business with cutting-edge technology and innovative solutions
         </p>
         <button
           ref={buttonRef}
           onClick={() => scrollToSection('contact')}
-          className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 relative overflow-hidden group"
+          onMouseDown={(e) => e.currentTarget.classList.add('active')}
+          onMouseUp={(e) => e.currentTarget.classList.remove('active')}
+          onMouseLeave={(e) => e.currentTarget.classList.remove('active')}
+          className="px-6 sm:px-8 py-3 sm:py-4 min-h-[44px] bg-gradient-to-r from-blue-600 to-purple-600 text-white text-base sm:text-lg font-semibold rounded-full shadow-lg hover:shadow-xl active:scale-[0.98] transform hover:scale-[1.02] transition-all duration-300 ease-out relative overflow-hidden group focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:outline-none"
+          aria-label="Get started with Data Scube Solutions"
         >
           <span className="relative z-10">Get Started Today</span>
           <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
@@ -319,14 +327,15 @@ export default function Hero() {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+      <div className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce" aria-hidden="true">
         <div className="flex flex-col items-center text-gray-600 dark:text-gray-400">
-          <span className="text-sm mb-2 font-medium">Scroll</span>
+          <span className="text-xs sm:text-sm mb-2 font-medium">Scroll</span>
           <svg
-            className="w-6 h-6"
+            className="w-5 h-5 sm:w-6 sm:h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"

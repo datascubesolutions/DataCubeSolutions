@@ -1,39 +1,52 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Contact from '../components/Contact';
 import { Mail, MessageCircle, Smartphone, Phone } from 'lucide-react';
+import { useGSAP } from '../utils/useGSAP';
+import { shouldAnimate } from '../utils/motion';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
 export default function ContactPage() {
   const pageRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Fade in animation
+  // Use optimized GSAP hook
+  useGSAP((gsap, ScrollTrigger) => {
+    if (!shouldAnimate()) return;
+
+    // Detect mobile for reduced animations
+    const isMobile = typeof window !== 'undefined' && (
+      window.matchMedia('(max-width: 768px)').matches || 
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0
+    );
+
+    // Fade in animation
+    if (ScrollTrigger) {
       gsap.fromTo(
         '.fade-in',
         { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: isMobile ? 0.6 : 1,
           stagger: 0.2,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: pageRef.current,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
+    }
 
-      // Message bubbles floating animation
+    // Reduced animations on mobile - only desktop gets floating animations
+    if (!isMobile) {
+      // Message bubbles floating animation - desktop only
       const messageBubbles = pageRef.current?.querySelectorAll('.message-bubble');
       if (messageBubbles) {
         messageBubbles.forEach((bubble, index) => {
@@ -51,7 +64,7 @@ export default function ContactPage() {
         });
       }
 
-      // Envelope icons floating and rotating
+      // Envelope icons floating and rotating - desktop only
       const envelopeIcons = pageRef.current?.querySelectorAll('.envelope-icon');
       if (envelopeIcons) {
         envelopeIcons.forEach((envelope, index) => {
@@ -68,7 +81,7 @@ export default function ContactPage() {
         });
       }
 
-      // Phone icons floating
+      // Phone icons floating - desktop only
       const phoneIcons = pageRef.current?.querySelectorAll('.phone-icon');
       if (phoneIcons) {
         phoneIcons.forEach((phone, index) => {
@@ -85,7 +98,7 @@ export default function ContactPage() {
         });
       }
 
-      // Connection nodes pulse animation
+      // Connection nodes pulse animation - desktop only
       const connectionNodes = pageRef.current?.querySelectorAll('.connection-node');
       if (connectionNodes) {
         connectionNodes.forEach((node, index) => {
@@ -101,7 +114,7 @@ export default function ContactPage() {
         });
       }
 
-      // Ripple effects animation
+      // Ripple effects animation - desktop only
       const ripples = pageRef.current?.querySelectorAll('.ripple-effect');
       if (ripples) {
         ripples.forEach((ripple, index) => {
@@ -118,9 +131,7 @@ export default function ContactPage() {
           }
         });
       }
-    }, pageRef);
-
-    return () => ctx.revert();
+    }
   }, []);
 
   return (
@@ -128,7 +139,7 @@ export default function ContactPage() {
       <Header />
       <main ref={pageRef} className="pt-20 sm:pt-24 md:pt-32 relative">
         {/* Animated Background - Communication Theme */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 top-0">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 top-0" aria-hidden="true">
           {/* Mesh Gradient Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-purple-900/40 to-pink-900/40"></div>
 

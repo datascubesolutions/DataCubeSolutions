@@ -1,12 +1,16 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+let isInitialized = false;
+
 /**
  * Initialize GSAP performance optimizations
  * Call this once at app startup
  */
 export function initGSAPOptimizations() {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined' || isInitialized) return;
+  
+  isInitialized = true;
 
   // Register ScrollTrigger
   gsap.registerPlugin(ScrollTrigger);
@@ -31,6 +35,40 @@ export function initGSAPOptimizations() {
   
   // Use will-change for better performance
   // This is handled per-element in components
+}
+
+/**
+ * Cleanup all ScrollTriggers - call this on route changes
+ * This prevents memory leaks and improves performance
+ */
+export function cleanupScrollTriggers() {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    // Kill all ScrollTriggers
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    // Refresh to ensure cleanup
+    ScrollTrigger.refresh();
+  } catch (error) {
+    // Silently fail if cleanup fails
+    console.warn('ScrollTrigger cleanup error:', error);
+  }
+}
+
+/**
+ * Cleanup all GSAP animations - call this on route changes
+ */
+export function cleanupGSAPAnimations() {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    // Kill all tweens
+    gsap.killTweensOf('*');
+    // Cleanup ScrollTriggers
+    cleanupScrollTriggers();
+  } catch (error) {
+    console.warn('GSAP cleanup error:', error);
+  }
 }
 
 /**

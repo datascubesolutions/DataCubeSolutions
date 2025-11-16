@@ -79,9 +79,17 @@ const defaultSettings: ShowErrorMessage = {
   successMessage: '',
 };
 
+import { getApiBaseUrl } from '../app/utils/env';
+
 const Http = async (apiDataProps: IAPIOptions) => {
+  const baseURL = getApiBaseUrl();
+  
+  if (!baseURL) {
+    throw new Error('API base URL is not configured. Please set NEXT_PUBLIC_API_URL or NEXT_PUBLIC_API_BASIC_URL environment variable.');
+  }
+
   const http = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASIC_URL,
+    baseURL,
     headers,
     withCredentials: true,
   });
@@ -102,11 +110,9 @@ const Http = async (apiDataProps: IAPIOptions) => {
 
   const handleSuccess = (response: AxiosResponse<any, any>) => {
     if (typeof window !== 'undefined' && messageSettings && !messageSettings.hideSuccessMessage) {
-      if (messageSettings.successMessage !== '') {
+      if (messageSettings.successMessage && messageSettings.successMessage !== '') {
         Notification({
           type: NOTIFICATION_TYPE_SUCCESS,
-          //@ts-ignore
-
           message: messageSettings.successMessage,
         });
       } else if (response?.data?.meta?.message) {
@@ -148,10 +154,9 @@ const Http = async (apiDataProps: IAPIOptions) => {
     }
 
     if (typeof window !== 'undefined' && messageSettings && !messageSettings.hideErrorMessage) {
-      if (messageSettings.errorMessage !== '') {
+      if (messageSettings.errorMessage && messageSettings.errorMessage !== '') {
         Notification({
           type: NOTIFICATION_TYPE_ERROR,
-          //@ts-ignore
           message: messageSettings.errorMessage,
         });
       } else if (data?.message) {

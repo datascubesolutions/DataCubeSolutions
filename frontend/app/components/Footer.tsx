@@ -79,7 +79,7 @@ export default function Footer() {
 
   return (
     <footer ref={footerRef} className="bg-gray-900 dark:bg-black text-white py-8 sm:py-10 md:py-12">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div 
           ref={footerContentRef} 
           className="footer-content grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-6 sm:mb-8"
@@ -87,23 +87,23 @@ export default function Footer() {
         >
           {/* Company Info */}
           <div>
-            <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Data Scube
             </h3>
             <p className="text-sm sm:text-base text-gray-400 mb-3 sm:mb-4">
               Transforming businesses with cutting-edge ERP, CRM, and Web Development solutions.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors p-2 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation" aria-label="Facebook">
                 <Facebook className="w-6 h-6" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors p-2 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation" aria-label="Twitter">
                 <Twitter className="w-6 h-6" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors p-2 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation" aria-label="LinkedIn">
                 <Linkedin className="w-6 h-6" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
+              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors p-2 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation" aria-label="Instagram">
                 <Instagram className="w-6 h-6" />
               </a>
             </div>
@@ -115,7 +115,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-400 hover:text-white transition-colors">
+                  <Link href={link.href} className="text-gray-400 hover:text-white transition-colors py-2 block min-h-[44px] flex items-center touch-manipulation">
                     {link.label}
                   </Link>
                 </li>
@@ -129,7 +129,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {serviceLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-gray-400 hover:text-white transition-colors">
+                  <Link href={link.href} className="text-gray-400 hover:text-white transition-colors py-2 block min-h-[44px] flex items-center touch-manipulation">
                     {link.label}
                   </Link>
                 </li>
@@ -164,9 +164,9 @@ export default function Footer() {
               © {new Date().getFullYear()} Data Scube. All rights reserved.
             </p>
             <div className="flex flex-wrap justify-center md:justify-end gap-4 sm:gap-6 text-xs sm:text-sm text-gray-400">
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+              <a href="#" className="hover:text-white transition-colors py-2 px-2 min-h-[44px] flex items-center touch-manipulation">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors py-2 px-2 min-h-[44px] flex items-center touch-manipulation">Terms of Service</a>
+              <a href="#" className="hover:text-white transition-colors py-2 px-2 min-h-[44px] flex items-center touch-manipulation">Cookie Policy</a>
             </div>
           </div>
         </div>

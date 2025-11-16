@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import FastLink from './components/FastLink';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -11,6 +11,9 @@ import {
   Cpu, Brain, Sparkle, Stars, Infinity, Code, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { Icon as PremiumIcon } from './components/icons/IconLibrary';
+import SkeletonGrid from './components/ui/SkeletonGrid';
+import { useGSAP } from './utils/useGSAP';
+import { shouldAnimate } from './utils/motion';
 
 const features = [
   {
@@ -144,6 +147,7 @@ export default function Home() {
   const ctaRef = useRef<HTMLDivElement>(null);
   const testimonialsPerSlide = 4;
   const [currentTestimonialSlide, setCurrentTestimonialSlide] = useState(0);
+  // Removed unused isLoadingTestimonials state - testimonials are static data
   const totalTestimonialSlides = Math.max(1, Math.ceil(testimonials.length / testimonialsPerSlide));
 
   const visibleTestimonials = (() => {
@@ -163,68 +167,64 @@ export default function Home() {
     setCurrentTestimonialSlide((prev: number) => (prev + 1) % totalTestimonialSlides);
   };
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    let ctx: any = null;
-    
-    const initGSAP = async () => {
-      try {
-        const { gsap } = await import('gsap');
-        const { ScrollTrigger } = await import('gsap/ScrollTrigger');
-        
-        // Check if ScrollTrigger is available and registerPlugin exists
-        if (ScrollTrigger && typeof gsap.registerPlugin === 'function') {
-          gsap.registerPlugin(ScrollTrigger);
-        } else {
-          console.warn('ScrollTrigger or registerPlugin not available');
-          return;
-        }
-        
-        ctx = gsap.context(() => {
-          // Simple fade-in animations
-      if (titleRef.current) {
-        gsap.fromTo(
-          titleRef.current,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
-        );
-      }
+  // Use optimized GSAP hook instead of manual initialization
+  useGSAP((gsap, ScrollTrigger) => {
+    if (!shouldAnimate()) return;
 
-      if (subtitleRef.current) {
-        gsap.fromTo(
-          subtitleRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: 'power2.out' }
-        );
-      }
+    // Detect mobile for reduced animations
+    const isMobile = typeof window !== 'undefined' && (
+      window.matchMedia('(max-width: 768px)').matches || 
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0
+    );
 
-      if (ctaRef.current) {
-        gsap.fromTo(
-          ctaRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8, delay: 0.4, ease: 'power2.out' }
-        );
-      }
+    // Simple fade-in animations for hero
+    if (titleRef.current) {
+      gsap.fromTo(
+        titleRef.current,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }
+      );
+    }
 
-      // Scroll-triggered animations
-      gsap.utils.toArray('.fade-in-section').forEach((section: any) => {
-        gsap.fromTo(
-          section,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
-            },
-          }
-        );
-      });
+    if (subtitleRef.current) {
+      gsap.fromTo(
+        subtitleRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: 'power2.out' }
+      );
+    }
+
+    if (ctaRef.current) {
+      gsap.fromTo(
+        ctaRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.8, delay: 0.4, ease: 'power2.out' }
+      );
+    }
+
+    // Scroll-triggered animations
+    if (ScrollTrigger) {
+      const sections = pageRef.current?.querySelectorAll('.fade-in-section');
+      if (sections) {
+        sections.forEach((section) => {
+          gsap.fromTo(
+            section,
+            { opacity: 0, y: 40 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: isMobile ? 0.6 : 0.8,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: section,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+              },
+            }
+          );
+        });
+      }
 
       // Feature cards animation
       gsap.fromTo(
@@ -233,7 +233,7 @@ export default function Home() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.6,
+          duration: isMobile ? 0.4 : 0.6,
           stagger: 0.1,
           ease: 'power2.out',
           scrollTrigger: {
@@ -251,29 +251,11 @@ export default function Home() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.6,
+          duration: isMobile ? 0.4 : 0.6,
           stagger: 0.15,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: '.services-section',
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
-
-      // Process steps animation
-      gsap.fromTo(
-        '.process-step',
-        { opacity: 0, x: -30 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.6,
-          stagger: 0.2,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: '.process-section',
             start: 'top 80%',
             toggleActions: 'play none none none',
           },
@@ -287,7 +269,7 @@ export default function Home() {
         {
           opacity: 1,
           y: 0,
-          duration: 0.6,
+          duration: isMobile ? 0.4 : 0.6,
           stagger: 0.15,
           ease: 'power2.out',
           scrollTrigger: {
@@ -297,19 +279,7 @@ export default function Home() {
           },
         }
       );
-      }, pageRef);
-      } catch (error) {
-        console.error('Error initializing GSAP:', error);
-      }
-    };
-    
-    initGSAP();
-    
-    return () => {
-      if (ctx) {
-        ctx.revert();
-      }
-    };
+    }
   }, []);
 
   return (
@@ -341,7 +311,7 @@ export default function Home() {
         <div className="absolute top-1/2 right-1/3 w-40 h-40 sm:w-56 sm:h-56 md:w-80 md:h-80 bg-indigo-600/8 rounded-full blur-3xl"></div>
 
         {/* Small Chip with Irregular Glowing Connections - Center Background */}
-        <div className="absolute top-[25%] md:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] md:w-[280px] md:h-[280px] lg:w-[320px] lg:h-[320px] pointer-events-none z-0">
+        <div className="absolute top-[25%] md:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] sm:w-[240px] sm:h-[240px] md:w-[280px] md:h-[280px] lg:w-[320px] lg:h-[320px] pointer-events-none z-0" aria-hidden="true">
           {/* Outer Glow */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 via-cyan-500/15 to-blue-500/15 blur-3xl animate-pulse"></div>
           
@@ -694,7 +664,7 @@ export default function Home() {
         </div>
 
         {/* Floating Feature Cards in Background */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block" aria-hidden="true">
           {/* Top Left Card */}
           <div className="absolute top-20 left-8 md:left-16 w-52 md:w-64 bg-gradient-to-br from-slate-800/50 to-slate-800/30 backdrop-blur-md rounded-2xl p-5 border border-slate-700/50 shadow-2xl shadow-blue-500/5 opacity-70 hover:opacity-90 transition-all duration-300">
             <div className="flex items-start gap-4">
@@ -863,7 +833,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10" aria-hidden="true">
           <div className="flex flex-col items-center">
             <PremiumIcon name="chevron-down" size="lg" className="text-slate-400 animate-bounce" />
           </div>
@@ -872,7 +842,7 @@ export default function Home() {
 
       {/* Services Section */}
       <section className="services-section py-16 sm:py-20 md:py-24 lg:py-28 relative z-10 bg-gradient-to-b from-slate-950 to-slate-900/50">
-        <div className="container mx-auto px-4 sm:px-6 max-w-7xl">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
           <div className="text-center mb-10 sm:mb-12 md:mb-16 lg:mb-20 fade-in-section">
             <div className="inline-block mb-4">
               <span className="text-sm font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent tracking-widest uppercase">Our Solutions</span>
@@ -937,7 +907,7 @@ export default function Home() {
 
       {/* Why Choose Data Scube Section */}
       <section className="features-section py-24 relative z-10 bg-slate-900/50">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 fade-in-section">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Why Choose Data Scube
@@ -981,7 +951,7 @@ export default function Home() {
 
       {/* Vision Short Intro Section */}
       <section className="py-20 relative z-10 bg-slate-950/90">
-        <div className="container mx-auto px-6 flex flex-col lg:flex-row items-center gap-10 fade-in-section">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-10 fade-in-section">
           <div className="flex-1 space-y-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-700/60 bg-slate-900/60 text-blue-300 text-sm font-semibold">
               <Sparkle className="w-4 h-4" />
@@ -1033,7 +1003,7 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <section className="testimonials-section py-24 relative z-10 bg-slate-950">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="fade-in-section text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               What Our Clients Say
@@ -1049,7 +1019,7 @@ export default function Home() {
             <button
               type="button"
               onClick={handlePrevTestimonial}
-              className="flex-shrink-0 p-3 rounded-full border border-slate-700/50 text-slate-300 hover:border-blue-500/60 hover:text-blue-300 transition-all bg-slate-800/50 hover:bg-slate-700/50 shadow-lg hover:shadow-blue-500/20"
+              className="flex-shrink-0 p-3 rounded-full border border-slate-700/50 text-slate-300 hover:border-blue-500/60 hover:text-blue-300 transition-all bg-slate-800/50 hover:bg-slate-700/50 shadow-lg hover:shadow-blue-500/20 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none"
               aria-label="Previous testimonial"
             >
               <PremiumIcon name="chevron-left" size="lg" />
@@ -1091,7 +1061,7 @@ export default function Home() {
             <button
               type="button"
               onClick={handleNextTestimonial}
-              className="flex-shrink-0 p-3 rounded-full border border-slate-700/50 text-slate-300 hover:border-blue-500/60 hover:text-blue-300 transition-all bg-slate-800/50 hover:bg-slate-700/50 shadow-lg hover:shadow-blue-500/20"
+              className="flex-shrink-0 p-3 rounded-full border border-slate-700/50 text-slate-300 hover:border-blue-500/60 hover:text-blue-300 transition-all bg-slate-800/50 hover:bg-slate-700/50 shadow-lg hover:shadow-blue-500/20 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none"
               aria-label="Next testimonial"
             >
               <PremiumIcon name="chevron-right" size="lg" />
@@ -1099,19 +1069,19 @@ export default function Home() {
           </div>
           
           {/* Page Indicator */}
-          <div className="hidden md:flex justify-center mt-6">
+          {/* <div className="hidden md:flex justify-center mt-6">
             <span className="text-sm font-medium text-slate-400">
               {currentTestimonialSlide + 1} / {totalTestimonialSlides}
             </span>
-          </div>
+          </div> */}
 
           {/* Mobile: Horizontal scroll container */}
-          <div className="md:hidden overflow-x-auto pb-4 -mx-6 px-6 custom-scrollbar" style={{ scrollbarWidth: 'thin' }}>
+          <div className="md:hidden overflow-x-auto pb-4 -mx-4 sm:-mx-6 px-4 sm:px-6 custom-scrollbar touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
             <div className="flex gap-4" style={{ width: 'max-content' }}>
               {testimonials.map((testimonial, index) => (
                 <div
                   key={`${testimonial.name}-${index}`}
-                  className="testimonial-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 flex-shrink-0"
+                  className="testimonial-card bg-slate-800/50 backdrop-blur-sm rounded-xl p-4 sm:p-5 md:p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 flex-shrink-0 touch-manipulation"
                   style={{ width: 'calc(100vw - 3rem)', maxWidth: '400px' }}
                 >
                   <div className="mb-4">
@@ -1158,13 +1128,16 @@ export default function Home() {
                   Let's discuss how our solutions can help you achieve your business goals and drive sustainable growth
             </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <FastLink
+                  <FastLink
               href="/contact"
               prefetch={true}
-                    className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group"
+                    className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-base sm:text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 flex items-center justify-center gap-2 group relative overflow-hidden"
                   >
-                    Get In Touch
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <span className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
+                    <span className="relative z-10 flex items-center gap-2">
+                      Get In Touch
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </FastLink>
                   <FastLink
                     href="/services"

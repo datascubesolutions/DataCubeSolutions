@@ -1,8 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import {
@@ -32,10 +30,8 @@ import {
   Package,
   FolderKanban,
 } from 'lucide-react';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+import { useGSAP } from '../utils/useGSAP';
+import { shouldAnimate } from '../utils/motion';
 
 const supportSteps = [
   {
@@ -209,47 +205,38 @@ const mentorshipHighlights = [
 export default function IndustriesPage() {
   const pageRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
+  // Use optimized GSAP hook
+  useGSAP((gsap, ScrollTrigger) => {
+    if (!shouldAnimate()) return;
+
     // Detect mobile/touch device for performance optimization
-    const isMobile = window.matchMedia('(max-width: 768px)').matches || 
-                     'ontouchstart' in window || 
-                     navigator.maxTouchPoints > 0;
+    const isMobile = typeof window !== 'undefined' && (
+      window.matchMedia('(max-width: 768px)').matches || 
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0
+    );
 
-    // Register ScrollTrigger if available
-    if (typeof ScrollTrigger !== 'undefined' && typeof gsap.registerPlugin === 'function') {
-      try {
-        gsap.registerPlugin(ScrollTrigger);
-      } catch (e) {
-        console.warn('ScrollTrigger registration failed:', e);
-      }
-    }
-
-    const ctx = gsap.context(() => {
+    if (ScrollTrigger) {
       // Fade in animations - very fast
-      if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
-        gsap.utils.toArray<HTMLElement>('.fade-in').forEach((element, index) => {
-          gsap.set(element, {
-            opacity: 0,
-            y: 30,
-            willChange: 'transform, opacity',
-            transform: 'translateZ(0)',
-          });
-          
-          gsap.to(element, {
-            opacity: 1,
-            y: 0,
-            duration: 0.3,
-            delay: index * 0.03,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: element,
-              start: 'top 95%',
-              toggleActions: 'play none none none',
-              once: true,
-            },
-          });
+      const fadeElements = pageRef.current?.querySelectorAll('.fade-in');
+      if (fadeElements) {
+        fadeElements.forEach((element, index) => {
+          gsap.fromTo(
+            element,
+            { opacity: 0, y: 30 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: isMobile ? 0.25 : 0.3,
+              delay: isMobile ? 0 : index * 0.03,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: element,
+                start: 'top 95%',
+                toggleActions: 'play none none none',
+              },
+            }
+          );
         });
       }
 
@@ -257,28 +244,22 @@ export default function IndustriesPage() {
       const stepCards = pageRef.current?.querySelectorAll('.support-step-card');
       if (stepCards) {
         stepCards.forEach((card, index) => {
-          gsap.set(card, {
-            opacity: 0,
-            y: 30,
-            willChange: 'transform, opacity',
-            transform: 'translateZ(0)',
-          });
-          
-          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
-            gsap.to(card, {
+          gsap.fromTo(
+            card,
+            { opacity: 0, y: 30 },
+            {
               opacity: 1,
               y: 0,
               duration: isMobile ? 0.25 : 0.3,
-              delay: index * (isMobile ? 0.03 : 0.05),
+              delay: isMobile ? 0 : index * 0.05,
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
                 start: 'top 95%',
                 toggleActions: 'play none none none',
-                once: true,
               },
-            });
-          }
+            }
+          );
         });
       }
 
@@ -286,28 +267,22 @@ export default function IndustriesPage() {
       const schemeCards = pageRef.current?.querySelectorAll('.scheme-card');
       if (schemeCards) {
         schemeCards.forEach((card, index) => {
-          gsap.set(card, {
-            opacity: 0,
-            x: index % 2 === 0 ? -30 : 30,
-            willChange: 'transform, opacity',
-            transform: 'translateZ(0)',
-          });
-          
-          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
-            gsap.to(card, {
+          gsap.fromTo(
+            card,
+            { opacity: 0, x: index % 2 === 0 ? -30 : 30 },
+            {
               opacity: 1,
               x: 0,
               duration: isMobile ? 0.25 : 0.3,
-              delay: index * (isMobile ? 0.02 : 0.03),
+              delay: isMobile ? 0 : index * 0.03,
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
                 start: 'top 95%',
                 toggleActions: 'play none none none',
-                once: true,
               },
-            });
-          }
+            }
+          );
         });
       }
 
@@ -315,40 +290,32 @@ export default function IndustriesPage() {
       const serviceCards = pageRef.current?.querySelectorAll('.startup-service-card');
       if (serviceCards) {
         serviceCards.forEach((card, index) => {
-          gsap.set(card, {
-            opacity: 0,
-            y: 30,
-            willChange: 'transform, opacity',
-            transform: 'translateZ(0)',
-          });
-          
-          if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger) {
-            gsap.to(card, {
+          gsap.fromTo(
+            card,
+            { opacity: 0, y: 30 },
+            {
               opacity: 1,
               y: 0,
               duration: isMobile ? 0.25 : 0.3,
-              delay: index * (isMobile ? 0.02 : 0.03),
+              delay: isMobile ? 0 : index * 0.03,
               ease: 'power2.out',
               scrollTrigger: {
                 trigger: card,
                 start: 'top 95%',
                 toggleActions: 'play none none none',
-                once: true,
               },
-            });
-          }
+            }
+          );
         });
       }
-    }, pageRef);
-
-    return () => ctx.revert();
+    }
   }, []);
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-gradient-to-b from-gray-950 via-blue-950/50 to-purple-950/50 relative overflow-hidden">
+    <div ref={pageRef} className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
       {/* Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-slate-950 to-gray-950"></div>
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
         <div className="absolute inset-0 opacity-20" style={{ 
           backgroundImage: 'linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)', 
           backgroundSize: '60px 60px' 
@@ -359,7 +326,7 @@ export default function IndustriesPage() {
 
       <main className="relative z-10 pt-24 pb-12">
         {/* Startup Support Overview Hero */}
-        <section className="relative py-20 px-6">
+        <section className="relative py-20 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto max-w-5xl text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/40 bg-blue-500/10 mb-6 fade-in">
               <Rocket className="w-4 h-4 text-blue-300" />
@@ -377,7 +344,7 @@ export default function IndustriesPage() {
         </section>
 
         {/* How We Help Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto max-w-7xl">
             <div className="text-center mb-16 fade-in">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -470,7 +437,7 @@ export default function IndustriesPage() {
         </section>
 
         {/* IT & Digital Solutions Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto max-w-7xl">
             <div className="text-center mb-16 fade-in">
               <div className="inline-flex items-center gap-3 mb-4">
@@ -564,7 +531,7 @@ export default function IndustriesPage() {
         </section>
 
         {/* Mentorship & Funding Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto max-w-6xl">
             <div className="text-center mb-16 fade-in">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -635,7 +602,7 @@ export default function IndustriesPage() {
         </section>
 
         {/* Free Consultation CTA Section */}
-        <section className="py-20 px-6">
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="container mx-auto max-w-4xl">
             <div className="text-center bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 backdrop-blur-md rounded-2xl p-12 border border-blue-400/30 shadow-2xl fade-in">
               <div className="mb-6">

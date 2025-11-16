@@ -6,6 +6,59 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   
+  // Security headers
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin'
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()'
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://data-scube-ai.onrender.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: https: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://data-scube-be.onrender.com https://data-scube-ai.onrender.com wss://data-scube-ai.onrender.com",
+              "frame-ancestors 'self'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; ')
+          }
+        ],
+      },
+    ];
+  },
+  
   // Image optimization
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -37,9 +90,16 @@ const nextConfig = {
     pagesBufferLength: 2,
   },
   
-  // Bundle optimization
+  // Bundle optimization - combined webpack config
   webpack: (config, { isServer }) => {
     if (!isServer) {
+      // Fix for GSAP module resolution
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+
+      // Optimized bundle splitting
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {
@@ -51,13 +111,15 @@ const nextConfig = {
             chunks: 'all',
             test: /node_modules/,
             priority: 20,
+            reuseExistingChunk: true,
           },
-          // GSAP chunk
+          // GSAP chunk - separate for better caching
           gsap: {
             name: 'gsap',
             chunks: 'all',
             test: /[\\/]node_modules[\\/](gsap)[\\/]/,
             priority: 30,
+            reuseExistingChunk: true,
           },
           // Common chunk
           common: {
@@ -78,16 +140,6 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: false,
-  },
-  webpack: (config, { isServer }) => {
-    // Fix for GSAP module resolution
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      };
-    }
-    return config;
   },
 }
 

@@ -1,39 +1,54 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef, memo } from 'react';
+import { useGSAP } from '../utils/useGSAP';
+import { sanitizeHTML } from '../utils/sanitize';
 import { Users, Target, User, Star, Lightbulb, Sparkles, Handshake, Shield, Rocket, Eye, Goal, Briefcase, Calendar, Award, TrendingUp, ArrowRight } from 'lucide-react';
+import {
+  IconUsers,
+  IconTarget,
+  IconUser,
+  IconStar,
+  IconCode,
+  IconSparkles,
+  IconCheckCircle,
+  IconShield,
+  IconRocket,
+  IconGlobe,
+  IconTrendingUp,
+  IconAward,
+  IconBriefcase,
+} from './icons/IconLibrary';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
 const stats = [
-  { number: '30+', label: 'Happy Clients', icon: Users },
-  { number: '12+', label: 'Projects Completed', icon: Target },
-  { number: '15+', label: 'Team Members', icon: User },
-  { number: '2.3+', label: 'Years Experience', icon: Star },
+  { number: '30+', label: 'Happy Clients', icon: IconUsers },
+  { number: '12+', label: 'Projects Completed', icon: IconTarget },
+  { number: '15+', label: 'Team Members', icon: IconUser },
+  { number: '2.3+', label: 'Years Experience', icon: IconStar },
 ];
 
 const values = [
   {
     title: 'Complete Solutions',
     description: 'We provide end-to-end services - from IT solutions to startup support, ensuring all your business needs are met in one place.',
-    icon: Lightbulb,
+    icon: IconCode,
   },
   {
     title: 'Expert Excellence',
     description: 'Our team combines technology expertise with business consulting to deliver exceptional quality in every project.',
-    icon: Sparkles,
+    icon: IconSparkles,
   },
   {
     title: 'Client Success',
     description: 'Your success is our primary goal - whether you\'re a startup needing registration and funding or an enterprise requiring IT solutions.',
-    icon: Handshake,
+    icon: IconCheckCircle,
   },
   {
     title: 'Trusted Partnership',
     description: 'We maintain transparency and integrity in all our dealings, building long-term partnerships with our clients.',
-    icon: Shield,
+    icon: IconShield,
   },
 ];
 
@@ -69,53 +84,53 @@ const timeline = [
     year: '2014',
     title: 'Company Founded',
     description: 'Started with a vision to transform business operations through technology',
-    icon: Rocket,
+    icon: IconRocket,
   },
   {
     year: '2016',
     title: 'First 100 Clients',
     description: 'Reached milestone of serving 100+ satisfied clients',
-    icon: Target,
+    icon: IconTarget,
   },
   {
     year: '2018',
     title: 'International Expansion',
     description: 'Expanded operations to serve clients across multiple countries',
-    icon: TrendingUp,
+    icon: IconTrendingUp,
   },
   {
     year: '2020',
     title: '500+ Projects',
     description: 'Completed over 500 successful projects across various industries',
-    icon: Award,
+    icon: IconAward,
   },
   {
     year: '2022',
     title: '50+ Team Members',
     description: 'Grew to a team of 50+ skilled professionals',
-    icon: Users,
+    icon: IconUsers,
   },
   {
     year: '2024',
     title: 'Industry Leader',
     description: 'Recognized as a leading technology solutions provider',
-    icon: Star,
+    icon: IconStar,
   },
 ];
 
-export default function AboutUs() {
+function AboutUs() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const title = sectionRef.current?.querySelector('h2');
-      const subtitle = sectionRef.current?.querySelector('.about-subtitle');
-      const content = sectionRef.current?.querySelector('.about-content');
-      const stats = statsRef.current?.querySelectorAll('.stat-card');
-      const valueCards = sectionRef.current?.querySelectorAll('.value-card');
+  // Use optimized GSAP hook that doesn't block rendering
+  useGSAP((gsap, ScrollTrigger) => {
+    const title = sectionRef.current?.querySelector('h2');
+    const subtitle = sectionRef.current?.querySelector('.about-subtitle');
+    const content = sectionRef.current?.querySelector('.about-content');
+    const stats = statsRef.current?.querySelectorAll('.stat-card');
+    const valueCards = sectionRef.current?.querySelectorAll('.value-card');
 
-      // Title animation
+    // Title animation
       if (title) {
         gsap.fromTo(
           title,
@@ -485,16 +500,13 @@ export default function AboutUs() {
           }
         );
       }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  }, [sectionRef, statsRef]);
 
   return (
     <section
       id="about"
       ref={sectionRef}
-      className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black relative overflow-hidden"
+      className="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 relative overflow-hidden -mt-20 sm:-mt-24 md:-mt-28 -mb-12 pt-20 sm:pt-24 md:pt-28 pb-12"
     >
       {/* Circuit Board Background */}
       <div className="absolute inset-0 opacity-60">
@@ -632,7 +644,7 @@ export default function AboutUs() {
         </circle>
       </svg>
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16 relative">
           {/* Circuit LED indicator near title */}
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-8">
@@ -685,8 +697,8 @@ export default function AboutUs() {
             <div className="absolute top-0 right-0 w-3 h-3 bg-blue-400 rounded-full shadow-lg shadow-blue-400/50 circuit-connection"></div>
             
             <div className="relative w-full max-w-md">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur-2xl opacity-30 transform rotate-6"></div>
-              <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border-2 border-blue-500/30 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl blur-2xl opacity-30 transform rotate-6"></div>
+              <div className="relative bg-slate-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border-2 border-blue-500/30 overflow-hidden">
                 {/* Circuit board pattern overlay */}
                 <div className="absolute inset-0 opacity-10" style={{
                   backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(59, 130, 246, 0.1) 2px, rgba(59, 130, 246, 0.1) 4px)`,
@@ -697,7 +709,7 @@ export default function AboutUs() {
                 
                 <div className="text-center relative z-10">
                   <div className="mb-4">
-                    <Rocket className="w-16 h-16 text-green-400 mx-auto" />
+                    <IconRocket size="xl" state="info" className="text-emerald-300 mx-auto" />
                   </div>
                   <h4 className="text-2xl font-bold text-white mb-2">
                     Our Mission
@@ -718,7 +730,7 @@ export default function AboutUs() {
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-blue-400/20 via-purple-400/20 to-transparent"></div>
           
           {/* Our Vision */}
-          <div className="vision-card relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border-2 border-blue-500/30 overflow-hidden">
+          <div className="vision-card relative bg-slate-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border-2 border-blue-500/30 overflow-hidden">
             {/* Circuit pattern */}
             <div className="absolute inset-0 opacity-10" style={{
               backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(59, 130, 246, 0.1) 2px, rgba(59, 130, 246, 0.1) 4px)`,
@@ -730,7 +742,7 @@ export default function AboutUs() {
             
             <div className="flex items-center mb-6 relative z-10">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-blue-500/50">
-                <Eye className="w-8 h-8 text-white" />
+                <IconGlobe size="lg" state="info" className="text-cyan-300" />
               </div>
               <h3 className="text-3xl font-bold text-white">
                 Our Vision
@@ -750,7 +762,7 @@ export default function AboutUs() {
           </div>
 
           {/* Our Mission - Enhanced */}
-          <div className="mission-card relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border-2 border-purple-500/30 overflow-hidden">
+          <div className="mission-card relative bg-slate-800/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border-2 border-purple-500/30 overflow-hidden">
             {/* Circuit pattern */}
             <div className="absolute inset-0 opacity-10" style={{
               backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(168, 85, 247, 0.1) 2px, rgba(168, 85, 247, 0.1) 4px)`,
@@ -762,7 +774,7 @@ export default function AboutUs() {
             
             <div className="flex items-center mb-6 relative z-10">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg shadow-purple-500/50">
-                <Goal className="w-8 h-8 text-white" />
+                <IconTarget size="lg" state="info" className="text-purple-100" />
               </div>
               <h3 className="text-3xl font-bold text-white">
                 Our Mission
@@ -790,7 +802,7 @@ export default function AboutUs() {
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="stat-card relative bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 text-center shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-orange-500/30 overflow-hidden"
+              className="stat-card relative bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 text-center shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-orange-500/30 overflow-hidden"
             >
               {/* Circuit pattern overlay */}
               <div className="absolute inset-0 opacity-10" style={{
@@ -801,16 +813,16 @@ export default function AboutUs() {
               <div className={`absolute top-2 ${index % 2 === 0 ? 'left-2' : 'right-2'} w-2 h-2 bg-orange-400 rounded-full shadow-lg shadow-orange-400/50 animate-pulse circuit-card-led`}></div>
               
               <div className="relative z-10">
-                <div className="mb-3">
+                <div className="mb-4">
                   {(() => {
                     const IconComponent = stat.icon;
-                    return <IconComponent className="w-10 h-10 text-orange-400 mx-auto" />;
+                    return <IconComponent size="lg" state="warning" className="text-orange-400 mx-auto" />;
                   })()}
                 </div>
-                <div className="stat-number text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400 mb-2">
+                <div className="stat-number text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400 mb-2">
                   {stat.number}
                 </div>
-                <div className="stat-label text-gray-300 font-medium">
+                <div className="stat-label text-base text-gray-300 font-medium">
                   {stat.label}
                 </div>
               </div>
@@ -819,7 +831,7 @@ export default function AboutUs() {
         </div>
 
         {/* Values Section */}
-        <div className="relative py-20 overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black">
+        <div className="relative py-20 overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
           {/* Circuit Board Background */}
           <div className="absolute inset-0 opacity-40">
             <div
@@ -836,8 +848,8 @@ export default function AboutUs() {
           </div>
 
           {/* Content Container */}
-          <div className="relative z-10 container mx-auto px-6">
-            <div className="text-center mb-16 fade-in">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="text-center mb-12 md:mb-16 fade-in">
               <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 Our Core Values
               </h3>
@@ -845,7 +857,7 @@ export default function AboutUs() {
                 The principles that guide our work and define our culture
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {values.map((value, index) => {
               const borderColors = [
                 'border-blue-500/30',
@@ -869,7 +881,7 @@ export default function AboutUs() {
               return (
                 <div
                   key={index}
-                  className="value-card relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border-2 border-gray-700/50 hover:border-gray-700 overflow-hidden"
+                  className="value-card relative bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-xl border-2 border-slate-700/50 hover:border-slate-700 overflow-hidden h-full"
                 >
                   {/* Circuit pattern */}
                   <div className="absolute inset-0 opacity-10" style={{
@@ -885,7 +897,7 @@ export default function AboutUs() {
                       <div className={`value-icon inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${iconGradients[index]} shadow-lg`}>
                         {(() => {
                           const IconComponent = value.icon;
-                          return <IconComponent className="w-8 h-8 text-white" />;
+                          return <IconComponent size="lg" state="default" className="text-white" />;
                         })()}
                       </div>
                     </div>
@@ -917,7 +929,7 @@ export default function AboutUs() {
         </div>
 
         {/* Leadership Team Section */}
-        <div className="relative py-20 overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black">
+        <div className="relative py-20 overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
           {/* Circuit Board Background */}
           <div className="absolute inset-0 opacity-40">
             <div
@@ -933,8 +945,8 @@ export default function AboutUs() {
             <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-gray-800/30 to-blue-900/20"></div>
           </div>
 
-          <div className="container mx-auto px-6 relative z-10">
-            <div className="text-center mb-16 fade-in">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="text-center mb-12 md:mb-16 fade-in">
               <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 Our Leadership Team
               </h3>
@@ -943,11 +955,11 @@ export default function AboutUs() {
               </p>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
               {leadershipTeam.map((member, index) => (
                 <div
                   key={index}
-                  className="leadership-card group relative bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border-2 border-blue-500/30 hover:border-blue-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden fade-in"
+                  className="leadership-card group relative bg-slate-800/80 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-xl border-2 border-blue-500/30 hover:border-blue-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden fade-in h-full"
                 >
                   {/* Circuit pattern */}
                   <div className="absolute inset-0 opacity-10" style={{
@@ -959,9 +971,9 @@ export default function AboutUs() {
                   
                   <div className="relative z-10 text-center">
                     <div className="mb-4 relative inline-block">
-                      <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 p-1 mx-auto group-hover:scale-110 transition-transform duration-300">
-                        <div className="w-full h-full rounded-full bg-gray-700 flex items-center justify-center overflow-hidden">
-                          <img 
+                      <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 p-1 mx-auto group-hover:scale-110 transition-transform duration-300">
+                        <div className="w-full h-full rounded-full bg-slate-700 flex items-center justify-center overflow-hidden">
+                          <img
                             src={member.image} 
                             alt={member.name}
                             className="w-full h-full object-cover rounded-full"
@@ -970,14 +982,32 @@ export default function AboutUs() {
                               const target = e.target as HTMLImageElement;
                               target.style.display = 'none';
                               const parent = target.parentElement;
-                              if (parent) {
-                                parent.innerHTML = '<div class="w-full h-full bg-gradient-to-br from-blue-400/20 to-purple-400/20 flex items-center justify-center"><svg class="w-14 h-14 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg></div>';
+                              if (parent && !parent.querySelector('.fallback-icon')) {
+                                // Use React-safe approach - create SVG element directly
+                                const fallbackDiv = document.createElement('div');
+                                fallbackDiv.className = 'w-full h-full bg-gradient-to-br from-blue-400/20 to-purple-400/20 flex items-center justify-center fallback-icon';
+                                
+                                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                                svg.setAttribute('class', 'w-14 h-14 text-blue-400');
+                                svg.setAttribute('fill', 'none');
+                                svg.setAttribute('stroke', 'currentColor');
+                                svg.setAttribute('viewBox', '0 0 24 24');
+                                
+                                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                                path.setAttribute('stroke-linecap', 'round');
+                                path.setAttribute('stroke-linejoin', 'round');
+                                path.setAttribute('stroke-width', '2');
+                                path.setAttribute('d', 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z');
+                                
+                                svg.appendChild(path);
+                                fallbackDiv.appendChild(svg);
+                                parent.appendChild(fallbackDiv);
                               }
                             }}
                           />
                         </div>
                       </div>
-                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-5 h-5 bg-green-400 rounded-full border-4 border-gray-800 shadow-lg"></div>
+                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-5 h-5 bg-green-400 rounded-full border-4 border-slate-800 shadow-lg"></div>
                     </div>
                     <h4 className="text-lg font-bold text-white mb-2 group-hover:text-blue-300 transition-colors">
                       {member.name}
@@ -992,7 +1022,7 @@ export default function AboutUs() {
         </div>
 
         {/* Careers Section */}
-        <div className="careers-section relative py-20 overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-black dark:via-gray-900 dark:to-black">
+        <div className="careers-section relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-20">
           {/* Circuit Board Background */}
           <div className="absolute inset-0 opacity-40">
             <div
@@ -1008,11 +1038,11 @@ export default function AboutUs() {
             <div className="absolute inset-0 bg-gradient-to-br from-orange-900/20 via-gray-800/30 to-orange-900/20"></div>
           </div>
 
-          <div className="container mx-auto px-6 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="max-w-4xl mx-auto text-center fade-in">
-              <div className="mb-8">
+              <div className="mb-10 md:mb-12">
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-600 to-red-600 shadow-lg mb-6">
-                  <Briefcase className="w-10 h-10 text-white" />
+                  <IconBriefcase size="lg" state="info" className="text-emerald-300" />
                 </div>
                 <h3 className="text-4xl md:text-5xl font-bold text-white mb-4">
                   Join Our Team
@@ -1023,8 +1053,8 @@ export default function AboutUs() {
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6 mb-10">
-                <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border-2 border-blue-500/30 hover:border-blue-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+              <div className="grid md:grid-cols-3 gap-6 md:gap-8 mb-10">
+                <div className="relative bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 md:p-8 border-2 border-blue-500/30 hover:border-blue-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden h-full">
                   {/* Circuit pattern */}
                   <div className="absolute inset-0 opacity-10" style={{
                     backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(59, 130, 246, 0.1) 2px, rgba(59, 130, 246, 0.1) 4px)`,
@@ -1032,12 +1062,12 @@ export default function AboutUs() {
                   {/* LED indicator */}
                   <div className="absolute top-4 left-4 w-2 h-2 bg-blue-400 rounded-full shadow-lg shadow-blue-400/50 animate-pulse circuit-card-led"></div>
                   <div className="relative z-10">
-                    <Users className="w-10 h-10 text-blue-400 mx-auto mb-4" />
+                    <IconUsers size="lg" state="info" className="text-blue-400 mx-auto mb-4" />
                     <h4 className="text-lg font-semibold text-white mb-2">Collaborative Culture</h4>
                     <p className="text-gray-400 text-sm">Work with talented professionals in a supportive environment</p>
                   </div>
                 </div>
-                <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border-2 border-purple-500/30 hover:border-purple-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+                <div className="relative bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 md:p-8 border-2 border-purple-500/30 hover:border-purple-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden h-full">
                   {/* Circuit pattern */}
                   <div className="absolute inset-0 opacity-10" style={{
                     backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(168, 85, 247, 0.1) 2px, rgba(168, 85, 247, 0.1) 4px)`,
@@ -1045,12 +1075,12 @@ export default function AboutUs() {
                   {/* LED indicator */}
                   <div className="absolute top-4 right-4 w-2 h-2 bg-purple-400 rounded-full shadow-lg shadow-purple-400/50 animate-pulse circuit-card-led"></div>
                   <div className="relative z-10">
-                    <Rocket className="w-10 h-10 text-purple-400 mx-auto mb-4" />
+                    <IconRocket size="lg" state="info" className="text-purple-300 mx-auto mb-4" />
                     <h4 className="text-lg font-semibold text-white mb-2">Growth Opportunities</h4>
                     <p className="text-gray-400 text-sm">Continuous learning and career development programs</p>
                   </div>
                 </div>
-                <div className="relative bg-gray-800/80 backdrop-blur-sm rounded-xl p-6 border-2 border-orange-500/30 hover:border-orange-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+                <div className="relative bg-slate-800/80 backdrop-blur-sm rounded-xl p-6 md:p-8 border-2 border-orange-500/30 hover:border-orange-500/60 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden h-full">
                   {/* Circuit pattern */}
                   <div className="absolute inset-0 opacity-10" style={{
                     backgroundImage: `repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(249, 115, 22, 0.1) 2px, rgba(249, 115, 22, 0.1) 4px)`,
@@ -1058,7 +1088,7 @@ export default function AboutUs() {
                   {/* LED indicator */}
                   <div className="absolute top-4 left-4 w-2 h-2 bg-orange-400 rounded-full shadow-lg shadow-orange-400/50 animate-pulse circuit-card-led"></div>
                   <div className="relative z-10">
-                    <Award className="w-10 h-10 text-orange-400 mx-auto mb-4" />
+                    <IconAward size="lg" state="info" className="text-amber-300 mx-auto mb-4" />
                     <h4 className="text-lg font-semibold text-white mb-2">Competitive Benefits</h4>
                     <p className="text-gray-400 text-sm">Comprehensive benefits package and flexible work options</p>
                   </div>
@@ -1083,4 +1113,7 @@ export default function AboutUs() {
     </section>
   );
 }
+
+// Memoize to prevent unnecessary re-renders
+export default memo(AboutUs);
 

@@ -1,39 +1,70 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
 import { Users, User } from 'lucide-react';
+import { useGSAP } from '../../utils/useGSAP';
+import { shouldAnimate } from '../../utils/motion';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
 export default function CRMServicePage() {
   const pageRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Fade in animation
+  // Use optimized GSAP hook
+  useGSAP((gsap, ScrollTrigger) => {
+    if (!shouldAnimate()) return;
+
+    // Detect mobile for reduced animations
+    const isMobile = typeof window !== 'undefined' && (
+      window.matchMedia('(max-width: 768px)').matches || 
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0
+    );
+
+    // Fade in animation
+    if (ScrollTrigger) {
       gsap.fromTo(
         '.fade-in',
         { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: isMobile ? 0.6 : 1,
           stagger: 0.2,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: pageRef.current,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
 
-      // Customer icons floating animation
+      // Customer metrics counter animation
+      const metrics = pageRef.current?.querySelectorAll('.customer-metric');
+      if (metrics) {
+        metrics.forEach((metric, index) => {
+          gsap.fromTo(
+            metric,
+            { scale: 0.8, opacity: 0 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: isMobile ? 0.4 : 0.6,
+              delay: isMobile ? 0 : 0.5 + index * 0.2,
+              ease: 'back.out(1.7)',
+            }
+          );
+        });
+      }
+    }
+
+    // Reduced animations on mobile - only desktop gets floating animations
+    if (!isMobile) {
+      // Customer icons floating animation - desktop only
       const customerIcons = pageRef.current?.querySelectorAll('.customer-icon');
       if (customerIcons) {
         customerIcons.forEach((icon, index) => {
@@ -50,7 +81,7 @@ export default function CRMServicePage() {
         });
       }
 
-      // Main customer icon animation
+      // Main customer icon animation - desktop only
       const mainIcon = pageRef.current?.querySelector('.customer-icon-main');
       if (mainIcon) {
         gsap.to(mainIcon, {
@@ -63,41 +94,7 @@ export default function CRMServicePage() {
         });
       }
 
-      // Customer metrics counter animation
-      const metrics = pageRef.current?.querySelectorAll('.customer-metric');
-      if (metrics) {
-        metrics.forEach((metric, index) => {
-          gsap.fromTo(
-            metric,
-            { scale: 0.8, opacity: 0 },
-            {
-              scale: 1,
-              opacity: 1,
-              duration: 0.6,
-              delay: 0.5 + index * 0.2,
-              ease: 'back.out(1.7)',
-            }
-          );
-
-          // Hover pulse effect
-          metric.addEventListener('mouseenter', () => {
-            gsap.to(metric, {
-              scale: 1.05,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
-          metric.addEventListener('mouseleave', () => {
-            gsap.to(metric, {
-              scale: 1,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
-        });
-      }
-
-      // Data nodes pulse animation
+      // Data nodes pulse animation - desktop only
       const dataNodes = pageRef.current?.querySelectorAll('.data-node');
       if (dataNodes) {
         dataNodes.forEach((node, index) => {
@@ -112,17 +109,15 @@ export default function CRMServicePage() {
           });
         });
       }
-    }, pageRef);
-
-    return () => ctx.revert();
+    }
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="min-h-screen bg-slate-950 overflow-hidden">
       <Header />
       <main ref={pageRef} className="pt-20 relative">
         {/* Animated Background - Customer Data Flow */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
           {/* Mesh Gradient Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-indigo-900/20"></div>
           
@@ -199,7 +194,7 @@ export default function CRMServicePage() {
 
         {/* Hero Section */}
         <section className="relative py-20 bg-gradient-to-br from-purple-50/90 to-pink-50/90 dark:from-gray-900/95 dark:to-gray-800/95 backdrop-blur-sm z-10">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center fade-in relative z-10">
               <div className="relative inline-block mb-6">
                 <div className="customer-icon-main flex items-center justify-center">
@@ -238,7 +233,7 @@ export default function CRMServicePage() {
 
         {/* Main Content */}
         <section className="relative py-20 z-10">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto space-y-12">
               {/* Overview */}
               <div className="fade-in bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">

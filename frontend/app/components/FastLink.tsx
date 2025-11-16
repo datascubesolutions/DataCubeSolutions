@@ -1,8 +1,8 @@
 'use client';
 
-import { startTransition, useRef } from 'react';
+import { startTransition, useRef, useCallback, memo } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface FastLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
@@ -13,12 +13,13 @@ interface FastLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 }
 
 /**
- * Ultra-fast Link component with:
- * - Prefetch on hover (instant navigation)
- * - startTransition for smooth navigation
- * - Optimized prefetching strategy
+ * Optimized Link component with:
+ * - Debounced prefetch on hover (prevents excessive prefetch calls)
+ * - startTransition for non-blocking navigation
+ * - Prevents prefetch on current route
+ * - Optimized event handlers with useCallback
  */
-export default function FastLink({ 
+function FastLink({ 
   href, 
   children, 
   prefetch = true, 
@@ -27,31 +28,55 @@ export default function FastLink({
   ...props 
 }: FastLinkProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const prefetchedRef = useRef(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleMouseEnter = () => {
-    // Aggressive prefetch on hover for ultra-fast navigation
-    if (!prefetchedRef.current && typeof window !== 'undefined') {
-      prefetchedRef.current = true;
-      // Force prefetch immediately on hover
-      try {
-        router.prefetch(href);
-      } catch (e) {
-        // Silently fail if prefetch fails
-      }
+  // Memoize prefetch handler to prevent recreation
+  const handleMouseEnter = useCallback(() => {
+    // Don't prefetch if already on this route
+    if (pathname === href) {
+      return;
     }
-  };
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Debounce prefetch to prevent excessive calls
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      if (!prefetchedRef.current && typeof window !== 'undefined' && prefetch) {
+        prefetchedRef.current = true;
+        try {
+          router.prefetch(href);
+        } catch (e) {
+          // Silently fail if prefetch fails
+        }
+      }
+    }, 100); // 100ms debounce
+  }, [href, pathname, prefetch, router]);
+
+  const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Call custom onClick if provided
     if (onClick) {
       onClick();
     }
     
-    // Use startTransition for smoother navigation
+    // Use startTransition to mark navigation as non-urgent
+    // This allows React to keep the UI responsive during navigation
     startTransition(() => {
-      // Navigation is handled by Link, but we ensure smooth transition
+      // Navigation is handled by Next.js Link automatically
+      // startTransition ensures smooth transitions
     });
-  };
+  }, [onClick]);
+
+  // Cleanup timeout on unmount
+  const cleanup = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+  }, []);
 
   return (
     <Link
@@ -59,7 +84,8 @@ export default function FastLink({
       prefetch={prefetch}
       className={className}
       onMouseEnter={handleMouseEnter}
-      onTouchStart={handleMouseEnter} // Also prefetch on touch for mobile
+      onMouseLeave={cleanup}
+      onTouchStart={handleMouseEnter}
       onClick={handleClick}
       {...props}
     >
@@ -67,4 +93,7 @@ export default function FastLink({
     </Link>
   );
 }
+
+// Memoize component to prevent unnecessary re-renders
+export default memo(FastLink);
 

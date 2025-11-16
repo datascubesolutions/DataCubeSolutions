@@ -1,34 +1,44 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
 import { BarChart3, Zap, TrendingUp, DollarSign, Wrench } from 'lucide-react';
+import { useGSAP } from '../../utils/useGSAP';
+import { shouldAnimate } from '../../utils/motion';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
 export default function ERPServicePage() {
   const pageRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Fade in animation
+  // Use optimized GSAP hook
+  useGSAP((gsap, ScrollTrigger) => {
+    if (!shouldAnimate()) return;
+
+    // Detect mobile for reduced animations
+    const isMobile = typeof window !== 'undefined' && (
+      window.matchMedia('(max-width: 768px)').matches || 
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0
+    );
+
+    // Fade in animation
+    if (ScrollTrigger) {
       gsap.fromTo(
         '.fade-in',
         { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: isMobile ? 0.6 : 1,
           stagger: 0.2,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: pageRef.current,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
@@ -45,15 +55,18 @@ export default function ERPServicePage() {
             {
               height: targetHeight,
               opacity: 1,
-              duration: 1,
-              delay: index * 0.05,
+              duration: isMobile ? 0.6 : 1,
+              delay: isMobile ? 0 : index * 0.05,
               ease: 'power2.out',
             }
           );
         });
       }
+    }
 
-      // ERP bars pulse animation
+    // Reduced animations on mobile - only desktop gets floating animations
+    if (!isMobile) {
+      // ERP bars pulse animation - desktop only
       const erpBars = pageRef.current?.querySelectorAll('.erp-bar');
       if (erpBars) {
         erpBars.forEach((bar, index) => {
@@ -68,7 +81,7 @@ export default function ERPServicePage() {
         });
       }
 
-      // Dashboard cards floating animation
+      // Dashboard cards floating animation - desktop only
       const dashboardCards = pageRef.current?.querySelectorAll('.dashboard-card');
       if (dashboardCards) {
         dashboardCards.forEach((card, index) => {
@@ -85,7 +98,7 @@ export default function ERPServicePage() {
         });
       }
 
-      // Main ERP icon animation
+      // Main ERP icon animation - desktop only
       const mainIcon = pageRef.current?.querySelector('.erp-icon-main');
       if (mainIcon) {
         gsap.to(mainIcon, {
@@ -97,8 +110,10 @@ export default function ERPServicePage() {
           ease: 'sine.inOut',
         });
       }
+    }
 
-      // Stat cards entrance animation
+    // Stat cards entrance animation
+    if (ScrollTrigger) {
       const statCards = pageRef.current?.querySelectorAll('.erp-stat-card');
       if (statCards) {
         statCards.forEach((card, index) => {
@@ -109,29 +124,11 @@ export default function ERPServicePage() {
               scale: 1,
               rotation: 0,
               opacity: 1,
-              duration: 0.8,
-              delay: 0.3 + index * 0.15,
+              duration: isMobile ? 0.6 : 0.8,
+              delay: isMobile ? 0 : 0.3 + index * 0.15,
               ease: 'back.out(1.7)',
             }
           );
-
-          // Hover effect
-          card.addEventListener('mouseenter', () => {
-            gsap.to(card, {
-              scale: 1.08,
-              y: -5,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
-          card.addEventListener('mouseleave', () => {
-            gsap.to(card, {
-              scale: 1,
-              y: 0,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
         });
       }
 
@@ -145,15 +142,18 @@ export default function ERPServicePage() {
             { width: 0 },
             {
               width: `${width}%`,
-              duration: 1.5,
-              delay: 1 + index * 0.2,
+              duration: isMobile ? 1 : 1.5,
+              delay: isMobile ? 0 : 1 + index * 0.2,
               ease: 'power2.out',
             }
           );
         });
       }
+    }
 
-      // Metric dots pulse
+    // Reduced animations on mobile - only desktop gets pulse animations
+    if (!isMobile) {
+      // Metric dots pulse - desktop only
       const metricDots = pageRef.current?.querySelectorAll('.metric-dot');
       if (metricDots) {
         metricDots.forEach((dot, index) => {
@@ -169,7 +169,7 @@ export default function ERPServicePage() {
         });
       }
 
-      // Loading bars animation
+      // Loading bars animation - desktop only
       const loadingBars = pageRef.current?.querySelectorAll('.erp-loading-bar');
       if (loadingBars) {
         loadingBars.forEach((bar, index) => {
@@ -187,17 +187,15 @@ export default function ERPServicePage() {
           );
         });
       }
-    }, pageRef);
-
-    return () => ctx.revert();
+    }
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="min-h-screen bg-slate-950 overflow-hidden">
       <Header />
       <main ref={pageRef} className="pt-20 relative">
         {/* Animated Background - Dashboard Metrics */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
           {/* Grid Pattern Background */}
           <div 
             className="absolute inset-0 opacity-10"
@@ -286,7 +284,7 @@ export default function ERPServicePage() {
 
         {/* Hero Section */}
         <section className="relative py-20 bg-gradient-to-br from-blue-50/90 to-purple-50/90 dark:from-gray-900/95 dark:to-gray-800/95 backdrop-blur-sm z-10">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center fade-in relative z-10">
               <div className="relative inline-block mb-6">
                 <div className="erp-icon-main flex items-center justify-center">
@@ -339,7 +337,7 @@ export default function ERPServicePage() {
 
         {/* Main Content */}
         <section className="relative py-20 z-10">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto space-y-12">
               {/* Overview */}
               <div className="fade-in bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">

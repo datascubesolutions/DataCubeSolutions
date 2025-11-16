@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Tabs from './Tabs';
-import { BarChart3, Users, Code, Rocket, Cloud, Palette } from 'lucide-react';
+import { Rocket } from 'lucide-react';
+import { IconBarChart, IconUsers, IconCode, IconCloud, IconDatabase, IconSparkles } from './icons/IconLibrary';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
@@ -13,33 +14,33 @@ const services = [
     id: 1,
     title: 'ERP Solutions',
     description: 'Comprehensive Enterprise Resource Planning systems to streamline your business operations, manage resources efficiently, and boost productivity.',
-    icon: BarChart3,
+    icon: IconBarChart,
     category: 'it',
     features: ['Inventory Management', 'Financial Planning', 'Supply Chain', 'Human Resources'],
     color: 'from-blue-500 to-blue-700',
     details: (
-      <div className="space-y-6">
+      <div className="space-y-6 md:space-y-8">
         <div>
-          <h4 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Enterprise Resource Planning</h4>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-4 md:mb-6">Enterprise Resource Planning</h4>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
             Our ERP solutions are designed to integrate all aspects of your business into a single, 
             unified system. We help organizations manage their core business processes including 
             finance, HR, manufacturing, supply chain, services, and procurement.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">Key Features</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+          <div className="bg-blue-50 dark:bg-gray-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">Key Features</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• Real-time data analytics</li>
               <li>• Automated workflows</li>
               <li>• Multi-location support</li>
               <li>• Cloud-based deployment</li>
             </ul>
           </div>
-          <div className="bg-purple-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">Benefits</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+          <div className="bg-purple-50 dark:bg-gray-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">Benefits</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• Increased productivity</li>
               <li>• Better decision making</li>
               <li>• Cost reduction</li>
@@ -54,33 +55,33 @@ const services = [
     id: 2,
     title: 'CRM Systems',
     description: 'Customer Relationship Management solutions to enhance customer engagement, track interactions, and drive sales growth.',
-    icon: Users,
+    icon: IconUsers,
     category: 'it',
     features: ['Customer Analytics', 'Sales Pipeline', 'Marketing Automation', 'Support Tickets'],
     color: 'from-purple-500 to-purple-700',
     details: (
-      <div className="space-y-6">
+      <div className="space-y-6 md:space-y-8">
         <div>
-          <h4 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Customer Relationship Management</h4>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-4 md:mb-6">Customer Relationship Management</h4>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
             Transform your customer relationships with our comprehensive CRM solutions. Track every 
             interaction, automate sales processes, and provide exceptional customer service that 
             drives loyalty and revenue growth.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-purple-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">Sales Management</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+          <div className="bg-purple-50 dark:bg-gray-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">Sales Management</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• Lead tracking & conversion</li>
               <li>• Sales pipeline management</li>
               <li>• Revenue forecasting</li>
               <li>• Performance analytics</li>
             </ul>
           </div>
-          <div className="bg-pink-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">Customer Service</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+          <div className="bg-pink-50 dark:bg-gray-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">Customer Service</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• 24/7 support tickets</li>
               <li>• Customer history tracking</li>
               <li>• Automated responses</li>
@@ -95,33 +96,33 @@ const services = [
     id: 3,
     title: 'Web Development',
     description: 'Modern, responsive, and scalable web applications built with latest technologies to bring your digital presence to life.',
-    icon: Code,
+    icon: IconCode,
     category: 'it',
     features: ['React/Next.js', 'Node.js Backend', 'Mobile Responsive', 'SEO Optimized'],
     color: 'from-pink-500 to-pink-700',
     details: (
-      <div className="space-y-6">
+      <div className="space-y-6 md:space-y-8">
         <div>
-          <h4 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Web Development Services</h4>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-4 md:mb-6">Web Development Services</h4>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
             From simple websites to complex web applications, we build digital solutions that 
             engage users and drive business results. Our team uses cutting-edge technologies 
             to create fast, scalable, and user-friendly web experiences.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-pink-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">Frontend Development</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+          <div className="bg-pink-50 dark:bg-gray-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">Frontend Development</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• React & Next.js</li>
               <li>• TypeScript</li>
               <li>• Responsive design</li>
               <li>• Modern UI/UX</li>
             </ul>
           </div>
-          <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">Backend Development</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+          <div className="bg-blue-50 dark:bg-gray-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">Backend Development</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• Node.js & Express</li>
               <li>• RESTful APIs</li>
               <li>• Database integration</li>
@@ -136,33 +137,33 @@ const services = [
     id: 4,
     title: 'Cloud & API Integrations',
     description: 'Seamless cloud infrastructure and API integrations to connect your systems, enhance scalability, and enable real-time data synchronization.',
-    icon: Cloud,
+    icon: IconCloud,
     category: 'it',
     features: ['AWS/Azure Setup', 'RESTful APIs', 'Microservices', 'Data Sync'],
     color: 'from-cyan-500 to-cyan-700',
     details: (
-      <div className="space-y-6">
+      <div className="space-y-6 md:space-y-8">
         <div>
-          <h4 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Cloud & API Integration Services</h4>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-4 md:mb-6">Cloud & API Integration Services</h4>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
             Connect your business systems with powerful cloud infrastructure and seamless API integrations. 
             We help you migrate to the cloud, build scalable architectures, and integrate third-party services 
             to streamline your operations.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-cyan-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">Cloud Services</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+          <div className="bg-cyan-50 dark:bg-gray-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">Cloud Services</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• AWS & Azure deployment</li>
               <li>• Cloud migration</li>
               <li>• Scalable infrastructure</li>
               <li>• Cost optimization</li>
             </ul>
           </div>
-          <div className="bg-blue-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">API Integration</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+          <div className="bg-blue-50 dark:bg-gray-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">API Integration</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• RESTful & GraphQL APIs</li>
               <li>• Third-party integrations</li>
               <li>• Webhook setup</li>
@@ -177,37 +178,78 @@ const services = [
     id: 6,
     title: 'UI/UX Design',
     description: 'Beautiful, intuitive user interfaces and exceptional user experiences designed to engage users and drive conversions.',
-    icon: Palette,
+    icon: IconSparkles,
     category: 'it',
     features: ['User Research', 'Wireframing', 'Prototyping', 'Design Systems'],
     color: 'from-pink-500 to-rose-500',
     details: (
-      <div className="space-y-6">
+      <div className="space-y-6 md:space-y-8">
         <div>
-          <h4 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">UI/UX Design Services</h4>
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+          <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-4 md:mb-6">UI/UX Design Services</h4>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
             Create stunning user interfaces and exceptional user experiences that captivate your audience. 
             Our design team combines creativity with user research to build intuitive, accessible, and 
             conversion-focused designs that align with your brand and business goals.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-pink-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">User Experience</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+          <div className="bg-pink-50 dark:bg-gray-800 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">User Experience</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• User research & testing</li>
               <li>• Information architecture</li>
               <li>• User journey mapping</li>
               <li>• Usability optimization</li>
             </ul>
           </div>
-          <div className="bg-rose-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-800 dark:text-white mb-2">User Interface</h5>
-            <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+          <div className="bg-rose-50 dark:bg-gray-800 p-5 sm:p-6 md:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">User Interface</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
               <li>• Visual design</li>
               <li>• Design systems</li>
               <li>• Prototyping & mockups</li>
               <li>• Responsive design</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 5,
+    title: 'Data Analytics & BI',
+    description: 'Transform raw data into actionable insights with advanced analytics and business intelligence solutions to drive informed decision-making.',
+    icon: IconDatabase,
+    category: 'it',
+    features: ['Data Visualization', 'Predictive Analytics', 'Real-time Dashboards', 'Custom Reports'],
+    color: 'from-emerald-500 to-emerald-700',
+    details: (
+      <div className="space-y-6 md:space-y-8">
+        <div>
+          <h4 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-4 md:mb-6">Data Analytics & Business Intelligence</h4>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 leading-relaxed mb-4 md:mb-6">
+            Unlock the power of your data with comprehensive analytics and business intelligence solutions. 
+            We help organizations collect, process, and analyze data to uncover patterns, trends, and insights 
+            that drive strategic decisions and competitive advantage.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
+          <div className="bg-emerald-50 dark:bg-gray-800 p-5 sm:p-6 md:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">Analytics Solutions</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
+              <li>• Data warehousing</li>
+              <li>• ETL processes</li>
+              <li>• Predictive modeling</li>
+              <li>• Machine learning integration</li>
+            </ul>
+          </div>
+          <div className="bg-green-50 dark:bg-gray-800 p-5 sm:p-6 md:p-8 rounded-lg md:rounded-xl">
+            <h5 className="font-semibold text-base sm:text-lg text-gray-800 dark:text-white mb-3 md:mb-4">Business Intelligence</h5>
+            <ul className="space-y-2.5 md:space-y-3 text-sm sm:text-base text-gray-600 dark:text-gray-300">
+              <li>• Interactive dashboards</li>
+              <li>• Custom reporting</li>
+              <li>• KPI tracking</li>
+              <li>• Data visualization</li>
             </ul>
           </div>
         </div>
@@ -226,7 +268,7 @@ const serviceGroups = [
   },
 ];
 
-export default function Services() {
+function Services() {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -488,6 +530,7 @@ export default function Services() {
     2: '/services/crm',
     3: '/services/web-development',
     4: '/services/cloud-api',
+    5: '/services/data-analytics',
     6: '/services/ui-ux-design',
   };
 
@@ -495,11 +538,11 @@ export default function Services() {
     <section
       id="services"
       ref={sectionRef}
-      className="py-20 relative overflow-hidden"
+      className="py-16 md:py-24 lg:py-32 relative overflow-hidden"
     >
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
         {/* Hero Section */}
-        <div className="text-center mb-20 relative" style={{ 
+        <div className="text-center mb-12 md:mb-16 lg:mb-20 relative" style={{ 
           minHeight: '200px', 
           position: 'relative',
           display: 'flex',
@@ -558,7 +601,7 @@ export default function Services() {
             ))}
           </svg>
 
-          <div className="relative mb-6 mx-auto" style={{ 
+          <div className="relative mb-8 md:mb-10 lg:mb-12 mx-auto" style={{ 
             width: 'fit-content',
             display: 'flex',
             justifyContent: 'center',
@@ -568,7 +611,7 @@ export default function Services() {
               width: 'fit-content',
               position: 'relative',
             }}>
-              <Rocket className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 text-blue-400" />
+              <Rocket className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 text-blue-400" />
             </div>
             <div className="absolute inset-0 bg-blue-400/30 rounded-full blur-3xl animate-pulse" style={{
               left: '50%',
@@ -583,7 +626,7 @@ export default function Services() {
             </div>
           </div>
           
-          <h2 className="text-5xl md:text-7xl font-bold text-white mb-6 relative z-10">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 md:mb-6 lg:mb-8 relative z-10 px-4">
             <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
               Our Services
             </span>
@@ -592,7 +635,7 @@ export default function Services() {
               Our Services
             </span>
           </h2>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-12 relative z-10">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8 md:mb-10 lg:mb-12 relative z-10 px-4 leading-relaxed">
             Comprehensive solutions tailored to your business needs. Transform your operations with cutting-edge technology.
           </p>
         </div>
@@ -604,31 +647,31 @@ export default function Services() {
           const badgeDotClass = group.key === 'it' ? 'bg-blue-400' : 'bg-emerald-400';
 
           return (
-          <div key={group.key} className="mb-16">
-            <div className="text-center mb-10">
+          <div key={group.key} className="mb-12 md:mb-16 lg:mb-20">
+            <div className="text-center mb-8 md:mb-12 lg:mb-16 px-4">
               <div
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${badgeBorderClass} bg-slate-900/60 text-sm font-semibold ${badgeTextClass}`}
+                className={`inline-flex items-center gap-2 px-4 py-2 md:px-5 md:py-2.5 rounded-full border ${badgeBorderClass} bg-slate-900/60 text-xs sm:text-sm font-semibold ${badgeTextClass} mb-4 md:mb-6`}
               >
                 <span className={`flex h-2 w-2 rounded-full ${badgeDotClass}`}></span>
                 {group.title}
               </div>
-              <h3 className="text-3xl md:text-4xl font-bold text-white mt-6 mb-3">
+              <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mt-4 md:mt-6 mb-3 md:mb-4">
                 {group.title}
               </h3>
-              <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+              <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
                 {group.description}
               </p>
             </div>
 
             <div
-              className={`grid gap-8 ${group.services.length === 1 ? 'max-w-3xl mx-auto md:grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-3'}`}
+              className={`grid gap-6 md:gap-8 lg:gap-10 ${group.services.length === 1 ? 'max-w-3xl mx-auto md:grid-cols-1' : 'md:grid-cols-2 lg:grid-cols-3'}`}
             >
               {group.services.map((service) => {
             return (
               <a
                 key={service.id}
                 href={servicePaths[service.id]}
-                className="service-card group relative bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 hover:shadow-3xl transition-transform duration-200 sm:hover:-translate-y-6 sm:hover:scale-105 border-2 border-transparent sm:hover:border-blue-500/50 block cursor-pointer overflow-hidden"
+                className="service-card group relative bg-gray-800/90 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10 lg:p-12 hover:shadow-3xl transition-all duration-300 ease-out sm:hover:-translate-y-4 sm:hover:scale-[1.02] border-2 border-transparent sm:hover:border-blue-500/50 block cursor-pointer overflow-hidden"
                 style={{ willChange: 'transform, opacity' }}
               >
                 {/* Gradient background on hover */}
@@ -641,36 +684,36 @@ export default function Services() {
 
                 {/* Content */}
                 <div className="relative z-10">
-                  <div className="mb-6 flex justify-center">
-                    <div className={`transform group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 inline-block`}>
+                  <div className="mb-5 sm:mb-6 md:mb-8 flex justify-center">
+                    <div className="transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 ease-out inline-block">
                       {(() => {
                         const IconComponent = service.icon;
-                        return <IconComponent className="w-16 h-16 text-blue-400" />;
+                        return <IconComponent size="xl" state="info" className="text-blue-400" />;
                       })()}
                     </div>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-4 md:mb-5 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300 ease-out">
                     {service.title}
                   </h3>
-                  <p className="text-gray-300 mb-6 leading-relaxed">
+                  <p className="text-base sm:text-lg text-gray-300 mb-5 sm:mb-6 md:mb-8 leading-relaxed">
                     {service.description}
                   </p>
-                  <ul className="space-y-2 mb-6">
+                  <ul className="space-y-3 mb-6 sm:mb-8 md:mb-10">
                     {service.features.map((feature, index) => (
-                      <li key={index} className="text-gray-300 flex items-center group-hover:text-white transition-colors duration-300">
-                        <span className={`w-3 h-3 rounded-full bg-gradient-to-r ${service.color} mr-3 shadow-lg transform group-hover:scale-125 transition-transform duration-300`}></span>
-                        {feature}
+                      <li key={index} className="text-base text-gray-300 flex items-center group-hover:text-white transition-colors duration-300 ease-out">
+                        <span className={`w-2.5 h-2.5 rounded-full bg-gradient-to-r ${service.color} mr-3 shadow-lg transform group-hover:scale-110 transition-transform duration-300 ease-out flex-shrink-0`}></span>
+                        <span>{feature}</span>
                       </li>
                     ))}
                   </ul>
-                  <div className="flex items-center text-blue-400 font-semibold group-hover:text-blue-300 group-hover:gap-2 transition-all">
+                  <div className="flex items-center text-base text-blue-400 font-semibold group-hover:text-blue-300 group-hover:gap-2 transition-all duration-300 ease-out mt-4 sm:mt-6">
                     <span>Learn More</span>
-                    <span className="ml-2 transform group-hover:translate-x-2 transition-transform duration-300">→</span>
+                    <span className="ml-2 transform group-hover:translate-x-2 transition-transform duration-300 ease-out">→</span>
                   </div>
                 </div>
                 
                 {/* Bottom gradient line */}
-                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${service.color} rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}></div>
+                <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${service.color} rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out`}></div>
               </a>
             );
           })}
@@ -682,4 +725,7 @@ export default function Services() {
     </section>
   );
 }
+
+// Memoize to prevent unnecessary re-renders
+export default memo(Services);
 

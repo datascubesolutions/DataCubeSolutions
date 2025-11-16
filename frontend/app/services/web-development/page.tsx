@@ -1,39 +1,89 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useRef } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Link from 'next/link';
 import { Code, Code2, Box, Terminal, Cloud } from 'lucide-react';
+import { useGSAP } from '../../utils/useGSAP';
+import { shouldAnimate } from '../../utils/motion';
 
 // GSAP plugin is registered globally in gsapOptimizations
 
 export default function WebDevelopmentServicePage() {
   const pageRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Fade in animation
+  // Use optimized GSAP hook
+  useGSAP((gsap, ScrollTrigger) => {
+    if (!shouldAnimate()) return;
+
+    // Detect mobile for reduced animations
+    const isMobile = typeof window !== 'undefined' && (
+      window.matchMedia('(max-width: 768px)').matches || 
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0
+    );
+
+    // Fade in animation
+    if (ScrollTrigger) {
       gsap.fromTo(
         '.fade-in',
         { opacity: 0, y: 50 },
         {
           opacity: 1,
           y: 0,
-          duration: 1,
+          duration: isMobile ? 0.6 : 1,
           stagger: 0.2,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: pageRef.current,
             start: 'top 80%',
-            toggleActions: 'play none none reverse',
+            toggleActions: 'play none none none',
           },
         }
       );
 
-      // Code snippets floating animation
+      // Tech cards entrance animation
+      const techCards = pageRef.current?.querySelectorAll('.web-tech-card');
+      if (techCards) {
+        techCards.forEach((card, index) => {
+          gsap.fromTo(
+            card,
+            { scale: 0, opacity: 0, y: 50 },
+            {
+              scale: 1,
+              opacity: 1,
+              y: 0,
+              duration: isMobile ? 0.4 : 0.6,
+              delay: isMobile ? 0 : 0.5 + index * 0.2,
+              ease: 'back.out(1.7)',
+            }
+          );
+        });
+      }
+
+      // Skill bars animation
+      const skillBars = pageRef.current?.querySelectorAll('.web-skill-bar');
+      if (skillBars) {
+        skillBars.forEach((bar, index) => {
+          const percent = [95, 90, 88, 92][index] || 85;
+          gsap.fromTo(
+            bar,
+            { width: 0 },
+            {
+              width: `${percent}%`,
+              duration: isMobile ? 1 : 1.5,
+              delay: isMobile ? 0 : 1 + index * 0.2,
+              ease: 'power2.out',
+            }
+          );
+        });
+      }
+    }
+
+    // Reduced animations on mobile - only desktop gets floating animations
+    if (!isMobile) {
+      // Code snippets floating animation - desktop only
       const codeSnippets = pageRef.current?.querySelectorAll('.code-snippet');
       if (codeSnippets) {
         codeSnippets.forEach((snippet, index) => {
@@ -51,7 +101,7 @@ export default function WebDevelopmentServicePage() {
         });
       }
 
-      // Tech icons floating and rotating
+      // Tech icons floating and rotating - desktop only
       const techIcons = pageRef.current?.querySelectorAll('.tech-icon');
       if (techIcons) {
         techIcons.forEach((icon, index) => {
@@ -67,7 +117,7 @@ export default function WebDevelopmentServicePage() {
         });
       }
 
-      // Code brackets pulse
+      // Code brackets pulse - desktop only
       const codeBrackets = pageRef.current?.querySelectorAll('.code-bracket');
       if (codeBrackets) {
         codeBrackets.forEach((bracket, index) => {
@@ -83,7 +133,7 @@ export default function WebDevelopmentServicePage() {
         });
       }
 
-      // Typing cursor blink
+      // Typing cursor blink - desktop only
       const typingCursor = pageRef.current?.querySelector('.typing-cursor');
       if (typingCursor) {
         gsap.to(typingCursor, {
@@ -95,7 +145,7 @@ export default function WebDevelopmentServicePage() {
         });
       }
 
-      // Main web icon animation
+      // Main web icon animation - desktop only
       const mainIcon = pageRef.current?.querySelector('.web-icon-main');
       if (mainIcon) {
         gsap.to(mainIcon, {
@@ -107,73 +157,15 @@ export default function WebDevelopmentServicePage() {
           ease: 'sine.inOut',
         });
       }
-
-      // Tech cards entrance animation
-      const techCards = pageRef.current?.querySelectorAll('.web-tech-card');
-      if (techCards) {
-        techCards.forEach((card, index) => {
-          gsap.fromTo(
-            card,
-            { scale: 0, opacity: 0, y: 50 },
-            {
-              scale: 1,
-              opacity: 1,
-              y: 0,
-              duration: 0.6,
-              delay: 0.5 + index * 0.2,
-              ease: 'back.out(1.7)',
-            }
-          );
-
-          // Hover effect
-          card.addEventListener('mouseenter', () => {
-            gsap.to(card, {
-              scale: 1.1,
-              y: -10,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
-          card.addEventListener('mouseleave', () => {
-            gsap.to(card, {
-              scale: 1,
-              y: 0,
-              duration: 0.3,
-              ease: 'power2.out',
-            });
-          });
-        });
-      }
-
-      // Skill bars animation
-      const skillBars = pageRef.current?.querySelectorAll('.web-skill-bar');
-      if (skillBars) {
-        skillBars.forEach((bar, index) => {
-          const parent = bar.parentElement;
-          const percent = [95, 90, 88, 92][index] || 85;
-          gsap.fromTo(
-            bar,
-            { width: 0 },
-            {
-              width: `${percent}%`,
-              duration: 1.5,
-              delay: 1 + index * 0.2,
-              ease: 'power2.out',
-            }
-          );
-        });
-      }
-    }, pageRef);
-
-    return () => ctx.revert();
+    }
   }, []);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="min-h-screen bg-slate-950 overflow-hidden">
       <Header />
       <main ref={pageRef} className="pt-20 relative">
         {/* Animated Background - Code & Tech Stack */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
           {/* Terminal Window Background */}
           <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-blue-900 to-indigo-900 opacity-20"></div>
 
@@ -274,7 +266,7 @@ export default function WebDevelopmentServicePage() {
 
         {/* Hero Section */}
         <section className="relative py-20 bg-gradient-to-br from-pink-50/90 to-blue-50/90 dark:from-gray-900/95 dark:to-gray-800/95 backdrop-blur-sm z-10">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center fade-in relative z-10">
               <div className="relative inline-block mb-6">
                 <div className="web-icon-main flex items-center justify-center">
@@ -327,7 +319,7 @@ export default function WebDevelopmentServicePage() {
 
         {/* Main Content */}
         <section className="relative py-20 z-10">
-          <div className="container mx-auto px-6">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto space-y-12">
               {/* Overview */}
               <div className="fade-in bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
